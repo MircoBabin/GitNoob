@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{92FBC621-BD9B-4434-A71F-39114F02E047}"
+	ProjectSection(SolutionItems) = preProject
+		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob", "GitNoob\GitNoob.csproj", "{E23A258D-2925-4898-9768-9BF44CD7DBDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.Config", "GitNoob.Config\GitNoob.Config.csproj", "{1D7B577E-BDE4-4372-8E2D-D761F14EF782}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.Git", "GitNoob.Git\GitNoob.Git.csproj", "{613D99AB-9536-4E24-AD59-D52A3777A5F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.Gui.Forms", "GitNoob.Gui.Forms\GitNoob.Gui.Forms.csproj", "{480D06FC-41DE-43E5-BC52-73CA7151972A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.Gui.Program", "GitNoob.Gui.Program\GitNoob.Gui.Program.csproj", "{D339B8B8-C757-4A26-B97C-5830BAFE1F00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.ProjectTypes", "GitNoob.ProjectTypes\GitNoob.ProjectTypes.csproj", "{6616FB99-930A-4AC8-97CA-F57BBBDF0A59}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E23A258D-2925-4898-9768-9BF44CD7DBDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E23A258D-2925-4898-9768-9BF44CD7DBDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E23A258D-2925-4898-9768-9BF44CD7DBDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E23A258D-2925-4898-9768-9BF44CD7DBDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D7B577E-BDE4-4372-8E2D-D761F14EF782}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D7B577E-BDE4-4372-8E2D-D761F14EF782}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D7B577E-BDE4-4372-8E2D-D761F14EF782}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D7B577E-BDE4-4372-8E2D-D761F14EF782}.Release|Any CPU.Build.0 = Release|Any CPU
+		{613D99AB-9536-4E24-AD59-D52A3777A5F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{613D99AB-9536-4E24-AD59-D52A3777A5F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{613D99AB-9536-4E24-AD59-D52A3777A5F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{613D99AB-9536-4E24-AD59-D52A3777A5F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{480D06FC-41DE-43E5-BC52-73CA7151972A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{480D06FC-41DE-43E5-BC52-73CA7151972A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{480D06FC-41DE-43E5-BC52-73CA7151972A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{480D06FC-41DE-43E5-BC52-73CA7151972A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D339B8B8-C757-4A26-B97C-5830BAFE1F00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D339B8B8-C757-4A26-B97C-5830BAFE1F00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D339B8B8-C757-4A26-B97C-5830BAFE1F00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D339B8B8-C757-4A26-B97C-5830BAFE1F00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6616FB99-930A-4AC8-97CA-F57BBBDF0A59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6616FB99-930A-4AC8-97CA-F57BBBDF0A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6616FB99-930A-4AC8-97CA-F57BBBDF0A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6616FB99-930A-4AC8-97CA-F57BBBDF0A59}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

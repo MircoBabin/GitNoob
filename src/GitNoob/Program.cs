@@ -1,0 +1,153 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+
+namespace GitNoob
+{
+    static class Program
+    {
+        private static class NativeMethods
+        {
+            [DllImport("user32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool SetForegroundWindow(IntPtr hWnd);
+        }
+
+        private static bool CheckConfigs(List<Config.IConfig> configs)
+        {
+            Dictionary<string, string> workingDirectoryPaths = new Dictionary<string, string>();
+            foreach (var config in configs)
+            {
+                foreach (var project in config.GetProjects())
+                {
+                    foreach (var item in project.WorkingDirectories)
+                    {
+                        var wd = item.Value;
+                        var path = wd.Path.ToLowerInvariant();
+
+                        var name = "Project \"" + project.Name + "\", working directory \"" + wd.Name + "\".";
+
+                        if (workingDirectoryPaths.ContainsKey(path))
+                        {
+                            string message = "The directory \"" + path + "\" is used in multiple project working directories. This is not allowed." + Environment.NewLine +
+                                Environment.NewLine +
+                                workingDirectoryPaths[path] + Environment.NewLine +
+                                name + Environment.NewLine +
+                                Environment.NewLine +
+                                "When having 2 mainbranches e.g. \"development\" and \"release\", create 2 directories MyProject-Development and MyProject-Release with their own main branch. The project is then stored 2 times on disk in 2 different directories." + Environment.NewLine;
+
+                        MessageBox.Show(message, "GitNoob configuration error");
+                            return false;
+                        }
+
+                        workingDirectoryPaths.Add(path, name);
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main(string[] args)
+        {
+            Process me = Process.GetCurrentProcess();
+            string executableFileName = me.Modules[0].FileName;
+
+            string rootConfigurationFilename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GitNoob", "GitNoob.ini");
+            if (args.Length >= 1)
+            {
+                rootConfigurationFilename = Path.GetFullPath(args[0]);
+            }
+
+            if (!File.Exists(rootConfigurationFilename))
+            {
+                MessageBox.Show("Root configuration file does not exist:" + Environment.NewLine + rootConfigurationFilename, "GitNoob");
+                return;
+            }
+
+            string singleInstanceMutexName;
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] hash = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rootConfigurationFilename));
+
+                singleInstanceMutexName = "GitNoob." + BitConverter.ToString(hash).Replace("-", string.Empty);
+            }
+
+            bool firstInstance = false;
+            using (Mutex singleInstanceMutex = new Mutex(true, singleInstanceMutexName, out firstInstance)) {
+                if (firstInstance)
+                {
+                    string programPath = Path.GetFullPath(Path.GetDirectoryName(executableFileName));
+
+                    Config.Loader.ProjectTypeLoader.LoadProjectTypesAssembly(Path.Combine(programPath, "GitNoob.ProjectTypes.dll"));
+
+                    List<Config.IConfig> configs = new List<Config.IConfig>();
+                    configs.Add(new Config.Loader.IniFileLoader(rootConfigurationFilename, programPath));
+                    if (!CheckConfigs(configs)) return;
+
+                    Gui.Program.Utils.Resources.setIcon("error", Properties.Resources.error);
+
+                    Gui.Program.Utils.Resources.setIcon("git gui", Properties.Resources.breeze_icons_5_81_0_git_gui);
+                    Gui.Program.Utils.Resources.setIcon("get latest", Properties.Resources.download);
+                    Gui.Program.Utils.Resources.setIcon("merge", Properties.Resources.merge);
+                    Gui.Program.Utils.Resources.setIcon("delete all changes", Properties.Resources.delete_all_changes);
+
+                    Gui.Program.Utils.Resources.setIcon("clear cache", Properties.Resources.clear_cache);
+                    Gui.Program.Utils.Resources.setIcon("ngrok", Properties.Resources.ngrok_black);
+                    Gui.Program.Utils.Resources.setIcon("open logfiles", Properties.Resources.log_file);
+                    Gui.Program.Utils.Resources.setIcon("delete logfiles", Properties.Resources.log_file_delete);
+                    Gui.Program.Utils.Resources.setIcon("open configfiles", Properties.Resources.nullset);
+
+                    string licenseText = String.Empty;
+                    try
+                    {
+                        var asm = Assembly.GetExecutingAssembly();
+                        var names = asm.GetManifestResourceNames();
+
+                        using (var stream = asm.GetManifestResourceStream("GitNoob.LICENSE.md"))
+                        {
+                            using (var reader = new StreamReader(stream, Encoding.UTF8))
+                            {
+                                licenseText = reader.ReadToEnd();
+                            }
+
+                        }
+                    }
+                    catch { }
+
+
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+                    Application.Run(new Gui.Forms.ChooseProjectForm(configs, licenseText));
+                }
+                else
+                {
+                    try
+                    {
+                        foreach (Process proc in Process.GetProcessesByName(me.ProcessName))
+                        {
+                            if (proc.Id != me.Id && proc.Modules[0].FileName == executableFileName)
+                            {
+                                NativeMethods.SetForegroundWindow(proc.MainWindowHandle);
+                                break;
+                            }
+                        }
+                    }
+                    catch { }
+                }
+            }
+        }
+    }
+}
