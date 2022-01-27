@@ -40,6 +40,7 @@
     </Compile>
     <Compile Include="IProjectType_Capabilities.cs" />
     <Compile Include="IProjectType_ActionResult.cs" />
+    <Compile Include="SmtpServer.cs" />
     <Compile Include="Ngrok.cs" />
     <Compile Include="Apache.cs" />
     <Compile Include="IExecutor.cs" />

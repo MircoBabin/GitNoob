@@ -26,6 +26,7 @@ GitNoob solves the following problems:
 - Starting Git Gui for committing changes.
 - Optional: Starting the IDE.
 - Optional: Starting the browser. And automatically start Apache if needed.
+- Optional: Starting a local smtp server like [PaperCut-SMTP](https://github.com/ChangemakerStudios/Papercut-SMTP).
 - Optional: Starting [Fiddler](https://www.telerik.com/fiddler/fiddler-classic).
 - Optional: Starting [Ngrok](https://ngrok.com/). And automatically start Apache if needed.
 

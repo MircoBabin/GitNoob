@@ -382,6 +382,12 @@ namespace GitNoob.Gui.Forms
             location.X = lblStatusValue.Location.X;
             location.Y += 70;
 
+            var smtpserver = new Program.Action.StartSmtpServer(StepConfig);
+            if (smtpserver.isStartable())
+            {
+                this.panelStatus.Controls.Add(new ActionButton("Smtp Server", smtpserver, ref location));
+            }
+
             var fiddler = new Program.Action.StartFiddler();
             if (browser.isStartable() && fiddler.isStartable())
             {

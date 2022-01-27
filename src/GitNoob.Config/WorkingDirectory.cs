@@ -16,6 +16,7 @@
         public Php Php { get; set; }
         public Apache Apache { get; set; }
         public Ngrok Ngrok { get; set; }
+        public SmtpServer SmtpServer { get; set; }
         public Editor Editor { get; set; }
 
         public WorkingDirectory()
@@ -26,6 +27,7 @@
             Php = new Php();
             Apache = new Apache();
             Ngrok = new Ngrok();
+            SmtpServer = new SmtpServer();
             Editor = new Editor();
             Webpage = new Webpage();
         }

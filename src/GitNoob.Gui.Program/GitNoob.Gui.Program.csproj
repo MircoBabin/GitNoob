@@ -48,6 +48,7 @@
     <Compile Include="Action\ExecuteOpenConfigfiles.cs" />
     <Compile Include="Action\ExecuteFinishRebaseMerge.cs" />
     <Compile Include="Action\ExecuteDeleteLogfiles.cs" />
+    <Compile Include="Action\StartSmtpServer.cs" />
     <Compile Include="Action\IAction.cs" />
     <Compile Include="Action\IVisualizerMessage.cs" />
     <Compile Include="Action\MessageInput.cs" />

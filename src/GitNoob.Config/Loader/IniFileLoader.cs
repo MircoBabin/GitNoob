@@ -19,10 +19,12 @@ namespace GitNoob.Config.Loader
         private string _globalPhpName;
         private string _globalApacheName;
         private string _globalNgrokName;
+        private string _globalSmtpServerName;
         private Dictionary<string, WorkingGit> _globalGits;
         private Dictionary<string, Apache> _globalApaches;
         private Dictionary<string, Php> _globalPhps;
         private Dictionary<string, Ngrok> _globalNgroks;
+        private Dictionary<string, SmtpServer> _globalSmtpServers;
         private Dictionary<string, Webpage> _globalWebpages;
 
         private Dictionary<string, Project> _projects;
@@ -45,10 +47,12 @@ namespace GitNoob.Config.Loader
             _globalPhpName = String.Empty;
             _globalApacheName = String.Empty;
             _globalNgrokName = String.Empty;
+            _globalSmtpServerName = String.Empty;
             _globalGits = new Dictionary<string, WorkingGit>();
             _globalApaches = new Dictionary<string, Apache>();
             _globalPhps = new Dictionary<string, Php>();
             _globalNgroks = new Dictionary<string, Ngrok>();
+            _globalSmtpServers = new Dictionary<string, SmtpServer>();
             _globalWebpages = new Dictionary<string, Webpage>();
 
             _projects = new Dictionary<string, Project>();
@@ -128,6 +132,14 @@ namespace GitNoob.Config.Loader
                         _globalNgroks.Add(name, LoadNgrok(ini, sectionname, String.Empty));
                     }
                 },
+                {  "smtpserver-", (ini, sectionname, name) =>
+                    {
+                        if (_globalSmtpServers.ContainsKey(name))
+                            _globalSmtpServers.Remove(name);
+
+                        _globalSmtpServers.Add(name, LoadSmtpServer(ini, sectionname, String.Empty));
+                    }
+                },
             };
 
             {
@@ -166,6 +178,7 @@ namespace GitNoob.Config.Loader
                 _globalApacheName = ReadValue(ini, "gitnoob", "apache");
                 _globalPhpName = ReadValue(ini, "gitnoob", "php");
                 _globalNgrokName = ReadValue(ini, "gitnoob", "ngrok");
+                _globalSmtpServerName = ReadValue(ini, "gitnoob", "smtpserver");
 
                 foreach (string sectionname in ini.GetSectionNames())
                 {
@@ -323,6 +336,27 @@ namespace GitNoob.Config.Loader
             return ngrok;
         }
 
+        private SmtpServer LoadSmtpServer(IniFile ini, string Section, string smtpServerName)
+        {
+            SmtpServer smtpserver = new SmtpServer();
+            string value;
+
+            value = ReadValue(ini, Section, "smtpserver");
+            if (!String.IsNullOrWhiteSpace(value)) smtpServerName = value;
+            if (!String.IsNullOrWhiteSpace(smtpServerName))
+            {
+                if (_globalSmtpServers.ContainsKey(smtpServerName))
+                {
+                    smtpserver.CopyFrom(_globalSmtpServers[smtpServerName]);
+                }
+            }
+
+            value = ReadPath(ini, Section, "smtpServerExecutable");
+            if (!String.IsNullOrWhiteSpace(value)) smtpserver.Executable = value;
+
+            return smtpserver;
+        }
+
         private Webpage LoadWebpage(IniFile ini, string Section, string webpageName)
         {
             Webpage webpage = new Webpage();
@@ -386,6 +420,14 @@ namespace GitNoob.Config.Loader
                 ngrokName = name;
             }
 
+            string smtpServerName;
+            {
+                string name = "gitnoob-project-" + inifilename;
+                _globalSmtpServers.Add(name, LoadSmtpServer(ini, "gitnoob", _globalSmtpServerName));
+
+                smtpServerName = name;
+            }
+
             string webpageName;
             {
                 string name = "gitnoob-project-" + inifilename;
@@ -406,7 +448,7 @@ namespace GitNoob.Config.Loader
                             project.WorkingDirectories.Remove(name);
 
                         project.WorkingDirectories.Add(name, LoadWorkingDirectory(project, ini, sectionname, 
-                            gitName, webpageName, apacheName, phpName, ngrokName));
+                            gitName, webpageName, apacheName, phpName, ngrokName, smtpServerName));
                     }
                     catch { }
                 }
@@ -416,7 +458,7 @@ namespace GitNoob.Config.Loader
         }
 
         private WorkingDirectory LoadWorkingDirectory(Project project, IniFile ini, string Section, 
-            string gitName, string webpageName, string apacheName, string phpName, string ngrokName)
+            string gitName, string webpageName, string apacheName, string phpName, string ngrokName, string smtpServerName)
         {
             WorkingDirectory WorkingDirectory = new WorkingDirectory();
             string value;
@@ -439,6 +481,8 @@ namespace GitNoob.Config.Loader
             WorkingDirectory.Php = LoadPhp(ini, Section, phpName);
 
             WorkingDirectory.Ngrok = LoadNgrok(ini, Section, ngrokName);
+
+            WorkingDirectory.SmtpServer = LoadSmtpServer(ini, Section, smtpServerName);
 
 
             value = ReadValue(ini, Section, "port");

@@ -23,6 +23,9 @@ In the project configuration the section GitNoob can contain the settings:
 | ngrokPath | Path | (Optional) Path to Ngrok binaries. %ngrokPath% should contain ngrok.exe. e.g. "%binPath%\\ngrok". |
 | ngrokPort | Integer | (Optional) Port on localhost where the Ngrok dashboard is running. e.g. the default port "4040" |
 | | | |
+| smtpserver | Value | (Optional) project smtpserver settings name. E.g. "papercut" then there should also be a section \[smtpserver-papercut\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
+| smtpServerExecutable | Path | (Optional) Smtp server executable. |
+| | | |
 | origin | Value | (Optional) project url to be used for "git clone". e.g. "https://github.com/MircoBabin/GitNoob.git". |
 | mainbranch | Value | (Optional) main branch name. e.g. "master". |
 | commitname | Value | (Optional) what value should the committer name have. E.g. "Mirco Babin". |
@@ -64,6 +67,9 @@ This section defines a working directory.
 | ngrok | Value | (Optional) project ngrok settings name. E.g. "global" then there should also be a section \[ngrok-global\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | ngrokPath | Path | (Optional) Path to Ngrok binaries. %ngrokPath% should contain ngrok.exe. e.g. "%binPath%\\ngrok". |
 | ngrokPort | Integer | (Optional) Port on localhost where the Ngrok dashboard is running. e.g. the default port "4040" |
+| | | |
+| smtpserver | Value | (Optional) project smtpserver settings name. E.g. "papercut" then there should also be a section \[smtpserver-papercut\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
+| smtpServerExecutable | Path | (Optional) Smtp server executable. |
 | | | |
 | origin | Value | (Optional) url to be used for "git clone". e.g. "https://github.com/MircoBabin/GitNoob.git". |
 | mainbranch | Value | (Optional) main branch name. e.g. "master". |

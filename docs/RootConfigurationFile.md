@@ -35,6 +35,7 @@ In the root configuration the section GitNoob can contain the settings:
 | apache | Value | (Optional) global apache settings name. E.g. "global" then there should also be a section \[apache-global\]. |
 | php | Value | (Optional) global php settings name. E.g. "5.6.40" then there should also be a section \[php-5.6.40\]. |
 | ngrok | Value | (Optional) global ngrok settings name. E.g. "global" then there should also be a section \[ngrok-global\]. |
+| smtpserver | Value | (Optional) global smtpserver settings name. E.g. "papercut" then there should also be a section \[smtpserver-papercut\]. |
 
 ```
 [GitNoob]
@@ -47,6 +48,7 @@ commitemail=mirco@...
 apache=global
 php=5.6.40
 ngrok=global
+smtpserver=papercut
 ```
 
 # section \[projecttypes\]
@@ -121,6 +123,18 @@ ngrokPath=%binPath%\ngrok
 ngrokPort=4040
 ```
 
+# sections starting with \[smtpserver-\]
+A section starting with "smtpserver-" defines Smtp server settings. E.g. "\[smtpserver-papercut\]" defines an smtpserver section named "papercut".
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| smtpServerExecutable | Path | Executable to start. |
+
+```
+[smtpserver-papercut]
+smtpServerExecutable=%binPath%\PaperCut\papercut.exe
+```
+
 # full example of GitNoob.ini
 
 ```
@@ -138,6 +152,7 @@ commitemail=mirco@...
 apache=global
 php=5.6.40
 ngrok=global
+smtpserver=papercut
 
 [projecttypes]
 assembly=MyProjectTypes.dll
@@ -162,4 +177,7 @@ phpIni=%binPath%\php-7.2.31\php.ini
 [ngrok-global]
 ngrokPath=%binPath%\ngrok
 ngrokPort=4040
+
+[smtpserver-papercut]
+smtpServerExecutable=c:\utils\PaperCut\papercut.exe
 ```
