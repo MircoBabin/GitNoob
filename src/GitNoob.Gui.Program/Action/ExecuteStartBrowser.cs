@@ -14,11 +14,21 @@ namespace GitNoob.Gui.Program.Action
         {
             if (_cacheHttpHandler == null)
             {
-                //Query from HKEY_CLASSES_ROOT\http\shell\open\command
-                string openCommand = String.Empty;
-                using (var key = Registry.ClassesRoot.OpenSubKey("http\\shell\\open\\command", false))
+                //Query progid from HKEY_CURRENT_USER
+                string progid = String.Empty;
+                using (var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice", false))
                 {
-                    if (key != null) openCommand = ((string)key.GetValue("")).Trim();
+                    if (key != null) progid = ((string)key.GetValue("Progid")).Trim();
+                }
+
+                //Progid to executable
+                string openCommand = String.Empty;
+                if (!String.IsNullOrWhiteSpace(progid))
+                {
+                    using (var key = Registry.ClassesRoot.OpenSubKey(progid + "\\shell\\open\\command"))
+                    {
+                        if (key != null) openCommand = ((string)key.GetValue(null)).Trim();
+                    }
                 }
 
                 //Split {executable} {commandline}
