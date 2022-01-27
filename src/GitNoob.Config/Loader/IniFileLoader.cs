@@ -133,6 +133,19 @@ namespace GitNoob.Config.Loader
             {
                 IniFile ini = new IniFile(_rootConfigurationIniFilename);
 
+                {
+                    var loadConfigurationFrom = ReadValue(ini, "gitnoob", "loadRootConfigurationFrom");
+                    if (!String.IsNullOrWhiteSpace(loadConfigurationFrom))
+                    {
+                        loadConfigurationFrom = Path.GetFullPath(loadConfigurationFrom);
+                        if (File.Exists(loadConfigurationFrom))
+                        {
+                            _rootConfigurationIniFilename = loadConfigurationFrom;
+                            ini = new IniFile(_rootConfigurationIniFilename);
+                        }
+                    }
+                }
+
                 _prjPath = ReadPath(ini, "gitnoob", "prjPath");
                 if (_prjPath.EndsWith("\\")) _prjPath = _prjPath.Substring(0, _prjPath.Length - 1);
 

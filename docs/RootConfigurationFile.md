@@ -1,13 +1,27 @@
 # Root configuration file GitNoob.ini
 
-- In the My Document folder a directory GitNoob should be manually created.
+- In the My Documents folder a directory GitNoob should be manually created.
 - Here the GitNoob.ini root configuration file must be manually created.
 
 e.g. "c:\\Users\\Mirco\\Documents\\GitNoob\\GitNoob.ini".
 
 Path values in this root configuration file are relative to the GitNoob.ini file. E.g. a relative path like "MyProject.ini" would result in "c:\\Users\\Mirco\\Documents\\GitNoob\\MyProject.ini".
 
-As an alternative the root configuration filename can also be passed on the commandline as the first argument. e.g. c:\\Utils\\GitNoob\\GitNoob.exe "c:\\Projects\\GitNoob\\GitNoob.ini"
+## Alternative location
+An alternative the root configuration filename can also be passed on the commandline as the first argument. 
+
+e.g. c:\\Utils\\GitNoob\\GitNoob.exe "c:\\Projects\\GitNoob\\GitNoob.ini".
+
+## Redirection
+Also a redirection can be provided in the root configuration file. This prevents from having to use a commandline parameter.
+
+The My Documents\\GitNoob\\GitNoob.ini contains the entry "loadRootConfigurationFrom" pointing to the alternative location. 
+
+```
+[gitnoob]
+loadRootConfigurationFrom=c:\Projects\GitNoob\GitNoob.ini
+```
+
 
 # section \[GitNoob\]
 In the root configuration the section GitNoob can contain the settings:

@@ -94,7 +94,15 @@ namespace GitNoob
                     Config.Loader.ProjectTypeLoader.LoadProjectTypesAssembly(Path.Combine(programPath, "GitNoob.ProjectTypes.dll"));
 
                     List<Config.IConfig> configs = new List<Config.IConfig>();
-                    configs.Add(new Config.Loader.IniFileLoader(rootConfigurationFilename, programPath));
+                    try
+                    {
+                        configs.Add(new Config.Loader.IniFileLoader(rootConfigurationFilename, programPath));
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error loading configuration." + Environment.NewLine + Environment.NewLine + ex.Message, "GitNoob configuration error");
+                        return;
+                    }
                     if (!CheckConfigs(configs)) return;
 
                     Gui.Program.Utils.Resources.setIcon("error", Properties.Resources.error);
