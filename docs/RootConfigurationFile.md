@@ -179,5 +179,5 @@ ngrokPath=%binPath%\ngrok
 ngrokPort=4040
 
 [smtpserver-papercut]
-smtpServerExecutable=c:\utils\PaperCut\papercut.exe
+smtpServerExecutable=%binPath%\PaperCut\papercut.exe
 ```

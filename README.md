@@ -23,7 +23,7 @@ GitNoob solves the following problems:
 - When using [Git Credentials via KeePassCommander](https://github.com/MircoBabin/GitCredentialsViaKeePassCommander) ensure KeePass is started.
 - Starting a dosprompt.
 - Starting an explorer.
-- Starting Git Gui for committing changes.
+- Starting [Git Gui](https://github.com/prati0100/git-gui/) for committing changes.
 - Optional: Starting the IDE.
 - Optional: Starting the browser. And automatically start Apache if needed.
 - Optional: Starting a local smtp server like [PaperCut-SMTP](https://github.com/ChangemakerStudios/Papercut-SMTP).
