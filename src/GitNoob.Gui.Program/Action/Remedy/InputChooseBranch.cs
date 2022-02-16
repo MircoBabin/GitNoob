@@ -27,7 +27,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
                 VisualizerMessageButtons.Add(NewBranchText, (input) => {
                     var remedy = new InputNewBranchName(Step, new MessageWithLinks("Create new branch."), NewBranchText, (NewBranchName) =>
                     {
-                        var step = new Step.CreateBranch(NewBranchName, MainBranch);
+                        var step = new Step.CreateBranchOntoMainBranch(NewBranchName);
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                     });
 

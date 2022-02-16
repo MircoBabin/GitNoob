@@ -193,19 +193,22 @@ namespace GitNoob.Git
 
         public CreateNewBranchResult CreateNewBranch(string branchname, string branchFromBranchName, bool checkoutNewBranch)
         {
+            var currentbranch = new Command.Branch.GetCurrentBranch(this);
             var changes = new Command.WorkingTree.HasChanges(this);
             var rebasing = new Command.WorkingTree.IsRebaseActive(this);
             var merging = new Command.WorkingTree.IsMergeActive(this);
-
+            currentbranch.WaitFor();
             changes.WaitFor();
             rebasing.WaitFor();
             merging.WaitFor();
 
             if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false || 
-                rebasing.result != false || merging.result != false)
+                rebasing.result != false || merging.result != false ||
+                currentbranch.DetachedHead != false)
             {
                 return new CreateNewBranchResult()
                 {
+                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
                     ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
                     ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
                     ErrorRebaseInProgress = (rebasing.result != false),
@@ -216,7 +219,7 @@ namespace GitNoob.Git
             var create = new Command.Branch.CreateBranch(this, branchname, branchFromBranchName, checkoutNewBranch);
             create.WaitFor();
 
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
+            currentbranch = new Command.Branch.GetCurrentBranch(this);
             var command = new Command.Branch.ListBranches(this, true);
             command.WaitFor();
             currentbranch.WaitFor();
@@ -245,6 +248,8 @@ namespace GitNoob.Git
 
         public ChangeCurrentBranchResult ChangeCurrentBranchTo(string branchname)
         {
+            //explicitly no check for detached head.
+            //to allow for resolving detached head state by checking out a branch.
             var changes = new Command.WorkingTree.HasChanges(this);
             var rebasing = new Command.WorkingTree.IsRebaseActive(this);
             var merging = new Command.WorkingTree.IsMergeActive(this);
@@ -253,7 +258,8 @@ namespace GitNoob.Git
             rebasing.WaitFor();
             merging.WaitFor();
 
-            if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false || rebasing.result != false || merging.result != false)
+            if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false || 
+                rebasing.result != false || merging.result != false)
             {
                 return new ChangeCurrentBranchResult()
                 {

@@ -105,7 +105,7 @@
     <Compile Include="Action\Step\AskDeleteAllChanges.cs" />
     <Compile Include="Action\Step\EditFiles.cs" />
     <Compile Include="Action\Step\DeleteLogfiles.cs" />
-    <Compile Include="Action\Step\CreateBranch.cs" />
+    <Compile Include="Action\Step\CreateBranchOntoMainBranch.cs" />
     <Compile Include="Action\Step\ClearCache.cs" />
     <Compile Include="Action\Step\LockReset.cs" />
     <Compile Include="Action\Step\LockMainBranch.cs" />

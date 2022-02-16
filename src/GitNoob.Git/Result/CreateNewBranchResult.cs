@@ -7,6 +7,7 @@ namespace GitNoob.Git.Result
         public bool Created { get; set; }
         public string CurrentBranch { get; set; }
 
+        public bool ErrorDetachedHead { get; set; }
         public bool ErrorStagedUncommittedFiles { get; set; }
         public bool ErrorWorkingTreeChanges { get; set; }
         public bool ErrorRebaseInProgress { get; set; }
@@ -18,6 +19,7 @@ namespace GitNoob.Git.Result
             Created = false;
             CurrentBranch = String.Empty;
 
+            ErrorDetachedHead = false;
             ErrorStagedUncommittedFiles = false;
             ErrorWorkingTreeChanges = false;
             ErrorRebaseInProgress = false;
