@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
             this.NameLabel = new System.Windows.Forms.Label();
             this.WebsiteLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LicensePanel = new System.Windows.Forms.Panel();
@@ -81,6 +82,7 @@
             this.Controls.Add(this.LicensePanel);
             this.Controls.Add(this.WebsiteLinkLabel);
             this.Controls.Add(this.NameLabel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AboutForm";
             this.Text = "About GitNoob";
             this.LicensePanel.ResumeLayout(false);
