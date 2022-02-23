@@ -433,11 +433,24 @@ namespace GitNoob.Git
             var fetch = new Command.Repository.UpdateRepositoryFromRemotes(this);
             fetch.WaitFor();
 
-            var common = new Command.Branch.FindCommonCommitOfTwoBranches(this, MainBranch, currentbranch.shortname);
-            var maincommit = new Command.Branch.GetLastCommitOfBranch(this, MainBranch);
+            bool CurrentBranchIsBehindMainBranch;
             var commitname = new Command.Config.GetCurrentCommitter(this);
-            common.WaitFor();
-            maincommit.WaitFor();
+            if (MainBranch == currentbranch.shortname)
+            {
+                var fastForwardMainBranch = new Command.Branch.FastForwardCurrentBranchToRemote(this);
+                fastForwardMainBranch.WaitFor();
+
+                CurrentBranchIsBehindMainBranch = false;
+            }
+            else
+            {
+                var common = new Command.Branch.FindCommonCommitOfTwoBranches(this, MainBranch, currentbranch.shortname);
+                var maincommit = new Command.Branch.GetLastCommitOfBranch(this, MainBranch);
+                common.WaitFor();
+                maincommit.WaitFor();
+
+                CurrentBranchIsBehindMainBranch = (common.commitid != maincommit.commitid);
+            }
             commitname.WaitFor();
 
             return new GetLatestResult()
@@ -447,7 +460,7 @@ namespace GitNoob.Git
                 WorkingTreeChanges = (changes.workingtreeChanges != false),
                 StagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
                 UnpushedCommits = (unpushedCommits.result == true),
-                CurrentBranchIsBehindMainBranch = (common.commitid != maincommit.commitid),
+                CurrentBranchIsBehindMainBranch = CurrentBranchIsBehindMainBranch,
                 CommitFullName = commitname.result,
                 CommitName = commitname.name,
                 CommitEmail = commitname.email,
