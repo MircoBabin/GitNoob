@@ -6,6 +6,8 @@ namespace GitNoob.Gui.Program.Action.StepsExecutor
 {
     public class StepsExecutor
     {
+        public delegate void AfterRun(Exception ex);
+
         private StepConfig _stepConfig;
         public ProgramWorkingDirectory Config { get { return _stepConfig.Config; } }
         public Config.IExecutor Executor { get { return _stepConfig.Executor; } }
@@ -13,12 +15,16 @@ namespace GitNoob.Gui.Program.Action.StepsExecutor
         public string CurrentBranchStored { get; set; }
         public Git.GitLock GitLockStored { get; set; }
 
-        IEnumerable<IExecutableByStepsExecutor> _steps;
+        private IEnumerable<IExecutableByStepsExecutor> _steps;
+        private bool _lockFrontend;
+        private AfterRun _onAfterRun;
 
-        public StepsExecutor(StepConfig Config, IEnumerable<IExecutableByStepsExecutor> Steps)
+        public StepsExecutor(StepConfig Config, IEnumerable<IExecutableByStepsExecutor> Steps, bool LockFrontend = true, AfterRun OnAfterRun = null)
         {
             _stepConfig = Config;
             _steps = Steps;
+            _lockFrontend = LockFrontend;
+            _onAfterRun = OnAfterRun;
 
             CurrentBranchStored = null;
             GitLockStored = null;
@@ -30,7 +36,7 @@ namespace GitNoob.Gui.Program.Action.StepsExecutor
         {
             if (_executing) throw new Exception("already executing");
             _executing = true;
-            _stepConfig.Visualizer.lockFrontend();
+            if (_lockFrontend) _stepConfig.Visualizer.lockFrontend();
 
             try
             {
@@ -49,80 +55,98 @@ namespace GitNoob.Gui.Program.Action.StepsExecutor
         private List<IExecutableByStepsExecutor> _injectedSteps = new List<IExecutableByStepsExecutor>();
         private void run()
         {
-            _executingCancel = false;
-            lock (_injectedStepsLock)
-            {
-                _injectedSteps.Clear();
-            }
-
             try
             {
-                IExecutableByStepsExecutor step;
-                foreach (var basestep in _steps)
+                _executingCancel = false;
+                lock (_injectedStepsLock)
                 {
-                    step = basestep;
-                    while (step != null)
-                    {
-                        if (_executingCancel) return;
+                    _injectedSteps.Clear();
+                }
 
+                try
+                {
+                    IExecutableByStepsExecutor step;
+                    foreach (var basestep in _steps)
+                    {
+                        step = basestep;
+                        while (step != null)
+                        {
+                            if (_executingCancel) return;
+
+                            try
+                            {
+                                step.StepsExecutor = this;
+                                bool success = step.execute();
+
+                                if (!success)
+                                {
+                                    if (step.FailureRemedy == null)
+                                    {
+                                        Cancel();
+                                        return;
+                                    }
+
+                                    lock (_injectedStepsLock)
+                                    {
+                                        _injectedSteps.Insert(0, step.FailureRemedy);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                var remedy = new Remedy.MessageException(null, new MessageWithLinks(String.Empty), ex);
+                                remedy.StepsExecutor = this;
+                                remedy.execute();
+                                return;
+                            }
+
+
+                            lock (_injectedStepsLock)
+                            {
+                                if (_injectedSteps.Count == 0)
+                                {
+                                    step = null;
+                                }
+                                else
+                                {
+                                    step = _injectedSteps[0];
+                                    _injectedSteps.RemoveAt(0);
+                                }
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    if (GitLockStored != null)
+                    {
+                        BusyMessage("Release logical lock.");
                         try
                         {
-                            step.StepsExecutor = this;
-                            bool success = step.execute();
-
-                            if (!success)
-                            {
-                                if (step.FailureRemedy == null)
-                                {
-                                    Cancel();
-                                    return;
-                                }
-
-                                lock (_injectedStepsLock)
-                                {
-                                    _injectedSteps.Insert(0, step.FailureRemedy);
-                                }
-                            }
+                            GitLockStored.Release();
+                            GitLockStored = null;
                         }
-                        catch (Exception ex)
-                        {
-                            var remedy = new Remedy.MessageException(null, new MessageWithLinks(String.Empty), ex);
-                            remedy.StepsExecutor = this;
-                            remedy.execute();
-                            return;
-                        }
-
-
-                        lock (_injectedStepsLock)
-                        {
-                            if (_injectedSteps.Count == 0)
-                            {
-                                step = null;
-                            }
-                            else
-                            {
-                                step = _injectedSteps[0];
-                                _injectedSteps.RemoveAt(0);
-                            }
-                        }
+                        catch { }
                     }
+
+                    _executing = false;
+                    BusyMessage(null);
+                    if (_lockFrontend) _stepConfig.Visualizer.unlockFrontend();
                 }
             }
-            finally
+            catch (Exception ex)
             {
-                if (GitLockStored != null)
+                if (_onAfterRun != null)
                 {
-                    BusyMessage("Release logical lock.");
-                    try
-                    {
-                        GitLockStored.Release();
-                        GitLockStored = null;
-                    }
-                    catch { }
+                    _onAfterRun(ex);
+                    return;
                 }
+                throw (ex);
+            }
 
-                _executing = false;
-                _stepConfig.Visualizer.unlockFrontend();
+            if (_onAfterRun != null)
+            {
+                _onAfterRun(null);
             }
         }
 

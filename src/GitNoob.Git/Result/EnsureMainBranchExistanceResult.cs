@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GitNoob.Git.Result
+﻿namespace GitNoob.Git.Result
 {
     public class EnsureMainBranchExistanceResult
     {
@@ -13,6 +11,7 @@ namespace GitNoob.Git.Result
         public bool ErrorMergeInProgress { get; set; }
 
         public bool ErrorNotAutomaticallyCreated { get; set; } //because there is no remote tracking branch named the same
+        public bool ErrorNotTrackingRemoteBranch { get; set; }
 
         public EnsureMainBranchExistanceResult()
         {
@@ -25,6 +24,7 @@ namespace GitNoob.Git.Result
             ErrorMergeInProgress = false;
 
             ErrorNotAutomaticallyCreated = false;
+            ErrorNotTrackingRemoteBranch = false;
         }
     }
 }

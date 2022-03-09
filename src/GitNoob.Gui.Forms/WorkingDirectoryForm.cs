@@ -173,7 +173,7 @@ namespace GitNoob.Gui.Forms
 
         private Object _firstRefresh_LockObj = new Object();
         private volatile bool _firstRefresh = true;
-        Program.Action.ExecuteFinishRebaseMerge ActionFinishRebaseMerge = null;
+        Program.Action.ExecuteAfterStatus ActionAfterStatus = null;
         private void AfterRefresh(Git.Result.StatusResult status)
         {
             lock (_firstRefresh_LockObj)
@@ -186,10 +186,7 @@ namespace GitNoob.Gui.Forms
 
                     if (status != null)
                     {
-                        if (status.Rebasing || status.Merging)
-                        {
-                            ActionFinishRebaseMerge.execute(); //finish pending rebase/merge first.
-                        }
+                        ActionAfterStatus.execute(status);
                     }
                 }
             }
@@ -312,7 +309,7 @@ namespace GitNoob.Gui.Forms
             Program.Action.StartDosPrompt ActionStartDosPrompt = new Program.Action.StartDosPrompt(Config);
             Program.Action.StepsExecutor.StepConfig StepConfig = new Program.Action.StepsExecutor.StepConfig(Config, this, ActionStartDosPrompt);
             ActionChangeBranch = new Program.Action.ExecuteChangeBranch(StepConfig);
-            ActionFinishRebaseMerge = new Program.Action.ExecuteFinishRebaseMerge(StepConfig);
+            ActionAfterStatus = new Program.Action.ExecuteAfterStatus(StepConfig);
 
             Point empty = new Point(0,0);
             { 

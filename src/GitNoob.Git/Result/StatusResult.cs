@@ -14,6 +14,8 @@
         public bool Rebasing { get; set; }
         public bool Merging { get; set; }
         public bool Conflicts { get; set; }
+        public bool MainBranchExists { get; set; }
+        public bool MainBranchIsTrackingRemoteBranch { get; set; }
 
         public StatusResult()
         {
@@ -29,6 +31,8 @@
             Rebasing = false;
             Merging = false;
             Conflicts = false;
+            MainBranchExists = false;
+            MainBranchIsTrackingRemoteBranch = false;
         }
     }
 }

@@ -40,13 +40,19 @@
     </Compile>
     <Compile Include="Command\Branch\CreateBranch.cs" />
     <Compile Include="Command\Branch\FindCommonCommitOfTwoBranches.cs" />
+    <Compile Include="Command\Branch\SetTrackingRemoteBranch.cs" />
     <Compile Include="Command\Branch\MergeContinue.cs" />
     <Compile Include="Command\Branch\ResetCurrentBranchToPreviousCommit.cs" />
     <Compile Include="Command\Config\SetCommitter.cs" />
+    <Compile Include="Command\Remote\ChangeUrl.cs" />
+    <Compile Include="Command\Remote\ListRemotes.cs" />
     <Compile Include="Command\Repository\RemoteReachable.cs" />
+    <Compile Include="GitRemote.cs" />
     <Compile Include="GitUtils.cs" />
+    <Compile Include="Result\RemotesResult.cs" />
     <Compile Include="Result\BranchesResult.cs" />
     <Compile Include="Result\BuildCacheAndCommitOnMainBranchResult.cs" />
+    <Compile Include="Result\SetRemoteForBranchResult.cs" />
     <Compile Include="Result\UnpackLastTemporaryCommitOnCurrentBranchResult.cs" />
     <Compile Include="Result\CreateNewBranchResult.cs" />
     <Compile Include="Result\ChangeCurrentBranchResult.cs" />

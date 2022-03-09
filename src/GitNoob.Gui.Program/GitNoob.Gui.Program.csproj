@@ -46,8 +46,11 @@
     <Compile Include="Action\ExecuteDeleteAllChanges.cs" />
     <Compile Include="Action\ExecuteClearCache.cs" />
     <Compile Include="Action\ExecuteOpenConfigfiles.cs" />
-    <Compile Include="Action\ExecuteFinishRebaseMerge.cs" />
+    <Compile Include="Action\ExecuteAfterStatus.cs" />
     <Compile Include="Action\ExecuteDeleteLogfiles.cs" />
+    <Compile Include="Action\Remedy\InputChooseRemote.cs" />
+    <Compile Include="Action\Remedy\MessageSetRemoteForBranchFailed.cs" />
+    <Compile Include="Action\Remedy\MessageSetRemoteUrlFailed.cs" />
     <Compile Include="Action\StartSmtpServer.cs" />
     <Compile Include="Action\IAction.cs" />
     <Compile Include="Action\IVisualizerMessage.cs" />
@@ -101,8 +104,11 @@
     <Compile Include="Action\StartGitCredentialsViaKeePassCommanderOnGithub.cs" />
     <Compile Include="Action\StartGitGui.cs" />
     <Compile Include="Action\ExecuteMerge.cs" />
+    <Compile Include="Action\Step\AskSetRemoteTrackingBranchForMainBranch.cs" />
+    <Compile Include="Action\Step\AskSetCommitter.cs" />
     <Compile Include="Action\Step\AskStartMerge.cs" />
     <Compile Include="Action\Step\AskDeleteAllChanges.cs" />
+    <Compile Include="Action\Step\SetRemoteForBranch.cs" />
     <Compile Include="Action\Step\EditFiles.cs" />
     <Compile Include="Action\Step\DeleteLogfiles.cs" />
     <Compile Include="Action\Step\CreateBranchOntoMainBranch.cs" />

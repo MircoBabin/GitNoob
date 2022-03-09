@@ -123,6 +123,8 @@ namespace GitNoob.Git
             var rebasing = new Command.WorkingTree.IsRebaseActive(this);
             var merging = new Command.WorkingTree.IsMergeActive(this);
             var conflicts = new Command.WorkingTree.HasConflicts(this);
+            var mainbranchcommit = new Command.Branch.GetLastCommitOfBranch(this, MainBranch);
+            var mainbranchremote = new Command.Branch.GetRemoteBranch(this, MainBranch);
 
             currentbranch.WaitFor();
             commitname.WaitFor();
@@ -130,6 +132,8 @@ namespace GitNoob.Git
             rebasing.WaitFor();
             merging.WaitFor();
             conflicts.WaitFor();
+            mainbranchcommit.WaitFor();
+            mainbranchremote.WaitFor();
 
             return new StatusResult
             {
@@ -145,6 +149,8 @@ namespace GitNoob.Git
                 Rebasing = (rebasing.result == true),
                 Merging = (merging.result == true),
                 Conflicts = (conflicts.result == true),
+                MainBranchExists = (!string.IsNullOrEmpty(mainbranchcommit.commitid)),
+                MainBranchIsTrackingRemoteBranch = (!string.IsNullOrEmpty(mainbranchremote.result)),
             };
         }
 
@@ -166,6 +172,79 @@ namespace GitNoob.Git
 
                 ErrorChangingName = (commitname.name != toName),
                 ErrorChangingEmail = (commitname.email != toEmail),
+            };
+        }
+
+        public RemotesResult RetrieveRemotes()
+        {
+            var result = new RemotesResult();
+
+            var command = new Command.Remote.ListRemotes(this);
+            command.WaitFor();
+
+            
+            if (command.result != null)
+            {
+                foreach (var keypair in command.result)
+                {
+                    result.Remotes.Add(keypair.Value);
+                }
+            }
+
+            return result;
+        }
+
+        public SetRemoteForBranchResult SetRemoteForBranch(string branch, string remoteName, string remoteUrl = null)
+        {
+            if (!string.IsNullOrEmpty(remoteUrl))
+            {
+                var change = new Command.Remote.ChangeUrl(this, remoteName, remoteUrl);
+                change.WaitFor();
+
+                var list = new Command.Remote.ListRemotes(this);
+                list.WaitFor();
+
+                if (list.result != null)
+                {
+                    bool found = false;
+                    foreach (var keypair in list.result)
+                    {
+                        if (keypair.Value.RemoteName == remoteName)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        return new SetRemoteForBranchResult()
+                        {
+                            ErrorSettingRemoteUrl = true,
+                        };
+                    }
+                }
+            }
+
+            {
+                var command = new Command.Branch.SetTrackingRemoteBranch(this, branch, remoteName, branch);
+                command.WaitFor();
+
+                var branchremote = new Command.Branch.GetRemoteBranch(this, branch);
+                branchremote.WaitFor();
+
+                if (branchremote.result != (remoteName + "/" + branch))
+                {
+                    return new SetRemoteForBranchResult()
+                    {
+                        ErrorSettingRemoteForBranch = true,
+                    };
+                }
+            }
+
+            return new SetRemoteForBranchResult()
+            {
+                RemoteSet = true,
             };
         }
 
@@ -1059,8 +1138,11 @@ namespace GitNoob.Git
             checkout.WaitFor();
 
             var branch = new Command.Branch.GetCurrentBranch(this);
+            var remotebranch = new Command.Branch.GetRemoteBranch(this, MainBranch);
             branch.WaitFor();
+            remotebranch.WaitFor();
 
+            //restore current branch
             checkout = new Command.Branch.ChangeBranchTo(this, currentbranch.shortname);
             checkout.WaitFor();
 
@@ -1069,6 +1151,14 @@ namespace GitNoob.Git
                 return new EnsureMainBranchExistanceResult()
                 {
                     ErrorNotAutomaticallyCreated = true,
+                };
+            }
+
+            if (String.IsNullOrEmpty(remotebranch.result))
+            {
+                return new EnsureMainBranchExistanceResult()
+                {
+                    ErrorNotTrackingRemoteBranch = true,
                 };
             }
 
