@@ -69,7 +69,7 @@ namespace GitNoob.Git
         {
             get
             {
-                return _workingdirectory.Path;
+                return _workingdirectory.Path.ToString();
             }
         }
 
@@ -102,7 +102,7 @@ namespace GitNoob.Git
 
         public StatusResult RetrieveStatus()
         {
-            if (!Directory.Exists(_workingdirectory.Path))
+            if (!Directory.Exists(_workingdirectory.Path.ToString()))
             {
                 return new StatusResult();
             }
@@ -436,7 +436,7 @@ namespace GitNoob.Git
             {
                 try
                 {
-                    Directory.Delete(_workingdirectory.Path, true);
+                    Directory.Delete(_workingdirectory.Path.ToString(), true);
                 }
                 catch { }
 
@@ -560,12 +560,12 @@ namespace GitNoob.Git
         public GetLatestResult GetLatest(bool CheckGitCredentialsViaKeePassCommander = true)
         {
             bool clone;
-            if (!Directory.Exists(_workingdirectory.Path))
+            if (!Directory.Exists(_workingdirectory.Path.ToString()))
             {
                 try
                 {
-                    Directory.CreateDirectory(_workingdirectory.Path);
-                    if (!Directory.Exists(_workingdirectory.Path))
+                    Directory.CreateDirectory(_workingdirectory.Path.ToString());
+                    if (!Directory.Exists(_workingdirectory.Path.ToString()))
                     {
                         throw new Exception("Error creating directory: " + _workingdirectory.Path);
                     }
@@ -579,7 +579,7 @@ namespace GitNoob.Git
             }
             else
             {
-                clone = IsDirectoryEmpty(_workingdirectory.Path);
+                clone = IsDirectoryEmpty(_workingdirectory.Path.ToString());
             }
 
             if (CheckGitCredentialsViaKeePassCommander && !GitCredentialsViaKeePassCommander.AreCredentialsAvailable(this))

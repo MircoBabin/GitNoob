@@ -23,7 +23,7 @@ namespace GitNoob.Gui.Program.Action.Step
             {
                 message.Append(Environment.NewLine);
                 message.Append("The directory \"");
-                message.AppendLink(StepsExecutor.Config.ProjectWorkingDirectory.Path, () => {
+                message.AppendLink(StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString(), () => {
                     StepsExecutor.StartExplorer();
                 });
                 message.Append("\" is not empty and not a git repository.");

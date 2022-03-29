@@ -2,6 +2,21 @@
 {
     public class Editor
     {
-        public string WorkspaceFilename { get; set; }
+        public ConfigFilename WorkspaceFilename { get; private set; }
+
+        public Editor()
+        {
+            WorkspaceFilename = new ConfigFilename(null);
+        }
+
+        public void CopyFrom(Editor other)
+        {
+            WorkspaceFilename = other.WorkspaceFilename;
+        }
+
+        public void useWorkingDirectory(WorkingDirectory WorkingDirectory)
+        {
+            WorkspaceFilename.useWorkingDirectory(WorkingDirectory);
+        }
     }
 }

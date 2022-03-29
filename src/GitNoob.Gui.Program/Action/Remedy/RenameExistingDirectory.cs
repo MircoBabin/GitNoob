@@ -8,7 +8,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
         public RenameExistingDirectory(Step.Step Step, MessageWithLinks Message) :
             base(Step, ref Message)
         {
-            string RenameTo = Utils.FileUtils.DirectoryCopyRenameToDestinationName(StepsExecutor.Config.ProjectWorkingDirectory.Path);
+            string RenameTo = Utils.FileUtils.DirectoryCopyRenameToDestinationName(StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString());
 
             VisualizerMessageButtons = 
                 new Dictionary<string, System.Action<MessageInput>>()

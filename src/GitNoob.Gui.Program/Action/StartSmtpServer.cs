@@ -9,12 +9,12 @@ namespace GitNoob.Gui.Program.Action
 
         private string GetExecutable()
         {
-            if (string.IsNullOrWhiteSpace(stepConfig.Config.ProjectWorkingDirectory.SmtpServer.Executable))
+            if (stepConfig.Config.ProjectWorkingDirectory.SmtpServer.Executable.isEmpty())
             {
                 return null;
             }
 
-            return Path.GetFullPath(stepConfig.Config.ProjectWorkingDirectory.SmtpServer.Executable);
+            return Path.GetFullPath(stepConfig.Config.ProjectWorkingDirectory.SmtpServer.Executable.ToString());
         }
 
         public bool isStartable()

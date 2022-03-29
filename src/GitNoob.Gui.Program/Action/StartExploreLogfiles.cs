@@ -18,7 +18,7 @@ namespace GitNoob.Gui.Program.Action
             var result = new List<string>();
             foreach (var path in paths)
             {
-                result.Add(Path.Combine(stepConfig.Config.ProjectWorkingDirectory.Path, path));
+                result.Add(Path.Combine(stepConfig.Config.ProjectWorkingDirectory.Path.ToString(), path));
             }
 
             if (result.Count == 0) return null;

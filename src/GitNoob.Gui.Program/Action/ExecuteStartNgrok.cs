@@ -10,12 +10,12 @@ namespace GitNoob.Gui.Program.Action
 
         private string GetExecutable()
         {
-            if (string.IsNullOrWhiteSpace(stepConfig.Config.ProjectWorkingDirectory.Ngrok.NgrokPath))
+            if (stepConfig.Config.ProjectWorkingDirectory.Ngrok.NgrokPath.isEmpty())
             {
                 return null;
             }
 
-            return Path.Combine(stepConfig.Config.ProjectWorkingDirectory.Ngrok.NgrokPath, "ngrok.exe");
+            return Path.Combine(stepConfig.Config.ProjectWorkingDirectory.Ngrok.NgrokPath.ToString(), "ngrok.exe");
         }
 
         public bool isStartable()

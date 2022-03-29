@@ -4,11 +4,11 @@
     {
         public IProjectType ProjectType { get; set; }
 
-        public string Path { get; set; }
+        public ConfigPath Path { get; private set; }
 
         public string Name { get; set; }
-        public string IconFilename { get; set; }
-        public string ImageFilename { get; set; }
+        public ConfigFilename IconFilename { get; set; }
+        public ConfigFilename ImageFilename { get; set; }
         public string ImageBackgroundColor { get; set; } //In html notation e.g. "#000000" for black "#ffffff" for white
 
         public WorkingGit Git { get; set; }
@@ -23,6 +23,11 @@
         {
             ProjectType = null;
 
+            Path = new ConfigPath(null);
+
+            IconFilename = new ConfigFilename(null);
+            ImageFilename = new ConfigFilename(null);
+
             Git = new WorkingGit();
             Php = new Php();
             Apache = new Apache();
@@ -30,6 +35,17 @@
             SmtpServer = new SmtpServer();
             Editor = new Editor();
             Webpage = new Webpage();
+        }
+
+        public void useWorkingDirectory()
+        {
+            Git.useWorkingDirectory(this);
+            Php.useWorkingDirectory(this);
+            Apache.useWorkingDirectory(this);
+            Ngrok.useWorkingDirectory(this);
+            SmtpServer.useWorkingDirectory(this);
+            Editor.useWorkingDirectory(this);
+            Webpage.useWorkingDirectory(this);
         }
     }
 }

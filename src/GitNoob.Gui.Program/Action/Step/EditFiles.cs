@@ -60,7 +60,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
                     var info = new System.Diagnostics.ProcessStartInfo
                     {
-                        WorkingDirectory = StepsExecutor.Config.ProjectWorkingDirectory.Path,
+                        WorkingDirectory = StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString(),
                         FileName = exe,
                         Arguments = cmdline.ToString(),
                         UseShellExecute = false,
@@ -73,7 +73,7 @@ namespace GitNoob.Gui.Program.Action.Step
                     {
                         var info = new System.Diagnostics.ProcessStartInfo
                         {
-                            WorkingDirectory = StepsExecutor.Config.ProjectWorkingDirectory.Path,
+                            WorkingDirectory = StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString(),
                             FileName = exe,
                             Arguments = "\"" + file +"\"",
                             UseShellExecute = false,

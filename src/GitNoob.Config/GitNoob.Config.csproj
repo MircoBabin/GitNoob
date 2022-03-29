@@ -38,6 +38,8 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ConfigPath.cs" />
+    <Compile Include="ConfigFilename.cs" />
     <Compile Include="IProjectType_Capabilities.cs" />
     <Compile Include="IProjectType_ActionResult.cs" />
     <Compile Include="SmtpServer.cs" />

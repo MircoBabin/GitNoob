@@ -18,7 +18,7 @@ namespace GitNoob.Gui.Program.Action.Step
             string busyMessage = "Busy - renaming directory \"" + StepsExecutor.Config.ProjectWorkingDirectory.Path + "\" to \"" + Path.GetFileName(_renameTo) + "\"";
             BusyMessage = busyMessage;
 
-            var path = StepsExecutor.Config.ProjectWorkingDirectory.Path;
+            var path = StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString();
             if (!path.EndsWith("\\")) path = path + "\\";
             string directoryname = new DirectoryInfo(path).Name;
 
@@ -28,9 +28,9 @@ namespace GitNoob.Gui.Program.Action.Step
             {
                 try
                 {
-                    if (!Directory.Exists(StepsExecutor.Config.ProjectWorkingDirectory.Path)) break;
+                    if (!Directory.Exists(StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString())) break;
 
-                    Directory.Move(StepsExecutor.Config.ProjectWorkingDirectory.Path, newname);
+                    Directory.Move(StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString(), newname);
                     break;
                 }
                 catch (DirectoryNotFoundException ex)
@@ -40,7 +40,7 @@ namespace GitNoob.Gui.Program.Action.Step
                      */
 
                     //Directory renamed/removed outside Git Noob e.g. in Windows Explorer
-                    if (!Directory.Exists(StepsExecutor.Config.ProjectWorkingDirectory.Path)) break;
+                    if (!Directory.Exists(StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString())) break;
 
                     throw ex;
                 }
@@ -57,7 +57,7 @@ namespace GitNoob.Gui.Program.Action.Step
                      */
 
                     //Directory renamed/removed outside Git Noob e.g. in Windows Explorer
-                    if (!Directory.Exists(StepsExecutor.Config.ProjectWorkingDirectory.Path)) break;
+                    if (!Directory.Exists(StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString())) break;
 
                     string details = String.Empty;
                     if (Directory.Exists(newname) || File.Exists(newname))

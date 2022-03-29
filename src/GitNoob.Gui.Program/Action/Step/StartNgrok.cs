@@ -85,7 +85,7 @@ namespace GitNoob.Gui.Program.Action.Step
             {
                 var info = new System.Diagnostics.ProcessStartInfo
                 {
-                    WorkingDirectory = StepsExecutor.Config.ProjectWorkingDirectory.Path,
+                    WorkingDirectory = StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString(),
                     FileName = _ngrokExe,
                     Arguments = "http -host-header=localhost:" + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port + " localhost:" + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port,
                     UseShellExecute = false,

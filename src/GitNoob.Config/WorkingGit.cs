@@ -21,5 +21,9 @@
             CommitName = other.CommitName;
             CommitEmail = other.CommitEmail;
         }
+
+        public void useWorkingDirectory(WorkingDirectory WorkingDirectory)
+        {
+        }
     }
 }

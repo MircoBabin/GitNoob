@@ -13,9 +13,9 @@ namespace GitNoob.Gui.Program.Action
 
         private string GetFile()
         {
-            if (string.IsNullOrWhiteSpace(Config.ProjectWorkingDirectory.Editor.WorkspaceFilename)) return null;
+            if (Config.ProjectWorkingDirectory.Editor.WorkspaceFilename.isEmpty()) return null;
 
-            return Config.ProjectWorkingDirectory.Editor.WorkspaceFilename.Replace("%gitRoot%", Config.ProjectWorkingDirectory.Path);
+            return Config.ProjectWorkingDirectory.Editor.WorkspaceFilename.ToString();
         }
 
         public bool isStartable()
@@ -29,7 +29,7 @@ namespace GitNoob.Gui.Program.Action
 
         public Icon icon()
         {
-            return Utils.ImageUtils.LoadIconForFile(Config.ProjectWorkingDirectory.Editor.WorkspaceFilename);
+            return Utils.ImageUtils.LoadIconForFile(Config.ProjectWorkingDirectory.Editor.WorkspaceFilename.ToString());
         }
 
         public void execute()

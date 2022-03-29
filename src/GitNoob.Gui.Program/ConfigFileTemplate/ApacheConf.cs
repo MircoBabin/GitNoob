@@ -30,7 +30,6 @@ namespace GitNoob.Gui.Program.ConfigFileTemplate
 
         private string _path;
         private string _fullFilename;
-        private bool _written = false;
 
         private Config.Project _project;
         private Config.WorkingDirectory _projectWorkingDirectory;
@@ -44,12 +43,14 @@ namespace GitNoob.Gui.Program.ConfigFileTemplate
 
             ProjectnameASCII = Utils.FileUtils.DeriveFilename(String.Empty, _project.Name) + "-" + Utils.FileUtils.DeriveFilename(String.Empty, _projectWorkingDirectory.Name);
 
-            if (!String.IsNullOrWhiteSpace(_projectWorkingDirectory.Apache.ApachePath))
+            if (!_projectWorkingDirectory.Apache.ApachePath.isEmpty())
             {
-                _path = Path.Combine(_projectWorkingDirectory.Apache.ApachePath, "conf");
+                string apachePath = _projectWorkingDirectory.Apache.ApachePath.ToString();
+
+                _path = Path.Combine(apachePath, "conf");
                 _fullFilename = Path.Combine(_path, "httpd." + ProjectnameASCII + ".conf");
 
-                PidFullFilename = Path.Combine(_projectWorkingDirectory.Apache.ApachePath, "logs", "httpd." + ProjectnameASCII + ".pid");
+                PidFullFilename = Path.Combine(apachePath, "logs", "httpd." + ProjectnameASCII + ".pid");
             }
             else
             {
@@ -62,48 +63,51 @@ namespace GitNoob.Gui.Program.ConfigFileTemplate
 
         private void write()
         {
-            if (_written && File.Exists(_fullFilename)) return;
-
             string php_loadmodule = null;
             string dll;
 
-            dll = Path.Combine(_projectWorkingDirectory.Php.Path, "php8apache2_4.dll");
+            string phpPath = _projectWorkingDirectory.Php.Path.ToString();
+
+            dll = Path.Combine(phpPath, "php8apache2_4.dll");
             if (String.IsNullOrEmpty(php_loadmodule) && File.Exists(dll))
             {
                 php_loadmodule = "LoadModule php_module \"" + dll.Replace('\\', '/') + "\"";
             }
 
-            dll = Path.Combine(_projectWorkingDirectory.Php.Path, "php7apache2_4.dll");
+            dll = Path.Combine(phpPath, "php7apache2_4.dll");
             if (String.IsNullOrEmpty(php_loadmodule) && File.Exists(dll))
             {
                 php_loadmodule = "LoadModule php7_module \"" + dll.Replace('\\', '/') + "\"";
             }
 
-            dll = Path.Combine(_projectWorkingDirectory.Php.Path, "php5apache2_4.dll");
+            dll = Path.Combine(phpPath, "php5apache2_4.dll");
             if (String.IsNullOrEmpty(php_loadmodule) && File.Exists(dll))
             {
                 php_loadmodule = "LoadModule php5_module \"" + dll.Replace('\\', '/') + "\"";
             }
-
-            var contents = Utils.FileUtils.TemplateToContents(_projectWorkingDirectory.Apache.ApacheConfTemplateContents, _project, _projectWorkingDirectory,
+            var contents = _projectWorkingDirectory.Apache.ApacheConfTemplateFilename.ReadAllText();
+            contents = Utils.FileUtils.TemplateToContents(contents, _project, _projectWorkingDirectory,
                 new Dictionary<string, string>()
                 {
-                        { "APACHE_PORT", _projectWorkingDirectory.Apache.Port.ToString() },
-                        { "APACHE_SRVROOT_SLASH", _projectWorkingDirectory.Apache.ApachePath.Replace('\\', '/') },
-                        { "APACHE_PIDFILE_SLASH", PidFullFilename.Replace('\\', '/') },
-                        { "APACHE_ERRORLOG", "logs/error." + ProjectnameASCII + ".log" },
-                        { "APACHE_CUSTOMLOG", "logs/access." + ProjectnameASCII + ".log" },
+                    { "GIT_ROOT_DIR",  _projectWorkingDirectory.Path.ToString() },
+                    { "GIT_ROOT_DIR_SLASH",  _projectWorkingDirectory.Path.ToString().Replace('\\', '/') },
 
-                        { "PROJECTNAME", ProjectnameASCII },
+                    { "APACHE_PORT", _projectWorkingDirectory.Apache.Port.ToString() },
+                    { "APACHE_SRVROOT_SLASH", _projectWorkingDirectory.Apache.ApachePath.ToString().Replace('\\', '/') },
+                    { "APACHE_PIDFILE_SLASH", PidFullFilename.Replace('\\', '/') },
+                    { "APACHE_ERRORLOG", "logs/error." + ProjectnameASCII + ".log" },
+                    { "APACHE_CUSTOMLOG", "logs/access." + ProjectnameASCII + ".log" },
 
-                        { "WEBROOT", _projectWorkingDirectory.Apache.WebrootPath },
-                        { "WEBROOT_SLASH", _projectWorkingDirectory.Apache.WebrootPath.Replace('\\', '/') },
+                    { "PROJECTNAME", ProjectnameASCII },
 
-                        { "PHP_PATH_SLASH", _projectWorkingDirectory.Php.Path.Replace('\\', '/') },
-                        { "PHP_INIFILE_SLASH", _phpIni.IniFullFilename.Replace('\\', '/') },
-                        { "APACHE_LOADMODULE_PHP", (php_loadmodule != null ? php_loadmodule : "") },
+                    { "WEBROOT", _projectWorkingDirectory.Apache.WebrootPath.ToString() },
+                    { "WEBROOT_SLASH", _projectWorkingDirectory.Apache.WebrootPath.ToString().Replace('\\', '/') },
 
-                        { "COMPUTERNAME", System.Environment.MachineName },
+                    { "PHP_PATH_SLASH", _projectWorkingDirectory.Php.Path.ToString().Replace('\\', '/') },
+                    { "PHP_INIFILE_SLASH", _phpIni.IniFullFilename.Replace('\\', '/') },
+                    { "APACHE_LOADMODULE_PHP", (php_loadmodule != null ? php_loadmodule : "") },
+
+                    { "COMPUTERNAME", System.Environment.MachineName },
                 });
 
             /*
@@ -138,7 +142,6 @@ namespace GitNoob.Gui.Program.ConfigFileTemplate
             */
 
             File.WriteAllText(_fullFilename, contents, Encoding.UTF8);
-            _written = true;
         }
     }
 }

@@ -16,13 +16,16 @@ namespace GitNoob.Gui.Forms
 
             this.ClientSize = new Size(48, 48);
             this.AutoSize = true;
-            try
+            if (_action != null)
             {
-                this.Image = Program.Utils.ImageUtils.IconToBitmapOfSize(_action.icon(), 48, 48, Color.Transparent);
-            }
-            catch
-            {
-                this.Text = text;
+                try
+                {
+                    this.Image = Program.Utils.ImageUtils.IconToBitmapOfSize(_action.icon(), 48, 48, Color.Transparent);
+                }
+                catch
+                {
+                    this.Text = text;
+                }
             }
 
             this.Location = location;

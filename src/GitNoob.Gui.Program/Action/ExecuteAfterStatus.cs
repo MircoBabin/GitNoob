@@ -31,23 +31,26 @@ namespace GitNoob.Gui.Program.Action
 
             _steps = new List<StepsExecutor.IExecutableByStepsExecutor>();
 
-            if (status.Rebasing || status.Merging)
+            if (status.DirectoryExists && status.IsGitRootDirectory)
             {
-                _steps.Add(new Step.FinishRebaseMerge());
-            }
-
-            if (status.MainBranchExists && !status.MainBranchIsTrackingRemoteBranch)
-            {
-                _steps.Add(new Step.AskSetRemoteTrackingBranchForMainBranch());
-            }
-
-            if (!string.IsNullOrWhiteSpace(stepConfig.Config.ProjectWorkingDirectory.Git.CommitName) &&
-                !string.IsNullOrWhiteSpace(stepConfig.Config.ProjectWorkingDirectory.Git.CommitEmail))
-            {
-                if (status.CommitName != stepConfig.Config.ProjectWorkingDirectory.Git.CommitName ||
-                    status.CommitEmail != stepConfig.Config.ProjectWorkingDirectory.Git.CommitEmail)
+                if (status.Rebasing || status.Merging)
                 {
-                    _steps.Add(new Step.AskSetCommitter(status));
+                    _steps.Add(new Step.FinishRebaseMerge());
+                }
+
+                if (status.MainBranchExists && !status.MainBranchIsTrackingRemoteBranch)
+                {
+                    _steps.Add(new Step.AskSetRemoteTrackingBranchForMainBranch());
+                }
+
+                if (!string.IsNullOrWhiteSpace(stepConfig.Config.ProjectWorkingDirectory.Git.CommitName) &&
+                    !string.IsNullOrWhiteSpace(stepConfig.Config.ProjectWorkingDirectory.Git.CommitEmail))
+                {
+                    if (status.CommitName != stepConfig.Config.ProjectWorkingDirectory.Git.CommitName ||
+                        status.CommitEmail != stepConfig.Config.ProjectWorkingDirectory.Git.CommitEmail)
+                    {
+                        _steps.Add(new Step.AskSetCommitter(status));
+                    }
                 }
             }
 

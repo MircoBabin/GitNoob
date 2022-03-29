@@ -29,7 +29,7 @@ namespace GitNoob.Gui.Program.Action
 
         public void execute()
         {
-            var path = Config.ProjectWorkingDirectory.Path;
+            var path = Config.ProjectWorkingDirectory.Path.ToString();
             if (!path.EndsWith("\\")) path = path + "\\";
 
             System.Diagnostics.Process.Start(path);

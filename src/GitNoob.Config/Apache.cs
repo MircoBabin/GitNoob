@@ -2,19 +2,33 @@
 {
     public class Apache
     {
-        public string ApachePath { get; set; }
+        public ConfigPath ApachePath { get; private set; }
 
         public int Port { get; set; }
-        public string ApacheConfTemplateContents { get; set; }
+        public ConfigFilename ApacheConfTemplateFilename { get; private set; }
 
-        public string WebrootPath { get; set; }
+        public ConfigPath WebrootPath { get; private set; }
+
+        public Apache()
+        {
+            ApachePath = new ConfigPath(null);
+            ApacheConfTemplateFilename = new ConfigFilename(null);
+            WebrootPath = new ConfigPath(null);
+        }
 
         public void CopyFrom(Apache other)
         {
-            ApachePath = other.ApachePath;
+            ApachePath.CopyFrom(other.ApachePath);
             Port = other.Port;
-            ApacheConfTemplateContents = other.ApacheConfTemplateContents;
-            WebrootPath = other.WebrootPath;
+            ApacheConfTemplateFilename.CopyFrom(other.ApacheConfTemplateFilename);
+            WebrootPath.CopyFrom(other.WebrootPath);
+        }
+
+        public void useWorkingDirectory(WorkingDirectory WorkingDirectory)
+        {
+            ApachePath.useWorkingDirectory(WorkingDirectory);
+            ApacheConfTemplateFilename.useWorkingDirectory(WorkingDirectory);
+            WebrootPath.useWorkingDirectory(WorkingDirectory);
         }
     }
 }

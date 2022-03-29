@@ -39,6 +39,9 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Php.cs" />
+    <Compile Include="PhpLaravel.cs" />
+    <Compile Include="PhpLaravel9.cs" />
+    <Compile Include="PhpLaravel8.cs" />
     <Compile Include="PhpLaravel7.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

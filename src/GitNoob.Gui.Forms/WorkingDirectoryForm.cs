@@ -257,13 +257,20 @@ namespace GitNoob.Gui.Forms
         {
             _positionSettingsName = BitConverter.ToString(Encoding.UTF8.GetBytes(Config.Project.Name + " - " + Config.ProjectWorkingDirectory.Name)).Replace("-", String.Empty);
 
-            if (File.Exists(Config.ProjectWorkingDirectory.IconFilename))
+            string filename;
+
+            filename = Config.ProjectWorkingDirectory.IconFilename.ToString();
+            if (File.Exists(filename))
             {
-                this.Icon = new Icon(Config.ProjectWorkingDirectory.IconFilename);
+                this.Icon = new Icon(filename);
             }
-            else if (File.Exists(Config.Project.IconFilename))
+            else
             {
-                this.Icon = new Icon(Config.Project.IconFilename);
+                filename = Config.Project.IconFilename.ToString();
+                if (File.Exists(filename))
+                {
+                    this.Icon = new Icon(filename);
+                }
             }
 
             this.Text = Config.Project.Name + " - " + Config.ProjectWorkingDirectory.Name;
@@ -274,7 +281,7 @@ namespace GitNoob.Gui.Forms
                 color = System.Drawing.ColorTranslator.FromHtml(Config.ProjectWorkingDirectory.ImageBackgroundColor);
             }
             catch { }
-            Picture.Image = Program.Utils.ImageUtils.LoadImageAsBitmap(Config.ProjectWorkingDirectory.ImageFilename, Picture.ClientSize.Width, Picture.ClientSize.Height, color);
+            Picture.Image = Program.Utils.ImageUtils.LoadImageAsBitmap(Config.ProjectWorkingDirectory.ImageFilename.ToString(), Picture.ClientSize.Width, Picture.ClientSize.Height, color);
             if (_chooseProject != null)
             {
                 Picture.Cursor = Cursors.Hand;
@@ -282,7 +289,7 @@ namespace GitNoob.Gui.Forms
             }
 
             lblMainbranchValue.Text = Config.ProjectWorkingDirectory.Git.MainBranch;
-            lblWorkingdirectoryValue.Text = Config.ProjectWorkingDirectory.Path;
+            lblWorkingdirectoryValue.Text = Config.ProjectWorkingDirectory.Path.ToString();
             lblCurrentbranchValue.Text = String.Empty;
             lblCommitnameValue.Text = String.Empty;
 

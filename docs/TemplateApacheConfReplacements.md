@@ -30,6 +30,14 @@ CustomLog "[APACHE_CUSTOMLOG]" common
 </VirtualHost>
 ```
 
+## marker \[GIT_ROOT_DIR\]
+The marker "\[GIT_ROOT_DIR\]" will be replaced with the configured **path** setting. Using windows-style '\\' as directory seperator.
+
+## marker \[GIT_ROOT_DIR_SLASH\]
+The marker "\[GIT_ROOT_DIR_SLASH\]" will be replaced with the configured **path** setting. Using unix-style '/' as directory seperator.
+
+
+
 ## marker \[APACHE_PORT\]
 The marker "\[APACHE_PORT\]" will be replaced with the configured **port** setting.
 

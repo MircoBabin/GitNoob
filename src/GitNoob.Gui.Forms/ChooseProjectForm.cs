@@ -212,7 +212,7 @@ namespace GitNoob.Gui.Forms
                         {
                             Location = new Point(wdLeft, top),
                             Size = new Size(4 * workingdirectoryheight, workingdirectoryheight),
-                            Image = Program.Utils.ImageUtils.LoadImageAsBitmap(workingdirectory.ImageFilename, 4 * workingdirectoryheight, workingdirectoryheight, color),
+                            Image = Program.Utils.ImageUtils.LoadImageAsBitmap(workingdirectory.ImageFilename.ToString(), 4 * workingdirectoryheight, workingdirectoryheight, color),
                         };
                         wdPicture.Cursor = Cursors.Hand;
                         wdPicture.Tag = prjwd;

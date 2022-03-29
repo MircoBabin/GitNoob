@@ -30,7 +30,7 @@ namespace GitNoob.Gui.Program.Action
         {
             var info = new System.Diagnostics.ProcessStartInfo
             {
-                WorkingDirectory = Config.ProjectWorkingDirectory.Path,
+                WorkingDirectory = Config.ProjectWorkingDirectory.Path.ToString(),
                 FileName = GetExecutable(),
                 UseShellExecute = false,
             };

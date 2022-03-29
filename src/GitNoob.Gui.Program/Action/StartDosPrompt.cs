@@ -29,7 +29,7 @@ namespace GitNoob.Gui.Program.Action
             string phpIniPath = null;
             if (this.NeedsPhp)
             {
-                phpPath = Config.ProjectWorkingDirectory.Php.Path;
+                phpPath = Config.ProjectWorkingDirectory.Php.Path.ToString();
                 phpIniPath = Config.PhpIni.IniPath;
             }
 
@@ -38,7 +38,7 @@ namespace GitNoob.Gui.Program.Action
                 phpPath,
                 phpIniPath,
                 Utils.FileUtils.TempDirectoryForProject(Config.Project, Config.ProjectWorkingDirectory),
-                Config.ProjectWorkingDirectory.Path
+                Config.ProjectWorkingDirectory.Path.ToString()
             );
         }
 
@@ -52,15 +52,16 @@ namespace GitNoob.Gui.Program.Action
         {
             var info = new ProcessStartInfo
             {
-                WorkingDirectory = Config.ProjectWorkingDirectory.Path,
+                WorkingDirectory = Config.ProjectWorkingDirectory.Path.ToString(),
                 FileName = GetExecutable(),
                 UseShellExecute = false,
+                Arguments = "/K \"title " + Utils.FileUtils.DeriveFilename(String.Empty, Config.Project.Name) + "-" + Utils.FileUtils.DeriveFilename(String.Empty, Config.ProjectWorkingDirectory.Name) + "\"",
             };
 
             if (NeedsPhp)
             {
                 info.EnvironmentVariables["PHPRC"] = Config.PhpIni.IniPath; /* Directory containing php.ini */
-                info.EnvironmentVariables["Path"] = info.EnvironmentVariables["Path"] + ";" + Config.ProjectWorkingDirectory.Php.Path;
+                info.EnvironmentVariables["Path"] = info.EnvironmentVariables["Path"] + ";" + Config.ProjectWorkingDirectory.Php.Path.ToString();
             }
 
             Process.Start(info);

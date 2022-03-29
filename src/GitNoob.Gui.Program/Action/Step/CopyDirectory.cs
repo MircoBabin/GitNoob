@@ -18,7 +18,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             try
             {
-              Utils.FileUtils.DirectoryCopy(StepsExecutor.Config.ProjectWorkingDirectory.Path, _copyTo, true);
+              Utils.FileUtils.DirectoryCopy(StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString(), _copyTo, true);
             }
             catch (Exception ex)
             {

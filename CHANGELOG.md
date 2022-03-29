@@ -1,5 +1,13 @@
 # GitNoob changelog
 
+## Version 1.4
+* Add: [GIT_ROOT_DIR] & [GIT_ROOT_DIR_SLASH] to template files.
+* Add: PhpLaravel8, PhpLaravel9 projecttypes.
+* Add: title for dos prompt window.
+* Fix: php.ini & apache.conf files refresh without exiting GitNoob.
+* Fix: non existing directory exception.
+* Fix: non existing directory asking to repair committername.
+
 ## Version 1.3
 
 * Add: check committername after choosing a project.

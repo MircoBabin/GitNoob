@@ -13,8 +13,8 @@ namespace GitNoob.Gui.Program.Action.Step
         {
             if (StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port == 0) return true;
 
-            if (string.IsNullOrEmpty(StepsExecutor.Config.ProjectWorkingDirectory.Apache.ApachePath)) return true;
-            var apacheBinPath = Path.Combine(StepsExecutor.Config.ProjectWorkingDirectory.Apache.ApachePath, "bin");
+            if (StepsExecutor.Config.ProjectWorkingDirectory.Apache.ApachePath.isEmpty()) return true;
+            var apacheBinPath = Path.Combine(StepsExecutor.Config.ProjectWorkingDirectory.Apache.ApachePath.ToString(), "bin");
             if (!File.Exists(Path.Combine(apacheBinPath, "httpd.exe"))) return true;
 
             BusyMessage = "Busy - starting Apache";
@@ -62,7 +62,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
                 var info = new ProcessStartInfo
                 {
-                    WorkingDirectory = Path.Combine(StepsExecutor.Config.ProjectWorkingDirectory.Apache.ApachePath, "bin"),
+                    WorkingDirectory = Path.Combine(StepsExecutor.Config.ProjectWorkingDirectory.Apache.ApachePath.ToString(), "bin"),
                     FileName = batFile,
                     UseShellExecute = false,
                     WindowStyle = ProcessWindowStyle.Minimized,
@@ -72,7 +72,7 @@ namespace GitNoob.Gui.Program.Action.Step
                     StepsExecutor.Config.ProjectWorkingDirectory.ProjectType.Capabilities.NeedsPhp)
                 {
                     info.EnvironmentVariables["PHPRC"] = StepsExecutor.Config.PhpIni.IniPath; /* Directory containing php.ini */
-                    info.EnvironmentVariables["Path"] = info.EnvironmentVariables["Path"] + ";" + StepsExecutor.Config.ProjectWorkingDirectory.Php.Path;
+                    info.EnvironmentVariables["Path"] = info.EnvironmentVariables["Path"] + ";" + StepsExecutor.Config.ProjectWorkingDirectory.Php.Path.ToString();
                 }
 
                 Process.Start(info);

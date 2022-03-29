@@ -95,13 +95,33 @@ namespace GitNoob.Config.Loader
             return replaceValueVariables(value);
         }
 
-        private string ReadPath(IniFile ini, string Section, string Key)
+        private void ReadPath(IniFile ini, string Section, string Key, ConfigPath intoValue, string baseDirectory = null)
         {
             string value = ReadValue(ini, Section, Key);
-            if (String.IsNullOrWhiteSpace(value)) return String.Empty;
+            if (String.IsNullOrWhiteSpace(value)) return;
 
-            if (value.Contains("%gitRoot%")) return value;
-            return GetFullPath(value, Path.GetDirectoryName(ini.IniFilename));
+            if (value.Contains("%gitRoot%"))
+            {
+                intoValue.CopyFrom(new ConfigPath(value));
+                return;
+            }
+
+            if (baseDirectory == null) baseDirectory = Path.GetDirectoryName(ini.IniFilename);
+            intoValue.CopyFrom(new ConfigPath(GetFullPath(value, baseDirectory)));
+        }
+
+        private void ReadFilename(IniFile ini, string Section, string Key, ConfigFilename intoValue)
+        {
+            string value = ReadValue(ini, Section, Key);
+            if (String.IsNullOrWhiteSpace(value)) return;
+
+            if (value.Contains("%gitRoot%"))
+            {
+                intoValue.CopyFrom(new ConfigFilename(value));
+                return;
+            }
+
+            intoValue.CopyFrom(new ConfigFilename(GetFullPath(value, Path.GetDirectoryName(ini.IniFilename))));
         }
 
         private void LoadGitnoobIni()
@@ -144,6 +164,7 @@ namespace GitNoob.Config.Loader
 
             {
                 IniFile ini = new IniFile(_rootConfigurationIniFilename);
+                ConfigPath path = new ConfigPath(null);
 
                 {
                     var loadConfigurationFrom = ReadValue(ini, "gitnoob", "loadRootConfigurationFrom");
@@ -158,10 +179,12 @@ namespace GitNoob.Config.Loader
                     }
                 }
 
-                _prjPath = ReadPath(ini, "gitnoob", "prjPath");
+                ReadPath(ini, "gitnoob", "prjPath", path);
+                _prjPath = path.ToString();
                 if (_prjPath.EndsWith("\\")) _prjPath = _prjPath.Substring(0, _prjPath.Length - 1);
 
-                _binPath = ReadPath(ini, "gitnoob", "binPath");
+                ReadPath(ini, "gitnoob", "binPath", path);
+                _binPath = path.ToString();
                 if (_binPath.EndsWith("\\")) _binPath = _binPath.Substring(0, _binPath.Length - 1);
 
                 foreach (var item in ini.GetSectionKeysAndValues("projecttypes"))
@@ -266,14 +289,8 @@ namespace GitNoob.Config.Loader
                 }
             }
 
-            value = ReadPath(ini, Section, "apachePath");
-            if (!String.IsNullOrWhiteSpace(value)) apache.ApachePath = value;
-
-            value = ReadPath(ini, Section, "apacheConf");
-            if (!String.IsNullOrWhiteSpace(value) && File.Exists(value))
-            {
-                apache.ApacheConfTemplateContents = File.ReadAllText(value, Encoding.UTF8);
-            }
+            ReadPath(ini, Section, "apachePath", apache.ApachePath);
+            ReadFilename(ini, Section, "apacheConf", apache.ApacheConfTemplateFilename);
 
             return apache;
         }
@@ -293,14 +310,8 @@ namespace GitNoob.Config.Loader
                 }
             }
 
-            value = ReadPath(ini, Section, "phpPath");
-            if (!String.IsNullOrWhiteSpace(value)) php.Path = value;
-
-            value = ReadPath(ini, Section, "phpIni");
-            if (!String.IsNullOrWhiteSpace(value) && File.Exists(value))
-            {
-                php.PhpIniTemplateContents = File.ReadAllText(value, Encoding.UTF8);
-            }
+            ReadPath(ini, Section, "phpPath", php.Path);
+            ReadFilename(ini, Section, "phpIni", php.PhpIniTemplateFilename);
 
             return php;
         }
@@ -320,8 +331,7 @@ namespace GitNoob.Config.Loader
                 }
             }
 
-            value = ReadPath(ini, Section, "ngrokPath");
-            if (!String.IsNullOrWhiteSpace(value)) ngrok.NgrokPath = value;
+            ReadPath(ini, Section, "ngrokPath", ngrok.NgrokPath);
 
             value = ReadValue(ini, Section, "ngrokPort");
             if (!string.IsNullOrWhiteSpace(value))
@@ -351,8 +361,7 @@ namespace GitNoob.Config.Loader
                 }
             }
 
-            value = ReadPath(ini, Section, "smtpServerExecutable");
-            if (!String.IsNullOrWhiteSpace(value)) smtpserver.Executable = value;
+            ReadFilename(ini, Section, "smtpServerExecutable", smtpserver.Executable);
 
             return smtpserver;
         }
@@ -386,7 +395,7 @@ namespace GitNoob.Config.Loader
 
             project.Name = ReadValue(ini, "gitnoob", "name");
             project.ProjectType = ProjectTypeLoader.Load(ReadValue(ini, "gitnoob", "type"));
-            project.IconFilename = ReadPath(ini, "gitnoob", "icon");
+            ReadFilename(ini, "gitnoob", "icon", project.IconFilename);
 
             string gitName;
             {
@@ -464,9 +473,11 @@ namespace GitNoob.Config.Loader
             string value;
 
             WorkingDirectory.Name = ReadValue(ini, Section, "name");
-            WorkingDirectory.Path = ReadPath(ini, Section, "path");
-            WorkingDirectory.IconFilename = ReadPath(ini, Section, "icon");
-            WorkingDirectory.ImageFilename = ReadPath(ini, Section, "image");
+
+            ReadPath(ini, Section, "path", WorkingDirectory.Path);
+
+            ReadFilename(ini, Section, "icon", WorkingDirectory.IconFilename);
+            ReadFilename(ini, Section, "image", WorkingDirectory.ImageFilename);
             WorkingDirectory.ImageBackgroundColor = ReadValue(ini, Section, "imagebackgroundcolor");
 
             WorkingDirectory.ProjectType = ProjectTypeLoader.Load(ReadValue(ini, Section, "type"));
@@ -495,10 +506,15 @@ namespace GitNoob.Config.Loader
                 catch { }
             }
 
-            value = ReadValue(ini, Section, "webroot");
-            WorkingDirectory.Apache.WebrootPath = GetFullPath(value, WorkingDirectory.Path);
+            ReadPath(ini, Section, "webroot", WorkingDirectory.Apache.WebrootPath, WorkingDirectory.Path.ToString()); //webroot is relative to %gitRoot%
+            if (WorkingDirectory.Apache.WebrootPath.isEmpty())
+            {
+                WorkingDirectory.Apache.WebrootPath.CopyFrom(WorkingDirectory.Path);
+            }
 
-            WorkingDirectory.Editor.WorkspaceFilename = ReadPath(ini, Section, "workspace");
+            ReadFilename(ini, Section, "workspace", WorkingDirectory.Editor.WorkspaceFilename);
+
+            WorkingDirectory.useWorkingDirectory();
 
             return WorkingDirectory;
         }

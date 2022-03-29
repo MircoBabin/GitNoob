@@ -23,7 +23,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append(Environment.NewLine);
             VisualizerMessageText.Append("Confirm this undoable action by typing in \"sure\".");
 
-            string CopyTo = Utils.FileUtils.DirectoryCopyRenameToDestinationName(StepsExecutor.Config.ProjectWorkingDirectory.Path);
+            string CopyTo = Utils.FileUtils.DirectoryCopyRenameToDestinationName(StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString());
 
             VisualizerMessageType = IVisualizerMessageType.input;
             VisualizerMessageButtons = 

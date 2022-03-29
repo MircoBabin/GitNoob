@@ -2,16 +2,21 @@
 {
     public class SmtpServer
     {
-        public string Executable { get; set; }
+        public ConfigFilename Executable { get; private set; }
 
         public SmtpServer()
         {
-            Executable = string.Empty;
+            Executable = new ConfigFilename(null);
         }
 
         public void CopyFrom(SmtpServer other)
         {
-            Executable = other.Executable;
+            Executable.CopyFrom(other.Executable);
+        }
+
+        public void useWorkingDirectory(WorkingDirectory WorkingDirectory)
+        {
+            Executable.useWorkingDirectory(WorkingDirectory);
         }
     }
 }

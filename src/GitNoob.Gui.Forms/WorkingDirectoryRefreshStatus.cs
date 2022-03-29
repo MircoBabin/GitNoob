@@ -29,15 +29,32 @@ namespace GitNoob.Gui.Forms
             _refreshThread.Name = "RefreshThread - " + Config.Project.Name + " - " + Config.ProjectWorkingDirectory.Name;
             _refreshThread.Start();
 
-            _watcher = new FileSystemWatcher();
-            _watcher.Path = _config.ProjectWorkingDirectory.Path;
-            _watcher.IncludeSubdirectories = true;
-            _watcher.EnableRaisingEvents = true;
-            _watcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.CreationTime | NotifyFilters.LastWrite | NotifyFilters.Size;
-            _watcher.Changed += (sender, e) => { if (e.ChangeType == WatcherChangeTypes.Changed) WorkingDirectoryChanges(); };
-            _watcher.Created += (sender, e) => { if (e.ChangeType == WatcherChangeTypes.Created) WorkingDirectoryChanges(); };
-            _watcher.Deleted += (sender, e) => { if (e.ChangeType == WatcherChangeTypes.Deleted) WorkingDirectoryChanges(); };
-            _watcher.Renamed += (sender, e) => { if (e.ChangeType == WatcherChangeTypes.Renamed) WorkingDirectoryChanges(); };
+            _watcher = null;
+            CreateWatcher();
+        }
+
+        private void CreateWatcher()
+        {
+            if (_isDisposed) return;
+            if (_watcher != null) return;
+            if (!Directory.Exists(_config.ProjectWorkingDirectory.Path.ToString())) return;
+
+            try
+            {
+                _watcher = new FileSystemWatcher();
+                _watcher.Path = _config.ProjectWorkingDirectory.Path.ToString();
+                _watcher.IncludeSubdirectories = true;
+                _watcher.EnableRaisingEvents = true;
+                _watcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.CreationTime | NotifyFilters.LastWrite | NotifyFilters.Size;
+                _watcher.Changed += (sender, e) => { if (e.ChangeType == WatcherChangeTypes.Changed) WorkingDirectoryChanges(); };
+                _watcher.Created += (sender, e) => { if (e.ChangeType == WatcherChangeTypes.Created) WorkingDirectoryChanges(); };
+                _watcher.Deleted += (sender, e) => { if (e.ChangeType == WatcherChangeTypes.Deleted) WorkingDirectoryChanges(); };
+                _watcher.Renamed += (sender, e) => { if (e.ChangeType == WatcherChangeTypes.Renamed) WorkingDirectoryChanges(); };
+            }
+            catch
+            {
+                _watcher = null;
+            }
         }
 
         public void Suspend()
@@ -67,13 +84,13 @@ namespace GitNoob.Gui.Forms
             Dispose(false);
         }
 
-        protected bool _isDisposed = false;
+        protected volatile bool _isDisposed = false;
         protected void Dispose(bool disposing)
         {
             if (_isDisposed) return;
             _isDisposed = true;
 
-            _watcher.Dispose();
+            if (_watcher != null) _watcher.Dispose();
             _watcher = null;
             _refreshAbort.Release();
         }
@@ -123,6 +140,7 @@ namespace GitNoob.Gui.Forms
                 }
 
                 if (_refreshAbort.WaitOne(500)) break;
+                CreateWatcher();
             }
         }
     }

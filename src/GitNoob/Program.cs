@@ -31,7 +31,7 @@ namespace GitNoob
                     foreach (var item in project.WorkingDirectories)
                     {
                         var wd = item.Value;
-                        var path = wd.Path.ToLowerInvariant();
+                        var path = wd.Path.ToString().ToLowerInvariant();
 
                         var name = "Project \"" + project.Name + "\", working directory \"" + wd.Name + "\".";
 

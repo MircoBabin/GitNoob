@@ -9,6 +9,10 @@
             Homepage = other.Homepage;
         }
 
+        public void useWorkingDirectory(WorkingDirectory WorkingDirectory)
+        {
+        }
+
         public string GetHomepageUrl(int port)
         {
             if (!string.IsNullOrEmpty(Homepage))
