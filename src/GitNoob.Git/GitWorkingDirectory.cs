@@ -252,13 +252,20 @@ namespace GitNoob.Git
         {
             var result = new BranchesResult();
 
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
             var command = new Command.Branch.ListBranches(this, true);
-            command.WaitFor();
+
+            var currentbranch = new Command.Branch.GetCurrentBranch(this);
             currentbranch.WaitFor();
-
+            result.DetachedHead_NotOnBranch = (currentbranch.DetachedHead == true);
             result.CurrentBranch = currentbranch.shortname;
+            if (currentbranch.DetachedHead == false)
+            {
+                var remotebranch = new Command.Branch.GetRemoteBranch(this, currentbranch.shortname);
+                remotebranch.WaitFor();
+                result.CurrentBranchIsTrackingRemoteBranch = !string.IsNullOrWhiteSpace(remotebranch.result);
+            }
 
+            command.WaitFor();
             if (command.result != null)
             {
                 foreach(var branch in command.result)
@@ -268,6 +275,40 @@ namespace GitNoob.Git
             }
 
             return result;
+        }
+
+        public RenameBranchResult RenameBranch(string branchname, string newname)
+        {
+            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
+            var merging = new Command.WorkingTree.IsMergeActive(this);
+
+            rebasing.WaitFor();
+            merging.WaitFor();
+
+            if (rebasing.result != false || merging.result != false)
+            {
+                return new RenameBranchResult()
+                {
+                    ErrorRebaseInProgress = (rebasing.result != false),
+                    ErrorMergeInProgress = (merging.result != false),
+                };
+            }
+
+            var rename = new Command.Branch.RenameBranch(this, branchname, newname);
+            rename.WaitFor();
+
+            if (rename.result != true)
+            {
+                return new RenameBranchResult()
+                {
+                    ErrorRenaming = true,
+                };
+            }
+
+            return new RenameBranchResult()
+            {
+                Renamed = true,
+            };
         }
 
         public CreateNewBranchResult CreateNewBranch(string branchname, string branchFromBranchName, bool checkoutNewBranch)

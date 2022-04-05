@@ -8,8 +8,13 @@ namespace GitNoob.Git.Command.Config
 
         public SetCommitter(GitWorkingDirectory gitworkingdirectory, string name, string email) : base(gitworkingdirectory)
         {
-            RunGit("name", "config user.name \"" + name + "\"");
-            RunGit("email", "config user.email \"" + email + "\"");
+            //Sequentially, otherwise error: could not lock config file .git/config: File exists
+
+            var configName = RunGit("name", "config user.name \"" + name + "\"");
+            configName.WaitFor();
+
+            var configEmail = RunGit("email", "config user.email \"" + email + "\"");
+            configEmail.WaitFor();
         }
 
         protected override void RunGitDone()

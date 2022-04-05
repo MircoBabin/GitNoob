@@ -31,7 +31,7 @@ In the project configuration the section GitNoob can contain the settings:
 | commitname | Value | (Optional) what value should the committer name have. E.g. "Mirco Babin". |
 | commitemail | Value | (Optional) what value should the committer email have. E.g. "mirco@..." |
 | | | |
-| homepage| Value | (Optional) url to start for the homepage. e.g. "https://localhost:7777" or "https://localhost:%port%" |
+| homepage | Value | (Optional) url to start for the homepage. e.g. "https://localhost:7777" or "https://localhost:%port%" |
 
 ```
 [gitnoob]
@@ -78,9 +78,10 @@ This section defines a working directory.
 | | | |
 | port| Integer | (Optional) port on localhost to use for the webserver. e.g. "7777". |
 | webroot | Path | (Optional) path relative to **path of the working directory** containing the webroot. E.g. "public". |
-| homepage| Value | (Optional) url to start for the homepage. When not filled in "http://localhost:%port%/" will be used. e.g. "https://localhost:7777" or "https://localhost:%port%" |
+| homepage | Value | (Optional) url to start for the homepage. When not filled in "http://localhost:%port%/" will be used. e.g. "https://localhost:7777" or "https://localhost:%port%" |
 | | | |
-| workspace| Path | (Optional) workspace filename of the IDE. The file is opened via shell execute, can be from any editor/ide. e.g. "%myDocuments%\\workspace.marvelous.code-workspace" or "%gitRoot%\\src\\GitNoob.sln". |
+| workspace | Path | (Optional) workspace filename of the IDE. The file is opened via shell execute, can be from any editor/ide. e.g. "%myDocuments%\\workspace.marvelous.code-workspace" or "%gitRoot%\\src\\GitNoob.sln". |
+| workspace-run-as-administrator | Boolean | (Optional) start workspace with "run as administrator" rights. e.g. workspace-run-as-administrator=true |
 
 ```
 [working-wip]

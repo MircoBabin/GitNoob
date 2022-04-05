@@ -331,7 +331,7 @@ namespace GitNoob.Gui.Forms
 
             this.panelStatus.Controls.Add(new ActionButton("Explorer", new Program.Action.StartExplorer(Config), ref location));
 
-            var workspace = new Program.Action.StartWorkspace(Config);
+            var workspace = new Program.Action.ExecuteWorkspace(StepConfig);
             if (workspace.isStartable())
             {
                 this.panelStatus.Controls.Add(new ActionButton("Editor", workspace, ref location));

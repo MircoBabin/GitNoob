@@ -46,12 +46,15 @@ namespace GitNoob.Gui.Program.Action.Step
                 StringBuilder batContents = new StringBuilder();
                 batContents.AppendLine("@echo off");
                 batContents.AppendLine("title Apache for " + StepsExecutor.Config.ApacheConf.ProjectnameASCII);
+                batContents.AppendLine("cd /D \"" + apacheBinPath + "\"");
                 batContents.AppendLine("echo This dosprompt is running Apache webserver on port " + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port + ".");
                 batContents.AppendLine("echo.");
                 batContents.AppendLine("echo Browse to " + StepsExecutor.Config.ProjectWorkingDirectory.Webpage.GetHomepageUrl(StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port));
                 batContents.AppendLine("echo.");
+                batContents.AppendLine("echo Apache path: " + apacheBinPath);
+                batContents.AppendLine("httpd.exe -v");
+                batContents.AppendLine("echo.");
                 batContents.AppendLine("echo Do not close this dosprompt.");
-                batContents.AppendLine("cd /D \"" + apacheBinPath + "\"");
                 batContents.AppendLine("httpd.exe -f \"" + StepsExecutor.Config.ApacheConf.ConfFullFilename + "\"");
                 batContents.AppendLine("if errorlevel 1 pause");
                 batContents.AppendLine("exit /b 0");

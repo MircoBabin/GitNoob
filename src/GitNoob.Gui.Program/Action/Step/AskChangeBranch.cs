@@ -22,8 +22,13 @@ namespace GitNoob.Gui.Program.Action.Step
 
             //not really a failure, but a solution to choose a branch visually
             message = new MessageWithLinks("Change branch to:");
+            string currentBranch = result.CurrentBranch;
+            string renameBranch = "Rename current branch \"" + currentBranch + "\".";
             string newBranch = "Create a new branch based on the main branch \"" + MainBranch + "\".";
-            FailureRemedy = new Remedy.InputChooseBranch(this, message, result.Branches, "Cancel, don't change branch", newBranch, MainBranch, (name) => {
+            FailureRemedy = new Remedy.InputChooseBranch(this, message, result.Branches, "Cancel, don't change branch", 
+                (!result.CurrentBranchIsTrackingRemoteBranch && !result.DetachedHead_NotOnBranch ? renameBranch : null), currentBranch,
+                newBranch, MainBranch, 
+                (name) => {
                 var step = new CheckoutBranch(false, name);
                 StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
             });

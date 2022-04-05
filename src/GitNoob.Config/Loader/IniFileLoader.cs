@@ -124,6 +124,16 @@ namespace GitNoob.Config.Loader
             intoValue.CopyFrom(new ConfigFilename(GetFullPath(value, Path.GetDirectoryName(ini.IniFilename))));
         }
 
+        private void ReadBoolean(IniFile ini, string Section, string Key, ConfigBoolean intoValue)
+        {
+            string value = ReadValue(ini, Section, Key);
+            if (String.IsNullOrWhiteSpace(value)) return;
+
+            value = value.ToLowerInvariant();
+            if (value == "true") intoValue.CopyFrom(new ConfigBoolean(true));
+            else if (value == "false") intoValue.CopyFrom(new ConfigBoolean(false));
+        }
+
         private void LoadGitnoobIni()
         { 
             Dictionary<string, System.Action<IniFile, string, string>> sectionDefinitions = new Dictionary<string, System.Action<IniFile, string, string>>()
@@ -513,6 +523,7 @@ namespace GitNoob.Config.Loader
             }
 
             ReadFilename(ini, Section, "workspace", WorkingDirectory.Editor.WorkspaceFilename);
+            ReadBoolean(ini, Section, "workspace-run-as-administrator", WorkingDirectory.Editor.WorkspaceRunAsAdministrator);
 
             WorkingDirectory.useWorkingDirectory();
 

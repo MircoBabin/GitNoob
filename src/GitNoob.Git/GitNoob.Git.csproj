@@ -49,6 +49,7 @@
     <Compile Include="Command\Repository\RemoteReachable.cs" />
     <Compile Include="GitRemote.cs" />
     <Compile Include="GitUtils.cs" />
+    <Compile Include="Result\RenameBranch.cs" />
     <Compile Include="Result\RemotesResult.cs" />
     <Compile Include="Result\BranchesResult.cs" />
     <Compile Include="Result\BuildCacheAndCommitOnMainBranchResult.cs" />

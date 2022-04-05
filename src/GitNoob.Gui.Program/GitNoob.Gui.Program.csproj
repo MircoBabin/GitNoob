@@ -98,7 +98,7 @@
     <Compile Include="Action\Remedy\RenameExistingDirectory.cs" />
     <Compile Include="Action\ExecuteStartBrowser.cs" />
     <Compile Include="Action\StartDosPrompt.cs" />
-    <Compile Include="Action\StartWorkspace.cs" />
+    <Compile Include="Action\ExecuteWorkspace.cs" />
     <Compile Include="Action\StartExplorer.cs" />
     <Compile Include="Action\ExecuteGetLatest.cs" />
     <Compile Include="Action\StartGitCredentialsViaKeePassCommanderOnGithub.cs" />
@@ -108,6 +108,7 @@
     <Compile Include="Action\Step\AskSetCommitter.cs" />
     <Compile Include="Action\Step\AskStartMerge.cs" />
     <Compile Include="Action\Step\AskDeleteAllChanges.cs" />
+    <Compile Include="Action\Step\RenameBranch.cs" />
     <Compile Include="Action\Step\SetRemoteForBranch.cs" />
     <Compile Include="Action\Step\EditFiles.cs" />
     <Compile Include="Action\Step\DeleteLogfiles.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Action\Step\EnsureStatus.cs" />
     <Compile Include="Action\Step\ExecutorStoreCurrentBranch.cs" />
     <Compile Include="Action\Step\MergeCurrentBranchIntoMainBranchFastForwardOnly.cs" />
+    <Compile Include="Action\Step\StartWorkspace.cs" />
     <Compile Include="Action\Step\TemporaryCommitChangesOnCurrentBranch.cs" />
     <Compile Include="Action\Step\MoveChangesOnMainBranchToNewBranch.cs" />
     <Compile Include="Action\Step\MoveChangesOnCurrentBranchToNewBranch.cs" />
