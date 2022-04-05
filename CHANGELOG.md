@@ -1,5 +1,11 @@
 # GitNoob changelog
 
+## Version 1.5
+* Add: workspace-run-as-administrator setting.
+* Add: rename current branch.
+* Add: show Apache path & version when starting Apache.
+* Fix: setting committer name & email.
+
 ## Version 1.4
 * Add: [GIT_ROOT_DIR] & [GIT_ROOT_DIR_SLASH] to template files.
 * Add: PhpLaravel8, PhpLaravel9 projecttypes.
