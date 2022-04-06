@@ -24,14 +24,20 @@ GitNoob solves the following problems:
 - Starting a dosprompt.
 - Starting an explorer.
 - Starting [Git Gui](https://github.com/prati0100/git-gui/) for committing changes.
-- Optional: Starting the IDE.
+- Optional: Starting the IDE. With the ability to start with "run as administrator" privileges.
 - Optional: Starting the browser. And automatically start Apache if needed.
 - Optional: Starting a local smtp server like [PaperCut-SMTP](https://github.com/ChangemakerStudios/Papercut-SMTP).
 - Optional: Starting [Fiddler](https://www.telerik.com/fiddler/fiddler-classic).
 - Optional: Starting [Ngrok](https://ngrok.com/). And automatically start Apache if needed.
 
-For [Php Laravel 7](https://laravel.com/docs/7.x) projects:
+For [Php](https://www.php.net/) projects:
 
+- Use a different php.ini and php version per project.
+- Setup the correct path for global [Composer](https://getcomposer.org/) binaries (%appdata%\Composer\vendor\bin).
+
+For [Php Laravel 7](https://laravel.com/docs/7.x), [Php Laravel 8](https://laravel.com/docs/8.x), [Php Laravel 9](https://laravel.com/docs/9.x) projects:
+
+- Laravel is a Php project. All advantages for Php projects also apply for Laravel projects.
 - Clear the Laravel cache.
 - Clear the Laravel logfiles.
 - Open the Laravel logfiles directory.

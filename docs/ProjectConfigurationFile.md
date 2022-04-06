@@ -9,7 +9,7 @@ In the project configuration the section GitNoob can contain the settings:
 | ---- | ---- | ----------- |
 | name | Path | Name of the project. E.g. "My marvelous project". |
 | icon | Path | (Optional) Filename of icon to be used in the workingdirectory form. E.g. "marvelous.ico". |
-| type | Value | (Optional) Project type. e.g. "Php" or "PhpLaravel7" |
+| type | Value | (Optional) Project type. e.g. "Php" or "PhpLaravel7", "PhpLaravel8", "PhpLaravel9" |
 | | | |
 | apache | Value | (Optional) project apache settings name. E.g. "global" then there should also be a section \[apache-global\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | apachePath | Path | (Optional) Path to Apache binaries. %apachePath%\\bin should contain httpd.exe. e.g. "%binPath%\\apache". |
@@ -54,7 +54,7 @@ This section defines a working directory.
 | icon | Path | (Optional) Filename of icon to be used in the workingdirectory form. E.g. "marvelous.ico". |
 | image | Path | (Optional) Filename of image to be used in the workingdirectory form. The max image size is 384px width by 96px height (ratio 4:1). Smaller images will be shown as is, bigger images will be scaled. E.g. "marvelous.png". |
 | imagebackgroundcolor | Value | (Optional) a html color reference for the image background. E.g. "#000000" for black. |
-| type | Value | (Optional) Project type. e.g. "Php" or "PhpLaravel7" |
+| type | Value | (Optional) Project type. e.g. "Php" or "PhpLaravel7", "PhpLaravel8", "PhpLaravel9" |
 | | | |
 | apache | Value | (Optional) project apache settings name. E.g. "global" then there should also be a section \[apache-global\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | apachePath | Path | (Optional) Path to Apache binaries. %apachePath%\\bin should contain httpd.exe. e.g. "%binPath%\\apache". |
