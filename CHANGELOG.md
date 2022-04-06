@@ -1,5 +1,9 @@
 # GitNoob changelog
 
+## Version 1.6
+* Fix: configure php for start workspace.
+* Fix: configure global composer path (%appdata%\Composer\vendor\bin) for start workspace & start dosprompt.
+
 ## Version 1.5
 * Add: workspace-run-as-administrator setting.
 * Add: rename current branch.
