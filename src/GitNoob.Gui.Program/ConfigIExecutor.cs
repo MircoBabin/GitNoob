@@ -55,8 +55,16 @@ namespace GitNoob.Gui.Program
             var envs = new Dictionary<string, string>();
             if (_needsPhp)
             {
-                paths.Add(_phpExePath);
                 envs.Add("PHPRC", _phpIniPath); /* Directory containing php.ini */
+                paths.Add(_phpExePath);
+
+                //Global Composer bin directory, e.g. for php-cs-fixer
+                //    %appdata%\Composer\\vendor\bin
+                string composerGlobalBin = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Composer\\vendor\\bin");
+                if (Directory.Exists(composerGlobalBin))
+                {
+                    paths.Add(composerGlobalBin);
+                }
             }
 
             var console = new Git.Command.ConsoleExecutor(batFile, commandline, _workingDirectory, null, null, paths, envs);

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.IO;
-using System.Text;
+﻿using GitNoob.Gui.Program.Utils;
 
 namespace GitNoob.Gui.Program.Action.Step
 {
@@ -18,30 +16,13 @@ namespace GitNoob.Gui.Program.Action.Step
         {
             BusyMessage = "Busy - starting workspace " + _filename;
 
-            if (_asAdministrator)
-            {
-                StringBuilder batContents = new StringBuilder();
-                batContents.AppendLine("@echo off");
-                batContents.AppendLine("start \"Workspace\" \"" + _filename + "\"");
+            var batFile = new BatFile("run-workspace", _asAdministrator,
+                StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory,
+                StepsExecutor.Config.PhpIni);
+            batFile.AppendLine("start \"Workspace\" \"" + _filename + "\"");
+            batFile.AppendLine("exit /b 0");
 
-                var path = Utils.FileUtils.TempDirectoryForProject(StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory);
-                var batFile = Path.Combine(path, "run-workspace.bat");
-                File.WriteAllText(batFile, batContents.ToString(), Encoding.ASCII);
-
-                var info = new ProcessStartInfo
-                {
-                    FileName = batFile,
-                    UseShellExecute = true,
-                    Verb = "runas",
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                };
-
-                Process.Start(info);
-            }
-            else
-            {
-                Process.Start(_filename);
-            }
+            batFile.Execute();
 
             return true;
         }

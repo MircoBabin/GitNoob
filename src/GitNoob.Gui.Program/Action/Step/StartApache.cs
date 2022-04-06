@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GitNoob.Gui.Program.Utils;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -43,42 +44,24 @@ namespace GitNoob.Gui.Program.Action.Step
 
             if (!running)
             {
-                StringBuilder batContents = new StringBuilder();
-                batContents.AppendLine("@echo off");
-                batContents.AppendLine("title Apache for " + StepsExecutor.Config.ApacheConf.ProjectnameASCII);
-                batContents.AppendLine("cd /D \"" + apacheBinPath + "\"");
-                batContents.AppendLine("echo This dosprompt is running Apache webserver on port " + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port + ".");
-                batContents.AppendLine("echo.");
-                batContents.AppendLine("echo Browse to " + StepsExecutor.Config.ProjectWorkingDirectory.Webpage.GetHomepageUrl(StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port));
-                batContents.AppendLine("echo.");
-                batContents.AppendLine("echo Apache path: " + apacheBinPath);
-                batContents.AppendLine("httpd.exe -v");
-                batContents.AppendLine("echo.");
-                batContents.AppendLine("echo Do not close this dosprompt.");
-                batContents.AppendLine("httpd.exe -f \"" + StepsExecutor.Config.ApacheConf.ConfFullFilename + "\"");
-                batContents.AppendLine("if errorlevel 1 pause");
-                batContents.AppendLine("exit /b 0");
+                var batFile = new BatFile("run-apache", false,
+                    StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory,
+                    StepsExecutor.Config.PhpIni);
+                batFile.AppendLine("title Apache for " + StepsExecutor.Config.ApacheConf.ProjectnameASCII);
+                batFile.AppendLine("cd /D \"" + apacheBinPath + "\"");
+                batFile.AppendLine("echo This dosprompt is running Apache webserver on port " + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port + ".");
+                batFile.AppendLine("echo.");
+                batFile.AppendLine("echo Browse to " + StepsExecutor.Config.ProjectWorkingDirectory.Webpage.GetHomepageUrl(StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port));
+                batFile.AppendLine("echo.");
+                batFile.AppendLine("echo Apache path: " + apacheBinPath);
+                batFile.AppendLine("httpd.exe -v");
+                batFile.AppendLine("echo.");
+                batFile.AppendLine("echo Do not close this dosprompt.");
+                batFile.AppendLine("httpd.exe -f \"" + StepsExecutor.Config.ApacheConf.ConfFullFilename + "\"");
+                batFile.AppendLine("if errorlevel 1 pause");
+                batFile.AppendLine("exit /b 0");
 
-                var path = Utils.FileUtils.TempDirectoryForProject(StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory);
-                var batFile = Path.Combine(path, "run-apache.bat");
-                File.WriteAllText(batFile, batContents.ToString(), Encoding.ASCII);
-
-                var info = new ProcessStartInfo
-                {
-                    WorkingDirectory = Path.Combine(StepsExecutor.Config.ProjectWorkingDirectory.Apache.ApachePath.ToString(), "bin"),
-                    FileName = batFile,
-                    UseShellExecute = false,
-                    WindowStyle = ProcessWindowStyle.Minimized,
-                };
-
-                if (StepsExecutor.Config.ProjectWorkingDirectory.ProjectType != null &&
-                    StepsExecutor.Config.ProjectWorkingDirectory.ProjectType.Capabilities.NeedsPhp)
-                {
-                    info.EnvironmentVariables["PHPRC"] = StepsExecutor.Config.PhpIni.IniPath; /* Directory containing php.ini */
-                    info.EnvironmentVariables["Path"] = info.EnvironmentVariables["Path"] + ";" + StepsExecutor.Config.ProjectWorkingDirectory.Php.Path.ToString();
-                }
-
-                Process.Start(info);
+                batFile.Execute();
             }
 
             return true;

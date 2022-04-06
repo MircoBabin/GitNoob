@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GitNoob.Gui.Program.Utils;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 
@@ -11,7 +12,7 @@ namespace GitNoob.Gui.Program.Action
         {
             if (_cacheExectable == null)
             {
-                _cacheExectable = Utils.FileUtils.FindExePath("%ComSpec%");
+                _cacheExectable = FileUtils.FindExePath("%ComSpec%");
             }
 
             return _cacheExectable;
@@ -37,7 +38,7 @@ namespace GitNoob.Gui.Program.Action
                 this.NeedsPhp, 
                 phpPath,
                 phpIniPath,
-                Utils.FileUtils.TempDirectoryForProject(Config.Project, Config.ProjectWorkingDirectory),
+                FileUtils.TempDirectoryForProject(Config.Project, Config.ProjectWorkingDirectory),
                 Config.ProjectWorkingDirectory.Path.ToString()
             );
         }
@@ -55,16 +56,10 @@ namespace GitNoob.Gui.Program.Action
                 WorkingDirectory = Config.ProjectWorkingDirectory.Path.ToString(),
                 FileName = GetExecutable(),
                 UseShellExecute = false,
-                Arguments = "/K \"title " + Utils.FileUtils.DeriveFilename(String.Empty, Config.Project.Name) + "-" + Utils.FileUtils.DeriveFilename(String.Empty, Config.ProjectWorkingDirectory.Name) + "\"",
+                Arguments = "/K \"title " + FileUtils.DeriveFilename(String.Empty, Config.Project.Name) + "-" + Utils.FileUtils.DeriveFilename(String.Empty, Config.ProjectWorkingDirectory.Name) + "\"",
             };
 
-            if (NeedsPhp)
-            {
-                info.EnvironmentVariables["PHPRC"] = Config.PhpIni.IniPath; /* Directory containing php.ini */
-                info.EnvironmentVariables["Path"] = info.EnvironmentVariables["Path"] + ";" + Config.ProjectWorkingDirectory.Php.Path.ToString();
-            }
-
-            Process.Start(info);
+            FileUtils.Execute_ProcessStartInfo(info, Config.ProjectWorkingDirectory, Config.PhpIni);
         }
 
         public string GetPhpExe()
