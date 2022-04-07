@@ -1,5 +1,8 @@
 # GitNoob changelog
 
+## Version 1.7
+* Fix: show, don't hide, Apache running window.
+
 ## Version 1.6
 * Fix: configure php for start workspace.
 * Fix: configure global composer path (%appdata%\Composer\vendor\bin) for start workspace & start dosprompt.
