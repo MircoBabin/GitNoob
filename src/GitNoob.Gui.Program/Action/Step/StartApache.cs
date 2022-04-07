@@ -44,7 +44,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             if (!running)
             {
-                var batFile = new BatFile("run-apache", false,
+                var batFile = new BatFile("run-apache", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.showWindow,
                     StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory,
                     StepsExecutor.Config.PhpIni);
                 batFile.AppendLine("title Apache for " + StepsExecutor.Config.ApacheConf.ProjectnameASCII);

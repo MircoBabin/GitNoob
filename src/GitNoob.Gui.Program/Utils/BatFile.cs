@@ -8,20 +8,25 @@ namespace GitNoob.Gui.Program.Utils
 {
     public class BatFile
     {
+        public enum RunAsType { runAsInvoker, runAsAdministrator }
+        public enum WindowType { showWindow, hideWindow }
+
         private string _name;
-        private bool _runAsAdministrator;
+        private RunAsType _runAs;
+        private WindowType _window;
         private Config.Project _project;
         private Config.WorkingDirectory _projectWorkingDirectory;
         private ConfigFileTemplate.PhpIni _phpIni;
 
         private StringBuilder _contents;
 
-        public BatFile(string name, bool runAsAdministrator,
+        public BatFile(string name, RunAsType runAs, WindowType window,
             Config.Project project, Config.WorkingDirectory projectworkingdirectory,
             ConfigFileTemplate.PhpIni phpIni)
         {
             _name = name;
-            _runAsAdministrator = runAsAdministrator;
+            _runAs = runAs;
+            _window = window;
             _project = project;
             _projectWorkingDirectory = projectworkingdirectory;
             _phpIni = phpIni;
@@ -59,13 +64,21 @@ namespace GitNoob.Gui.Program.Utils
                 WorkingDirectory = _projectWorkingDirectory.Path.ToString(),
 
                 UseShellExecute = false,
-                CreateNoWindow = true,
-                WindowStyle = ProcessWindowStyle.Hidden,
             };
 
-            if (_runAsAdministrator)
+            switch(_window)
             {
-                info.Verb = "runas";
+                case WindowType.hideWindow:
+                    info.CreateNoWindow = true;
+                    info.WindowStyle = ProcessWindowStyle.Hidden;
+                    break;
+            }
+
+            switch (_runAs)
+            {
+                case RunAsType.runAsAdministrator:
+                    info.Verb = "runas";
+                    break;
             }
 
             FileUtils.Execute_ProcessStartInfo(info, _projectWorkingDirectory, _phpIni);

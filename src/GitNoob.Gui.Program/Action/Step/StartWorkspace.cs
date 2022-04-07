@@ -16,7 +16,7 @@ namespace GitNoob.Gui.Program.Action.Step
         {
             BusyMessage = "Busy - starting workspace " + _filename;
 
-            var batFile = new BatFile("run-workspace", _asAdministrator,
+            var batFile = new BatFile("run-workspace", (_asAdministrator ? BatFile.RunAsType.runAsAdministrator : BatFile.RunAsType.runAsInvoker), BatFile.WindowType.hideWindow,
                 StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory,
                 StepsExecutor.Config.PhpIni);
             batFile.AppendLine("start \"Workspace\" \"" + _filename + "\"");
