@@ -2,11 +2,11 @@
 
 namespace GitNoob.Git.Result
 {
-    public class UnpackLastTemporaryCommitOnCurrentBranchResult
+    public class UnpackLastCommitOnCurrentBranchResult
     {
         public string CurrentBranch { get; set; }
         public bool Unpacked { get; set; }
-        public bool NoTemporaryCommitToUnpack { get; set; }
+        public bool NoCommitToUnpack { get; set; }
 
         public bool ErrorDetachedHead { get; set; }
         public bool ErrorStagedUncommittedFiles { get; set; }
@@ -15,11 +15,11 @@ namespace GitNoob.Git.Result
         public bool ErrorMergeInProgress { get; set; }
         public bool ErrorUnpacking { get; set; }
 
-        public UnpackLastTemporaryCommitOnCurrentBranchResult()
+        public UnpackLastCommitOnCurrentBranchResult()
         {
             CurrentBranch = String.Empty;
             Unpacked = false;
-            NoTemporaryCommitToUnpack = false;
+            NoCommitToUnpack = false;
 
             ErrorDetachedHead = false;
             ErrorStagedUncommittedFiles = false;

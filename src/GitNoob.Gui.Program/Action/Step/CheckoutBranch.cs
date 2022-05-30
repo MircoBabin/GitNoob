@@ -63,7 +63,7 @@ namespace GitNoob.Gui.Program.Action.Step
                 message.Append(Environment.NewLine);
                 message.Append("Unpacking the temporary commit failed.");
 
-                var result = StepsExecutor.Config.Git.UnpackLastTemporaryCommitOnCurrentBranch();
+                var result = StepsExecutor.Config.Git.UnpackLastCommitOnCurrentBranch(Git.GitWorkingDirectory.UnpackLastCommitType.OnlyUnpackTemporaryCommit);
                 if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
                 {
                     FailureRemedy = new Remedy.MessageRebasingOrMerging(this, message, result.ErrorRebaseInProgress, result.ErrorMergeInProgress);
@@ -82,7 +82,7 @@ namespace GitNoob.Gui.Program.Action.Step
                     return false;
                 }
 
-                if (!result.NoTemporaryCommitToUnpack && !result.Unpacked)
+                if (!result.NoCommitToUnpack && !result.Unpacked)
                 {
                     FailureRemedy = new Remedy.MessageUnknownResult(this, message, result);
                     return false;

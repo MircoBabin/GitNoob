@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WorkingDirectoryForm));
             this.lblMainbranch = new System.Windows.Forms.Label();
             this.lblCurrentbranch = new System.Windows.Forms.Label();
@@ -46,6 +47,7 @@
             this.errorBottom = new System.Windows.Forms.Label();
             this.errorPicture = new System.Windows.Forms.PictureBox();
             this.lblCurrentbranchValue = new System.Windows.Forms.LinkLabel();
+            this.toolTips = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
             this.panelStatus.SuspendLayout();
             this.panelError.SuspendLayout();
@@ -154,9 +156,9 @@
             // panelError
             // 
             this.panelError.Controls.Add(this.errorInput);
-            this.panelError.Controls.Add(this.errorText);
             this.panelError.Controls.Add(this.errorBottom);
             this.panelError.Controls.Add(this.errorPicture);
+            this.panelError.Controls.Add(this.errorText);
             this.panelError.Location = new System.Drawing.Point(0, 121);
             this.panelError.Margin = new System.Windows.Forms.Padding(0);
             this.panelError.Name = "panelError";
@@ -215,7 +217,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 382);
             this.Controls.Add(this.lblCurrentbranchValue);
-            this.Controls.Add(this.panelError);
             this.Controls.Add(this.labelBusy);
             this.Controls.Add(this.panelStatus);
             this.Controls.Add(this.Picture);
@@ -226,6 +227,7 @@
             this.Controls.Add(this.lblMainbranchValue);
             this.Controls.Add(this.lblCurrentbranch);
             this.Controls.Add(this.lblMainbranch);
+            this.Controls.Add(this.panelError);
             this.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "WorkingDirectoryForm";
@@ -261,6 +263,7 @@
         private System.Windows.Forms.LinkLabel errorText;
         private System.Windows.Forms.TextBox errorInput;
         private System.Windows.Forms.LinkLabel lblCurrentbranchValue;
+        private System.Windows.Forms.ToolTip toolTips;
     }
 }
 

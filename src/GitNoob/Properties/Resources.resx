@@ -133,6 +133,9 @@
   <data name="error" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\error.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="list_symbol_of_three_items_with_dots_icon_icons_com_72994_modified" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\list-symbol-of-three-items-with-dots_icon-icons.com_72994-modified.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="log_file" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\log-file.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -147,5 +150,8 @@
   </data>
   <data name="nullset" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\nullset.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="wrench_951" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\wrench-951.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

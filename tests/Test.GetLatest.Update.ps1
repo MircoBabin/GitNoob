@@ -116,7 +116,7 @@ function RunOnGitInitializedCommittedChangesOnMainBranch
                                 -Cloned $false `
                                 -Updated $false `
                                 -ErrorUnpushedCommitsOnMainBranch $true `
-                                -ErrorUnpushedCommitsAndOnLocalTrackingRemoteBranch $false # checked before GetLatest - this can't be a tracking branch, because the upstream was never fetched
+                                -ErrorUnpushedCommitsAndOnLocalTrackingRemoteBranch $false # checked out before GetLatest (so not automatically tracking remote)
                                 
         GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile1' -contents 'myfile1'
         GitNoob_GitStageFile -testdirectory $testrepository.testdirectory -name 'myfile1'
@@ -130,7 +130,7 @@ function RunOnGitInitializedCommittedChangesOnMainBranch
                                 -Cloned $false `
                                 -Updated $false `
                                 -ErrorUnpushedCommitsOnMainBranch $true `
-                                -ErrorUnpushedCommitsAndOnLocalTrackingRemoteBranch $false # checked before GetLatest - this can't be a tracking branch, because the upstream was never fetched
+                                -ErrorUnpushedCommitsAndOnLocalTrackingRemoteBranch $false # checked out before GetLatest (so not automatically tracking remote)
     } finally {
         GitNoob_DeleteTestDirectory -testdirectory $testrepository.testdirectory
     }

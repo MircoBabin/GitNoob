@@ -15,6 +15,12 @@ set "totalStartTime=%time: =0%"
     goto commandlineNext
 
 :all
+    SET /P AREYOUSURE=Run ALL tests ? (Y/[N])?
+    IF "%AREYOUSURE%" == "Y" GOTO all_yes
+    IF "%AREYOUSURE%" == "y" GOTO all_yes
+    goto :eof
+    
+:all_yes    
     for %%a in ("%~dp0Test.*.ps1") do set /A TOTAL=TOTAL+1
     for %%a in ("%~dp0Test.*.ps1") do call :runtest "%%a"
     goto end

@@ -19,11 +19,12 @@ namespace GitNoob.Gui.Program.Action.StepsExecutor
         private bool _lockFrontend;
         private AfterRun _onAfterRun;
 
-        public StepsExecutor(StepConfig Config, IEnumerable<IExecutableByStepsExecutor> Steps, bool LockFrontend = true, AfterRun OnAfterRun = null)
+        public enum LockFrontend { No, Yes }
+        public StepsExecutor(StepConfig Config, IEnumerable<IExecutableByStepsExecutor> Steps, LockFrontend LockFrontend = LockFrontend.Yes, AfterRun OnAfterRun = null)
         {
             _stepConfig = Config;
             _steps = Steps;
-            _lockFrontend = LockFrontend;
+            _lockFrontend = (LockFrontend == LockFrontend.Yes);
             _onAfterRun = OnAfterRun;
 
             CurrentBranchStored = null;
@@ -187,7 +188,13 @@ namespace GitNoob.Gui.Program.Action.StepsExecutor
 
         public void StartGitGui()
         {
-            var action = new StartGitGui(Config);
+            var action = new StartGitGui(_stepConfig);
+            action.execute();
+        }
+
+        public void StartGitkAll()
+        {
+            var action = new StartGitkAll(_stepConfig);
             action.execute();
         }
 

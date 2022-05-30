@@ -24,6 +24,7 @@ GitNoob solves the following problems:
 - Starting a dosprompt.
 - Starting an explorer.
 - Starting [Git Gui](https://github.com/prati0100/git-gui/) for committing changes.
+- Starting git history for current branch.
 - Optional: Starting the IDE. With the ability to start with "run as administrator" privileges.
 - Optional: Starting the browser. And automatically start Apache if needed.
 - Optional: Starting a local smtp server like [PaperCut-SMTP](https://github.com/ChangemakerStudios/Papercut-SMTP).
@@ -54,11 +55,21 @@ For Windows (.NET framework 4), [the latest version can be found here](https://g
 - Download the zip and unpack it somewhere.
 - Then a directory My Documents\GitNoob needs to be manually created. And manually populated with GitNoob.ini and other files. See the [documentation](docs/README.md "Documentation").
 
+*For unattended automatic installation scripts, read the section "Automatic installation scripts" lower down the page.*
+
 # Why
 I had a bunch of bat files to automate some projects tasks. Because the bat files did not cover everything I also had a TiddlyWiki containing snippets of git commands.
 As I had to work in more and more PHP projects, with each project having each own exceptions, it became harder to manage the bat files and project settings. 
 And it became annoying to always have to lookup the stash and other commands, because my programming work was interrupted and I had to fix something with priority.
 So I decided it was time to build a tool. That's why I started GitNoob.
+
+# Automatic installation scripts
+For unattended installation scripts the following flow can be used for the latest version:
+
+1) Download https://github.com/MircoBabin/GitNoob/releases/latest/download/release.download.zip.url-location
+2) Read the text of this file into **latest-download-url**. The file only contains an url, so the encoding is ASCII. *The encoding UTF-8 may also be used to read the file, because ASCII is UTF-8 encoding.*
+3) Download the zip from the **latest-download-url** to local file **GitNoob.zip**. *Each release carries the version number in the filename. To prevent not knowing the downloaded filename, download to a fixed local filename.*
+4) Unpack the downloaded **GitNoob.zip** in the KeePass directory where KeePass.exe is located.
 
 # Contributions
 **Warning: GitNoob is a very opinionated tool.**

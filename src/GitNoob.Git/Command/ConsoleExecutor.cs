@@ -293,7 +293,7 @@ namespace GitNoob.Git.Command
             [DllImport("kernel32.dll", SetLastError = true)]
             public static extern IntPtr GetStdHandle(int nStdHandle); //returns Handle
 
-            const uint ATTACH_PARENT_PROCESS = 0x0ffffffff;
+            public const uint ATTACH_PARENT_PROCESS = 0x0ffffffff;
             [DllImport("kernel32.dll", SetLastError = true)]
             public static extern bool AttachConsole(uint dwProcessId);
 

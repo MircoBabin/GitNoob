@@ -131,6 +131,12 @@ namespace GitNoob.Gui.Forms
                 {
                     if (status.IsGitRootDirectory)
                     {
+                        if (status.Rebasing) txt.Append("rebasing, ");
+                        if (status.Merging) txt.Append("merging, ");
+                        if (status.CherryPicking) txt.Append("cherry-picking, ");
+                        if (status.Reverting) txt.Append("reverting, ");
+                        if (status.Conflicts) txt.Append("conflicts, ");
+
                         if (status.DetachedHead_NotOnBranch) txt.Append("not on a branch [detached HEAD], ");
 
                         if (status.HasWorkingTreeChanges)
@@ -138,8 +144,6 @@ namespace GitNoob.Gui.Forms
                         else
                             txt.Append("no changes, ");
 
-                        if (status.Rebasing) txt.Append("rebasing, ");
-                        if (status.Merging) txt.Append("merging, ");
                         if (status.HasStagedUncommittedFiles) txt.Append("staged files, ");
                     }
                     else
@@ -320,32 +324,36 @@ namespace GitNoob.Gui.Forms
 
             Point empty = new Point(0,0);
             { 
-                new ActionButton("", null, ref empty);
+                new ActionButton(null, "", null, ref empty);
             }
 
             var browser = new Program.Action.ExecuteStartBrowser(StepConfig);
             if (browser.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton("Browser", browser, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Browser", browser, ref location));
             }
 
-            this.panelStatus.Controls.Add(new ActionButton("Explorer", new Program.Action.StartExplorer(Config), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explorer", new Program.Action.StartExplorer(Config), ref location));
 
             var workspace = new Program.Action.ExecuteWorkspace(StepConfig);
             if (workspace.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton("Editor", workspace, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Editor", workspace, ref location));
             }
 
-            this.panelStatus.Controls.Add(new ActionButton("DOS prompt", ActionStartDosPrompt, ref location));
-            this.panelStatus.Controls.Add(new ActionButton("Git Gui", new Program.Action.StartGitGui(Config), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "DOS prompt", ActionStartDosPrompt, ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Git Gui", new Program.Action.StartGitGui(StepConfig), ref location));
 
             if (lblMainbranch.Location.X > location.X) location.X = lblMainbranch.Location.X;
-            this.panelStatus.Controls.Add(new ActionButton("Get latest", new Program.Action.ExecuteGetLatest(StepConfig), ref location));
-            this.panelStatus.Controls.Add(new ActionButton("Merge", new Program.Action.ExecuteMerge(StepConfig), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Current branch history", new Program.Action.ExecuteGitkForCurrentBranch(StepConfig), ref location));
 
             location.X += empty.X;
-            this.panelStatus.Controls.Add(new ActionButton("Delete all changes", new Program.Action.ExecuteDeleteAllChanges(StepConfig), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Get latest", new Program.Action.ExecuteGetLatest(StepConfig), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Merge", new Program.Action.ExecuteMerge(StepConfig), ref location));
+
+            location.X += empty.X;
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Delete all changes", new Program.Action.ExecuteDeleteAllChanges(StepConfig), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Repair options", new Program.Action.ExecuteGitRepair(StepConfig), ref location));
 
             //Second row
             location.X = lblStatusValue.Location.X;
@@ -355,13 +363,13 @@ namespace GitNoob.Gui.Forms
             var exploreLogFiles = new Program.Action.StartExploreLogfiles(StepConfig);
             if (exploreLogFiles.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton("Explore logfiles", exploreLogFiles, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explore logfiles", exploreLogFiles, ref location));
                 count++;
             }
             var openConfigFiles = new Program.Action.ExecuteOpenConfigfiles(StepConfig);
             if (openConfigFiles.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton("Open configfiles", openConfigFiles, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Open configfiles", openConfigFiles, ref location));
                 count++;
             }
 
@@ -371,14 +379,14 @@ namespace GitNoob.Gui.Forms
             var clearCache = new Program.Action.ExecuteClearCache(StepConfig);
             if (clearCache.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton("Clear cache", clearCache, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Clear cache", clearCache, ref location));
                 count++;
             }
 
             var deleteLogFiles = new Program.Action.ExecuteDeleteLogfiles(StepConfig);
             if (deleteLogFiles.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton("Delete logfiles", deleteLogFiles, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Delete logfiles", deleteLogFiles, ref location));
                 count++;
             }
 
@@ -389,19 +397,19 @@ namespace GitNoob.Gui.Forms
             var smtpserver = new Program.Action.StartSmtpServer(StepConfig);
             if (smtpserver.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton("Smtp Server", smtpserver, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Smtp Server", smtpserver, ref location));
             }
 
             var fiddler = new Program.Action.StartFiddler();
             if (browser.isStartable() && fiddler.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton("Fiddler", fiddler, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Fiddler", fiddler, ref location));
             }
 
             var ngrok = new Program.Action.ExecuteStartNgrok(StepConfig);
             if (browser.isStartable() && ngrok.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton("Ngrok", ngrok, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Ngrok", ngrok, ref location));
             }
         }
 
@@ -526,6 +534,7 @@ namespace GitNoob.Gui.Forms
                 throw new Exception("buttons should have at least 1 entry");
             }
 
+            panelError.AutoScroll = false;
             while (_errorButtons.Count < message.VisualizerMessageButtons.Count)
             {
                 var button = new ErrorButton();
@@ -592,7 +601,6 @@ namespace GitNoob.Gui.Forms
 
             errorBottom.Text = String.Empty;
             errorBottom.Top = (location.Y + 10) - errorBottom.Height;
-            panelError.Visible = true;
 
             //Try to show full message
             int maxheight = panelError.Top + errorBottom.Bottom;
@@ -602,6 +610,8 @@ namespace GitNoob.Gui.Forms
             if (this.Height > myScreen.WorkingArea.Height) this.Height = myScreen.WorkingArea.Height;
 
             panelError.Height = this.ClientSize.Height - panelError.Top;
+            panelError.Visible = true;
+            panelError.AutoScroll = true;
 
             if (message.VisualizerMessageType == Program.Action.IVisualizerMessageType.input)
             {

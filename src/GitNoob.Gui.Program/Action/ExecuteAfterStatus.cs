@@ -82,7 +82,7 @@ namespace GitNoob.Gui.Program.Action
             {
                 _steps[_stepsNo++],
             }, 
-            false, executeStep);
+            StepsExecutor.StepsExecutor.LockFrontend.No, executeStep);
             executor.execute();
         }
     }

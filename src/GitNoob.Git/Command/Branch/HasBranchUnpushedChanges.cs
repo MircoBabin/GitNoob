@@ -23,7 +23,14 @@
             }
             else
             {
-                RunGit("base", "rev-list -n 1 \"" + mainBranch + ".." + localBranch + "\"");
+                if (mainBranch != null)
+                {
+                    RunGit("base", "rev-list -n 1 \"" + mainBranch + ".." + localBranch + "\"");
+                }
+                else
+                {
+                    RunGit("base", "rev-list -n 1 \"" + localBranch + "\"");
+                }
             }
         }
 

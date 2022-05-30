@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,6 +18,13 @@ namespace GitNoob
             [DllImport("user32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             public static extern bool SetForegroundWindow(IntPtr hWnd);
+        }
+
+        private static void OutputVersion(string filename)
+        {
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            File.WriteAllText(filename, version.Major + "." + version.Minor);
         }
 
         private static bool CheckConfigs(List<Config.IConfig> configs)
@@ -44,7 +50,7 @@ namespace GitNoob
                                 Environment.NewLine +
                                 "When having 2 mainbranches e.g. \"development\" and \"release\", create 2 directories MyProject-Development and MyProject-Release with their own main branch. The project is then stored 2 times on disk in 2 different directories." + Environment.NewLine;
 
-                        MessageBox.Show(message, "GitNoob configuration error");
+                            MessageBox.Show(message, "GitNoob configuration error");
                             return false;
                         }
 
@@ -62,6 +68,18 @@ namespace GitNoob
         [STAThread]
         static void Main(string[] args)
         {
+            if (args.Length == 1 &&
+                args[0].Length > 10 && args[0].Substring(0, 10).ToLowerInvariant() == "--version=")
+            {
+                // "--version=d:\Projects\GitNoob\assets\Release_version.txt"
+                var filename = args[0].Substring(10).Trim();
+                if (!string.IsNullOrWhiteSpace(filename) && filename.IndexOfAny(Path.GetInvalidPathChars()) < 0)
+                {
+                    OutputVersion(filename);
+                }
+                return;
+            }
+
             Process me = Process.GetCurrentProcess();
             string executableFileName = me.Modules[0].FileName;
 
@@ -86,7 +104,8 @@ namespace GitNoob
             }
 
             bool firstInstance = false;
-            using (Mutex singleInstanceMutex = new Mutex(true, singleInstanceMutexName, out firstInstance)) {
+            using (Mutex singleInstanceMutex = new Mutex(true, singleInstanceMutexName, out firstInstance))
+            {
                 if (firstInstance)
                 {
                     string programPath = Path.GetFullPath(Path.GetDirectoryName(executableFileName));
@@ -108,9 +127,11 @@ namespace GitNoob
                     Gui.Program.Utils.Resources.setIcon("error", Properties.Resources.error);
 
                     Gui.Program.Utils.Resources.setIcon("git gui", Properties.Resources.breeze_icons_5_81_0_git_gui);
+                    Gui.Program.Utils.Resources.setIcon("gitk", Properties.Resources.list_symbol_of_three_items_with_dots_icon_icons_com_72994_modified);
                     Gui.Program.Utils.Resources.setIcon("get latest", Properties.Resources.download);
                     Gui.Program.Utils.Resources.setIcon("merge", Properties.Resources.merge);
                     Gui.Program.Utils.Resources.setIcon("delete all changes", Properties.Resources.delete_all_changes);
+                    Gui.Program.Utils.Resources.setIcon("git repair", Properties.Resources.wrench_951);
 
                     Gui.Program.Utils.Resources.setIcon("clear cache", Properties.Resources.clear_cache);
                     Gui.Program.Utils.Resources.setIcon("ngrok", Properties.Resources.ngrok_black);

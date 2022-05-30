@@ -25,6 +25,12 @@
             _path = other._path;
         }
 
+        public void SetToString(string path)
+        {
+            _orgPath = path;
+            _path = path;
+        }
+
         public override string ToString()
         {
             if (isEmpty())

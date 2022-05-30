@@ -113,6 +113,16 @@ namespace GitNoob.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
+        internal static System.Drawing.Icon list_symbol_of_three_items_with_dots_icon_icons_com_72994_modified {
+            get {
+                object obj = ResourceManager.GetObject("list_symbol_of_three_items_with_dots_icon_icons_com_72994_modified", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
         internal static System.Drawing.Icon log_file {
             get {
                 object obj = ResourceManager.GetObject("log_file", resourceCulture);
@@ -156,6 +166,16 @@ namespace GitNoob.Properties {
         internal static System.Drawing.Icon nullset {
             get {
                 object obj = ResourceManager.GetObject("nullset", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon wrench_951 {
+            get {
+                object obj = ResourceManager.GetObject("wrench_951", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

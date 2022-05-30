@@ -7,7 +7,8 @@ namespace GitNoob.Gui.Program.Action.Remedy
         public InputChooseBranch(Step.Step Step, MessageWithLinks Message,
             IEnumerable<string> branches, string CancelText, 
             string RenameCurrentBranchText, string CurrentBranch,
-            string NewBranchText, string MainBranch, 
+            string NewBranchText, string MainBranch,
+            string DeleteBranchText, 
             System.Action<string> OnSelectedBranchAction) :
             base(Step, ref Message)
         {
@@ -52,6 +53,19 @@ namespace GitNoob.Gui.Program.Action.Remedy
                     Done();
                 });
             }
+
+            /* TODO - enable when repair function "Restore deleted branch" is ready
+            if (!string.IsNullOrWhiteSpace(DeleteBranchText))
+            {
+                VisualizerMessageButtons.Add(DeleteBranchText, (input) => {
+                    var remedy = new MessageConfirmDeleteBranch(Step, new MessageWithLinks(), CurrentBranch);
+                    var step = new Step.DeleteCurrentBranch(CurrentBranch);
+                    StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { remedy, step });
+
+                    Done();
+                });
+            }
+            */
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using GitNoob.Git.Result;
 using System;
-using System.Text;
 
 namespace GitNoob.Git
 {
@@ -100,29 +99,13 @@ namespace GitNoob.Git
             this.lockTagName = "gitlock-" + this.remoteBranchName;
         }
 
-        private string EncodeUtf8Base64(string value)
-        {
-            if (string.IsNullOrEmpty(value)) return string.Empty;
-
-            var bytes = Encoding.UTF8.GetBytes(value);
-            return Convert.ToBase64String(bytes);
-        }
-
-        private string DecodeUtf8Base64(string value)
-        {
-            if (string.IsNullOrEmpty(value)) return string.Empty;
-
-            var bytes = Convert.FromBase64String(value);
-            return Encoding.UTF8.GetString(bytes);
-        }
-
         private string BuildLockMessage(string username, string randomsha1, string message)
         {
             return "gitlock" +
-                   " [" + EncodeUtf8Base64(username) + "]" +
+                   " [" + GitUtils.EncodeUtf8Base64(username) + "]" +
                    " [" + DateTime.UtcNow.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") + "]" +
-                   " [" + EncodeUtf8Base64(randomsha1) + "]" +
-                   " [" + EncodeUtf8Base64(message) + "]";
+                   " [" + GitUtils.EncodeUtf8Base64(randomsha1) + "]" +
+                   " [" + GitUtils.EncodeUtf8Base64(message) + "]";
         }
 
         private void SplitLockMessage(string lockmessage, out string username, out DateTime? lockedtime, out string randomsha1, out string message)
@@ -145,7 +128,7 @@ namespace GitNoob.Git
                     switch (partno)
                     {
                         case 1:
-                            username = DecodeUtf8Base64(value);
+                            username = GitUtils.DecodeUtf8Base64(value);
                             break;
 
                         case 2:
@@ -157,11 +140,11 @@ namespace GitNoob.Git
                             break;
 
                         case 3:
-                            randomsha1 = DecodeUtf8Base64(value);
+                            randomsha1 = GitUtils.DecodeUtf8Base64(value);
                             break;
 
                         case 4:
-                            message = DecodeUtf8Base64(value);
+                            message = GitUtils.DecodeUtf8Base64(value);
                             break;
                     }
                 }

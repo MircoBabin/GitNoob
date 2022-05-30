@@ -23,6 +23,8 @@ $GitNoob_ProjectTypes_Dll = Join-Path -Path $PSScriptRoot  -ChildPath '..\bin\De
 $GitNoob_Git_Exe = (Get-Command 'git.exe').Path;
 [GitNoob.Git.GitWorkingDirectory]::setGitExecutable($GitNoob_Git_Exe)
 
+$GitNoob_Utf8NoBom_Encoding = New-Object System.Text.UTF8Encoding $False
+
 <#
  # Duration measurement
  #
@@ -77,6 +79,24 @@ class GitNoob_StopWatch
  # Basic testrepositories
  #>
 
+function GitNoob_Repository_MakeBare
+{
+    param (
+        [Parameter(Mandatory=$true)][pscustomobject]$testdirectory
+    )
+    
+    $dotGitDirectory = Join-Path -Path $testdirectory.path -ChildPath '.git'
+    $tmpDestination = Join-Path -Path $testdirectory.parent -ChildPath ($testdirectory.name + '.git');
+    Move-Item $dotGitDirectory $tmpDestination
+    Set-ItemProperty -Path $tmpDestination -Name Attributes -Value Normal    
+    
+    Remove-Item $testdirectory.path -Force -Recurse
+    
+    Move-Item $tmpDestination $testdirectory.path
+    
+    GitNoob_RunGitExe -testdirectory $testdirectory -commandline ('config --bool core.bare true')
+}
+
 function GitNoob_Repository_CreateEmpty
 {
     param (
@@ -101,7 +121,7 @@ function GitNoob_Repository_CreateEmpty
         }
     } finally { $stopwatch.stop() }
  }
- 
+
  function GitNoob_Repository_CreateTest
  {
     $stopwatch = [GitNoob_Stopwatch]::new()
@@ -222,8 +242,8 @@ function GitNoob_Repository_CreateEmpty
     GitNoob_GitCommit -testdirectory $repository.testdirectory -name ('GitNoob_Repository_UpdateTest: ' + $name)   
     
     # ends with "master" branch checked out
- }
-  
+}
+ 
 <#
  # Directories & files
  #>
@@ -342,12 +362,81 @@ function GitNoob_CreatePhpLaravel7Directory
     GitNoob_GitInit -testdirectory $testdirectory
     GitNoob_GitStageAll -testdirectory $testdirectory
     GitNoob_GitCommit -testdirectory $testdirectory -name 'first commit laravel7'
+
+    # Make repository *bare* to make sure "git push origin master" works.
+    #
+    # remote: error: refusing to update checked out branch: refs/heads/master
+    # remote: error: By default, updating the current branch in a non-bare repository 
+    # remote: is denied, because it will make the index and work tree inconsistent    
+    # remote: with what you pushed, and will require 'git reset --hard' to match      
+    # remote: the work tree to HEAD.
+    # remote:
+    # remote: You can set the 'receive.denyCurrentBranch' configuration variable      
+    # remote: to 'ignore' or 'warn' in the remote repository to allow pushing into    
+    # remote: its current branch; however, this is not recommended unless you
+    # remote: arranged to update its work tree to match what you pushed in some       
+    # remote: other way.
+    GitNoob_Repository_MakeBare -testdirectory $testdirectory
     
     return [pscustomobject]@{
         testdirectory = $testdirectory
-        remoteUrl = $null
+        remoteUrl = $testdirectory.path
         
         projectType = 'PhpLaravel7'
+        phpPath = $phpPath
+        phpIniTemplateFile = $phpIniTemplateFile
+    }
+}
+
+function GitNoob_CreatePhpLaravel9Directory
+{
+    param (
+        $nonExisting = $null
+    )
+
+    if ($nonExisting -eq $null) { $nonExisting = GitNoob_GetNonExistingTestDirectory }
+    
+    New-Item -ItemType Directory -Force -Path $nonExisting.path
+    
+    $fromPath = Join-Path -Path $GitNoob_Assets_Path -ChildPath 'php-laravel9\src\*'
+    Copy-Item -Path $fromPath -Destination $nonExisting.path -recurse -Force
+    
+    $fromPath = Join-Path -Path $GitNoob_Assets_Path -ChildPath 'php-composer\composer.phar';
+    Copy-Item -Path $fromPath -Destination $nonExisting.path -Force
+    
+    $phpPath = Join-Path -Path $GitNoob_Assets_Path -ChildPath 'php-bin-8.1.4-x64'
+    $phpIniTemplateFile = Join-Path -Path $GitNoob_Assets_Path -ChildPath 'php-laravel9\php.ini'
+    
+    $testdirectory =  [pscustomobject]@{
+        parent = $nonExisting.parent
+        name = $nonExisting.name
+        path = $nonExisting.path
+    }
+    
+    GitNoob_GitInit -testdirectory $testdirectory
+    GitNoob_GitStageAll -testdirectory $testdirectory
+    GitNoob_GitCommit -testdirectory $testdirectory -name 'first commit laravel9'
+
+    # Make repository *bare* to make sure "git push origin master" works.
+    #
+    # remote: error: refusing to update checked out branch: refs/heads/master
+    # remote: error: By default, updating the current branch in a non-bare repository 
+    # remote: is denied, because it will make the index and work tree inconsistent    
+    # remote: with what you pushed, and will require 'git reset --hard' to match      
+    # remote: the work tree to HEAD.
+    # remote:
+    # remote: You can set the 'receive.denyCurrentBranch' configuration variable      
+    # remote: to 'ignore' or 'warn' in the remote repository to allow pushing into    
+    # remote: its current branch; however, this is not recommended unless you
+    # remote: arranged to update its work tree to match what you pushed in some       
+    # remote: other way.
+    GitNoob_Repository_MakeBare -testdirectory $testdirectory
+    
+    return [pscustomobject]@{
+        testdirectory = $testdirectory
+        remoteUrl = $testdirectory.path
+        
+        projectType = 'PhpLaravel9'
         phpPath = $phpPath
         phpIniTemplateFile = $phpIniTemplateFile
     }
@@ -410,7 +499,7 @@ function GitNoob_CreateFile
     )
     
     $filename = Join-Path $testdirectory.path $name
-    Set-Content -Path $filename -Value $contents
+    Set-Content -NoNewline -Path $filename -Value $contents
 }
 
 function GitNoob_TouchFileTimestamps
@@ -656,6 +745,16 @@ function GitNoob_GitInit
     }
 }
 
+function GitNoob_GitRemoveWorkingTreeChanges
+{
+    param (
+        [Parameter(Mandatory=$true)][pscustomobject]$testdirectory
+    )
+    
+    GitNoob_RunGitExe -testdirectory $testdirectory -commandline ('reset --hard')
+    GitNoob_RunGitExe -testdirectory $testdirectory -commandline ('clean --force -d --quiet')
+}  
+
 function GitNoob_GitAddRemote
 {
     param (
@@ -824,7 +923,7 @@ function GitNoob_GitPushBranch
         [Parameter(Mandatory=$true)]$remotename,
         [Parameter(Mandatory=$true)]$name
     )
-    
+
     GitNoob_RunGitExe -testdirectory $testdirectory -commandline ('push "' + $remotename + '" "' + $name + '"')
 }
 
@@ -935,26 +1034,27 @@ function GitNoob_Git_New_GitWorkingDirectory
         $remoteBranch = $null,
         $projectType = $null,
         $phpPath = $null,
-        $phpIniTemplateContents = $null
+        $phpIniTemplateFilename = $null
     )
-    
+
     $config = new-object GitNoob.Config.WorkingDirectory
     $config.Name = 'GitNoob test'
-    $config.Path = $testdirectory.path
+    $config.Path.SetToString($testdirectory.path)
     if ($remoteUrl -ne $null) {
         $config.Git.RemoteUrl = $remoteUrl
     }
     if ($remoteBranch -ne $null) {
-        $config.Git.RemoteBranch = $remoteBranch
+        # todo rename parameter $remoteBranch to $mainBranch
+        $config.Git.MainBranch = $remoteBranch
     }
     if ($projectType -ne $null) {
         $config.ProjectType = [GitNoob.Config.Loader.ProjectTypeLoader]::Load($projectType)
     }
     if ($phpPath -ne $null) {
-        $config.Php.Path = $phpPath
+        $config.Php.Path.SetToString($phpPath)
     }
-    if ($phpIniTemplateContents -ne $null) {
-        $config.Php.PhpIniTemplateContents = $phpIniTemplateContents
+    if ($phpIniTemplateFilename -ne $null) {
+        $config.Php.PhpIniTemplateFilename.SetToString($phpIniTemplateFilename);
     }
 
     [GitNoob.Git.GitWorkingDirectory]::ClearCache()
@@ -1908,6 +2008,7 @@ function GitNoob_AssertBuildCacheAndCommitOnMainBranch
 {
     param (
         [Parameter(Mandatory=$true)]$description,
+        [Parameter(Mandatory=$true)]$testdirectory,
         [Parameter(Mandatory=$true)]$projectType, #e.g. GitNoob_CreatePhpLaravel7Directory
         [Parameter(Mandatory=$false)]$LaunchDebugger = $false,
         [Parameter(Mandatory=$false)]$ErrorBuildingCache = $null,
@@ -1922,16 +2023,14 @@ function GitNoob_AssertBuildCacheAndCommitOnMainBranch
     
     $stopwatch = [GitNoob_Stopwatch]::new()
     try {
-        $iniContents = Get-Content -Raw $projectType.phpIniTemplateFile
-        
-        $GitWorkingDirectory = GitNoob_Git_New_GitWorkingDirectory -testdirectory $projectType.testdirectory `
+        $GitWorkingDirectory = GitNoob_Git_New_GitWorkingDirectory -testdirectory $testdirectory `
                                                                    -projectType $projectType.projectType `
                                                                    -phpPath $projectType.phpPath `
-                                                                   -phpIniTemplateContents $iniContents
+                                                                   -phpIniTemplateFilename $projectType.phpIniTemplateFile
 
         $phpIni = new-object GitNoob.Gui.Program.ConfigFileTemplate.PhpIni($null, $GitWorkingDirectory.ConfigWorkingDirectory)
         $tempPath = GitNoob_GetRootDirectoryForTesting
-        $IExecutor = new-object GitNoob.Gui.Program.ConfigIExecutor($projectType.phpPath, $phpIni.IniPath, $tempPath, $projectType.testdirectory.path)
+        $IExecutor = new-object GitNoob.Gui.Program.ConfigIExecutor($true, $projectType.phpPath, $phpIni.IniPath, $tempPath, $testdirectory.path)
 
         $result = $GitWorkingDirectory.BuildCacheAndCommitOnMainBranch($IExecutor, 'Build cache - GitNoob_AssertBuildCacheAndCommitOnMainBranch')
         
@@ -1959,6 +2058,42 @@ function GitNoob_AssertBuildCacheAndCommitOnMainBranch
 }        
 
 
+function GitNoob_WriteHostHex()
+{
+    param (
+        [Parameter(Mandatory=$true)]$value
+    )
+    
+    $inputBytes = $null;
+    if ($value -is [byte[]])
+        {
+            $inputBytes = $value
+        }
+    else
+        {
+            $inputBytes = $GitNoob_Utf8NoBom_Encoding.GetBytes([string] $value)
+        }
+    
+    $counter = 0;
+    $line = "{0}   " -f  [Convert]::ToString($counter, 16).ToUpper().PadLeft(8, '0')
+    foreach($byte in $inputBytes)
+    {
+        ## Display each byte, in 2-digit hexidecimal, and add that to the
+        ## left-hand side.
+        $line += "{0:X2} " -f $byte
+        
+        $counter++;
+        
+        if (($counter % 16) -eq 0) {
+            Write-Host $line
+            
+            $line = "{0}   " -f  [Convert]::ToString($counter, 16).ToUpper().PadLeft(8, '0')
+        }
+   }
+   
+   Write-Host $line
+}
+
 function GitNoob_AssertSame
 {
     param (
@@ -1971,7 +2106,9 @@ function GitNoob_AssertSame
         Write-Host "`n!!! ERROR - GitNoob_AssertSame !!!"
         Write-Host $message
         Write-Host ('value      : ' + $value)
+        GitNoob_WriteHostHex -value $value
         Write-Host ('expectation: ' + $expectation)
+        GitNoob_WriteHostHex -value $expectation
     }
 }
 
@@ -1999,6 +2136,8 @@ function GitNoob_AssertFile
         Write-Host $message
         Write-Host ('filename     : ' + $filename)
         Write-Host ('file-contents: ' + $contents)
+        GitNoob_WriteHostHex -value $contents
         Write-Host ('expectation  : ' + $expectation)
+        GitNoob_WriteHostHex -value $expectation
     }
 }

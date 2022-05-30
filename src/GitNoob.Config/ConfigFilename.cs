@@ -28,6 +28,12 @@ namespace GitNoob.Config
             _filename = other._filename;
         }
 
+        public void SetToString(string filename)
+        {
+            _orgFilename = filename;
+            _filename = filename;
+        }
+
         public override string ToString()
         {
             if (isEmpty())

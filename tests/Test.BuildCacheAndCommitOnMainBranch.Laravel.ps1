@@ -26,22 +26,48 @@ function NothingWrong
         'class NothingWrong extends Controller' + "`r`n" + `
         '{' + "`r`n" + `
         '}' + "`r`n"
-
-    GitNoob_CreateFile -testdirectory $laravel.testdirectory `
-                       -name $file `
-                       -contents $contents
+            
+    $testdirectory = GitNoob_GetNonExistingTestDirectory
     try {
-        GitNoob_GitStageFile -testdirectory $laravel.testdirectory -name $file
-        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'NothingWrong'
+        GitNoob_AssertGetLatest -description 'Get latest (clone)' `
+                                -testdirectory $testdirectory `
+                                -remoteUrl $laravel.remoteUrl `
+                                -remoteBranch master `
+                                -Cloned $true `
+                                -Updated $false
+                                
+        GitNoob_CreateFile -testdirectory $testdirectory `
+                           -name $file `
+                           -contents $contents
+                           
+        GitNoob_GitStageFile -testdirectory $testdirectory -name $file
+        GitNoob_GitCommit -testdirectory $testdirectory -name 'NothingWrong'
+        GitNoob_GitPushBranch -testdirectory $testdirectory `
+                              -remotename origin `
+                              -name master
+
         GitNoob_AssertBuildCacheAndCommitOnMainBranch -description 'Laravel - Nothing wrong' `
+                                                      -testdirectory $testdirectory `
                                                       -projectType $laravel `
                                                       -Updated $true
+        GitNoob_AssertStatus -description 'Laravel - Nothing wrong' `
+                             -testdirectory $testdirectory `
+                             -DirectoryExists $true `
+                             -IsGitRootDirectory $true `
+                             -HasWorkingTreeChanges $false `
+                             -HasStagedUncommittedFiles $false `
+                             -Rebasing $false `
+                             -Merging $false
     } finally {
         GitNoob_GitRemoveAndStageFile -testdirectory $laravel.testdirectory `
                                       -name $file
-        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'NothingWrong undo'
+        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'NothingWrong undo'        
+        GitNoob_GitPushBranch -testdirectory $testdirectory `
+                              -remotename origin `
+                              -name master
+        
+        GitNoob_DeleteTestDirectory -testdirectory $testdirectory
     }
-    
 }
 
 function WrongNamespace
@@ -58,20 +84,39 @@ function WrongNamespace
         'class WrongNamespace extends Controller' + "`r`n" + `
         '{' + "`r`n" + `
         '}' + "`r`n"
-
-    GitNoob_CreateFile -testdirectory $laravel.testdirectory `
-                       -name $file `
-                       -contents $contents
+            
+    $testdirectory = GitNoob_GetNonExistingTestDirectory
     try {
-        GitNoob_GitStageFile -testdirectory $laravel.testdirectory -name $file
-        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'WrongNamespace'
+        GitNoob_AssertGetLatest -description 'Get latest (clone)' `
+                                -testdirectory $testdirectory `
+                                -remoteUrl $laravel.remoteUrl `
+                                -remoteBranch master `
+                                -Cloned $true `
+                                -Updated $false
+
+        GitNoob_CreateFile -testdirectory $testdirectory `
+                           -name $file `
+                           -contents $contents
+                           
+        GitNoob_GitStageFile -testdirectory $testdirectory -name $file
+        GitNoob_GitCommit -testdirectory $testdirectory -name 'WrongNamespace'
+        GitNoob_GitPushBranch -testdirectory $testdirectory `
+                              -remotename origin `
+                              -name master
+                              
         GitNoob_AssertBuildCacheAndCommitOnMainBranch -description 'Laravel - Wrong namespace' `
+                                                      -testdirectory $testdirectory `
                                                       -projectType $laravel `
                                                       -ErrorBuildingCache $true
     } finally {
         GitNoob_GitRemoveAndStageFile -testdirectory $laravel.testdirectory `
                                       -name $file
-        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'WrongNamespace undo'
+        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'WrongNamespace undo'        
+        GitNoob_GitPushBranch -testdirectory $testdirectory `
+                              -remotename origin `
+                              -name master
+        
+        GitNoob_DeleteTestDirectory -testdirectory $testdirectory
     }
 }
 
@@ -90,19 +135,38 @@ function WrongClassname
         '{' + "`r`n" + `
         '}' + "`r`n"
 
-    GitNoob_CreateFile -testdirectory $laravel.testdirectory `
-                       -name $file `
-                       -contents $contents
+    $testdirectory = GitNoob_GetNonExistingTestDirectory
     try {
-        GitNoob_GitStageFile -testdirectory $laravel.testdirectory -name $file
-        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'WrongClassname'
+        GitNoob_AssertGetLatest -description 'Get latest (clone)' `
+                                -testdirectory $testdirectory `
+                                -remoteUrl $laravel.remoteUrl `
+                                -remoteBranch master `
+                                -Cloned $true `
+                                -Updated $false
+
+        GitNoob_CreateFile -testdirectory $testdirectory `
+                           -name $file `
+                           -contents $contents
+                           
+        GitNoob_GitStageFile -testdirectory $testdirectory -name $file
+        GitNoob_GitCommit -testdirectory $testdirectory -name 'WrongClassname'
+        GitNoob_GitPushBranch -testdirectory $testdirectory `
+                              -remotename origin `
+                              -name master
+        
         GitNoob_AssertBuildCacheAndCommitOnMainBranch -description 'Laravel - Wrong classname' `
+                                                      -testdirectory $testdirectory `
                                                       -projectType $laravel `
                                                       -ErrorBuildingCache $true
     } finally {
         GitNoob_GitRemoveAndStageFile -testdirectory $laravel.testdirectory `
                                       -name $file
-        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'WrongClassname undo'
+        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'WrongClassname undo'        
+        GitNoob_GitPushBranch -testdirectory $testdirectory `
+                              -remotename origin `
+                              -name master
+        
+        GitNoob_DeleteTestDirectory -testdirectory $testdirectory
     }
 }
 
@@ -122,20 +186,52 @@ function RouteWithAnonymousFunction
         '    return $request->user();' + "`r`n" + `
         '});' + "`r`n"
 
-    GitNoob_CreateFile -testdirectory $laravel.testdirectory `
-                       -name $file `
-                       -contents $contents
+    $testdirectory = GitNoob_GetNonExistingTestDirectory
     try {
-        GitNoob_GitStageFile -testdirectory $laravel.testdirectory -name $file
-        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'WrongClassname'
+        GitNoob_AssertGetLatest -description 'Get latest (clone)' `
+                                -testdirectory $testdirectory `
+                                -remoteUrl $laravel.remoteUrl `
+                                -remoteBranch master `
+                                -Cloned $true `
+                                -Updated $false
+                                
+        GitNoob_CreateFile -testdirectory $testdirectory `
+                           -name $file `
+                           -contents $contents
+                           
+        GitNoob_GitStageFile -testdirectory $testdirectory -name $file
+        GitNoob_GitCommit -testdirectory $testdirectory -name 'WrongClassname'
+        GitNoob_GitPushBranch -testdirectory $testdirectory `
+                              -remotename origin `
+                              -name master
+        
         GitNoob_AssertBuildCacheAndCommitOnMainBranch -description 'Laravel - route with anonymous function' `
+                                                      -testdirectory $testdirectory `
                                                       -projectType $laravel `
                                                       -ErrorBuildingCache $true
     } finally {
         GitNoob_GitRemoveAndStageFile -testdirectory $laravel.testdirectory `
                                       -name $file
-        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'RouteWithAnonymousFunction undo'
+        GitNoob_GitCommit -testdirectory $laravel.testdirectory -name 'RouteWithAnonymousFunction undo'        
+        GitNoob_GitPushBranch -testdirectory $testdirectory `
+                              -remotename origin `
+                              -name master
+                              
+        GitNoob_DeleteTestDirectory -testdirectory $testdirectory
     }
+}
+
+
+$laravel = GitNoob_CreatePhpLaravel9Directory
+try {
+    NothingWrong -laravel $laravel
+    WrongNamespace -laravel $laravel
+    WrongClassname -laravel $laravel
+    
+    # Laravel 9 can serialize a Closure - this test will fail on Laravel 9, because the build route cache will succeed.
+    # RouteWithAnonymousFunction -laravel $laravel
+} finally {
+    GitNoob_DeleteTestDirectory -testdirectory $laravel.testdirectory
 }
 
 

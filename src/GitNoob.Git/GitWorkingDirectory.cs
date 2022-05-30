@@ -122,15 +122,22 @@ namespace GitNoob.Git
             var changes = new Command.WorkingTree.HasChanges(this);
             var rebasing = new Command.WorkingTree.IsRebaseActive(this);
             var merging = new Command.WorkingTree.IsMergeActive(this);
+            var cherrypicking = new Command.WorkingTree.IsCherryPickActive(this);
+            var reverting = new Command.WorkingTree.IsRevertActive(this);
             var conflicts = new Command.WorkingTree.HasConflicts(this);
             var mainbranchcommit = new Command.Branch.GetLastCommitOfBranch(this, MainBranch);
             var mainbranchremote = new Command.Branch.GetRemoteBranch(this, MainBranch);
 
             currentbranch.WaitFor();
+            var currentlastcommit = new Command.Branch.GetLastCommitOfBranch(this, currentbranch.shortname);
+            currentlastcommit.WaitFor();
+
             commitname.WaitFor();
             changes.WaitFor();
             rebasing.WaitFor();
             merging.WaitFor();
+            cherrypicking.WaitFor();
+            reverting.WaitFor();
             conflicts.WaitFor();
             mainbranchcommit.WaitFor();
             mainbranchremote.WaitFor();
@@ -141,6 +148,8 @@ namespace GitNoob.Git
                 IsGitRootDirectory = true,
                 DetachedHead_NotOnBranch = (currentbranch.DetachedHead == true),
                 CurrentBranch = currentbranch.shortname,
+                CurrentBranchLastCommitId = currentlastcommit.commitid,
+                CurrentBranchLastCommitMessage = currentlastcommit.commitmessage,
                 CommitFullName = commitname.result,
                 CommitName = commitname.name,
                 CommitEmail = commitname.email,
@@ -148,6 +157,8 @@ namespace GitNoob.Git
                 HasStagedUncommittedFiles = (changes.stagedUncommittedFiles == true),
                 Rebasing = (rebasing.result == true),
                 Merging = (merging.result == true),
+                CherryPicking = (cherrypicking.result == true),
+                Reverting = (reverting.result == true),
                 Conflicts = (conflicts.result == true),
                 MainBranchExists = (!string.IsNullOrEmpty(mainbranchcommit.commitid)),
                 MainBranchIsTrackingRemoteBranch = (!string.IsNullOrEmpty(mainbranchremote.result)),
@@ -366,6 +377,132 @@ namespace GitNoob.Git
             };
         }
 
+        public DeleteCurrentBranchResult DeleteCurrentBranch(string branchname)
+        {
+            var currentbranch = new Command.Branch.GetCurrentBranch(this);
+            var changes = new Command.WorkingTree.HasChanges(this);
+            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
+            var merging = new Command.WorkingTree.IsMergeActive(this);
+            currentbranch.WaitFor();
+            changes.WaitFor();
+            rebasing.WaitFor();
+            merging.WaitFor();
+
+            if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false ||
+                rebasing.result != false || merging.result != false ||
+                currentbranch.DetachedHead != false)
+            {
+                return new DeleteCurrentBranchResult()
+                {
+                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
+                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
+                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
+                    ErrorRebaseInProgress = (rebasing.result != false),
+                    ErrorMergeInProgress = (merging.result != false),
+                };
+            }
+
+            if (branchname != currentbranch.shortname)
+            {
+                return new DeleteCurrentBranchResult()
+                {
+                    ErrorCurrentBranchHasChanged = true,
+                };
+            }
+
+            if (branchname == MainBranch)
+            {
+                return new DeleteCurrentBranchResult()
+                {
+                    ErrorCannotDeleteMainBranch = true,
+                };
+            }
+
+            string tagname;
+            Command.Tag.ListTags list;
+            GitTag found = null;
+            do
+            {
+                tagname =
+                    "gitnoob-deleted-branch-" + GitUtils.GenerateRandomSha1();
+                list = new Command.Tag.ListTags(this);
+                list.WaitFor();
+
+                found = null;
+                foreach (var tag in list.result)
+                {
+                    if (tag.Value.ShortName == tagname)
+                    {
+                        found = tag.Value;
+                        break;
+                    }
+                }
+            } while (found != null);
+
+            var createtag = new Command.Tag.CreateTagToLastCommitOnCurrentBranch(this, tagname, 
+                "deleted-branch [" + GitUtils.EncodeUtf8Base64(branchname) + "]" +
+                "[" + GitUtils.EncodeUtf8Base64(MainBranch) + "]" + 
+                "[" + DateTime.UtcNow.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") + "]"
+                );
+            createtag.WaitFor();
+
+            list = new Command.Tag.ListTags(this);
+            list.WaitFor();
+
+            found = null;
+            foreach (var tag in list.result)
+            {
+                if (tag.Value.ShortName == tagname)
+                {
+                    found = tag.Value;
+                    break;
+                }
+            }
+
+            if (found == null)
+            {
+                return new DeleteCurrentBranchResult()
+                {
+                    ErrorCreatingSafetyTag = true,
+                };
+            }
+
+            var checkoutMainBranch = new Command.Branch.ChangeBranchTo(this, MainBranch);
+            checkoutMainBranch.WaitFor();
+
+            var delete = new Command.Branch.DeleteBranch(this, branchname, true);
+            delete.WaitFor();
+
+            var branchesCommand = new Command.Branch.ListBranches(this, true);
+            branchesCommand.WaitFor();
+
+            bool deleted = true;
+            if (branchesCommand.result != null)
+            {
+                foreach (var branch in branchesCommand.result)
+                {
+                    if (branch.ShortName == branchname)
+                    {
+                        deleted = false;
+                        break;
+                    }
+                }
+            }
+
+            if (!deleted)
+            {
+                return new DeleteCurrentBranchResult()
+                {
+                    ErrorDeleting = true,
+                };
+            }
+
+            return new DeleteCurrentBranchResult()
+            {
+                Deleted = true,
+            };
+        }
+
         public ChangeCurrentBranchResult ChangeCurrentBranchTo(string branchname)
         {
             //explicitly no check for detached head.
@@ -416,7 +553,8 @@ namespace GitNoob.Git
             };
         }
 
-        public UnpackLastTemporaryCommitOnCurrentBranchResult UnpackLastTemporaryCommitOnCurrentBranch()
+        public enum UnpackLastCommitType { All, OnlyUnpackTemporaryCommit }
+        public UnpackLastCommitOnCurrentBranchResult UnpackLastCommitOnCurrentBranch(UnpackLastCommitType unpackType)
         {
             var currentbranch = new Command.Branch.GetCurrentBranch(this);
             var changes = new Command.WorkingTree.HasChanges(this);
@@ -429,7 +567,7 @@ namespace GitNoob.Git
 
             if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false || rebasing.result != false || merging.result != false || currentbranch.DetachedHead != false)
             {
-                return new UnpackLastTemporaryCommitOnCurrentBranchResult()
+                return new UnpackLastCommitOnCurrentBranchResult()
                 {
                     CurrentBranch = currentbranch.shortname,
 
@@ -443,20 +581,31 @@ namespace GitNoob.Git
 
             var lastcommit = new Command.Branch.GetLastCommitOfBranch(this, currentbranch.shortname);
             lastcommit.WaitFor();
-            if (lastcommit.commitmessage == null || !lastcommit.commitmessage.StartsWith(TemporaryCommitMessage))
+            if (lastcommit.commitmessage == null)
             {
-                return new UnpackLastTemporaryCommitOnCurrentBranchResult()
+                return new UnpackLastCommitOnCurrentBranchResult()
                 {
                     CurrentBranch = currentbranch.shortname,
 
-                    NoTemporaryCommitToUnpack = true,
+                    NoCommitToUnpack = true,
+                };
+            }
+
+            if (unpackType == UnpackLastCommitType.OnlyUnpackTemporaryCommit && 
+                !lastcommit.commitmessage.StartsWith(TemporaryCommitMessage))
+            {
+                return new UnpackLastCommitOnCurrentBranchResult()
+                {
+                    CurrentBranch = currentbranch.shortname,
+
+                    NoCommitToUnpack = true,
                 };
             }
 
             var unpack = new Command.Branch.ResetCurrentBranchToPreviousCommit(this);
             unpack.WaitFor();
 
-            return new UnpackLastTemporaryCommitOnCurrentBranchResult()
+            return new UnpackLastCommitOnCurrentBranchResult()
             {
                 CurrentBranch = currentbranch.shortname,
 
@@ -766,6 +915,56 @@ namespace GitNoob.Git
             return new MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult()
             {
                 Moved = true,
+            };
+        }
+
+        public HasGitNoobTemporaryCommitResult HasCurrentBranchUntilMainBranchGitNoobTemporaryCommits()
+        {
+            var currentbranch = new Command.Branch.GetCurrentBranch(this);
+            currentbranch.WaitFor();
+
+            if (currentbranch.DetachedHead != false)
+            {
+                return new HasGitNoobTemporaryCommitResult()
+                {
+                    CurrentBranch = currentbranch.shortname,
+
+                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
+                };
+            }
+
+            var baseCommit = new Command.Branch.FindCommonCommitOfTwoBranches(this, MainBranch, currentbranch.shortname);
+            baseCommit.WaitFor();
+
+            if (String.IsNullOrWhiteSpace(baseCommit.commitid))
+            {
+                return new HasGitNoobTemporaryCommitResult()
+                {
+                    CurrentBranch = currentbranch.shortname,
+
+                    ErrorNoCommonCommitWithMainBranch = true,
+                };
+            }
+
+            var commits = new Command.Branch.ListCommits(this, baseCommit.commitid, currentbranch.shortname);
+            commits.WaitFor();
+
+            uint count = 0;
+            foreach(var commit in commits.result)
+            {
+                if (commit.Message.StartsWith(TemporaryCommitMessage))
+                {
+                    count++;
+                }
+            }
+
+            return new HasGitNoobTemporaryCommitResult()
+            {
+                CurrentBranch = currentbranch.shortname,
+
+                HasGitNoobTemporaryCommit = (count > 0),
+                HasNoGitNoobTemporaryCommit = (count == 0),
+                NumberOfGitNoobTemporaryCommits = count,
             };
         }
 

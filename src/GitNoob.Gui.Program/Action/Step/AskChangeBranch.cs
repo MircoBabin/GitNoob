@@ -25,9 +25,11 @@ namespace GitNoob.Gui.Program.Action.Step
             string currentBranch = result.CurrentBranch;
             string renameBranch = "Rename current branch \"" + currentBranch + "\".";
             string newBranch = "Create a new branch based on the main branch \"" + MainBranch + "\".";
+            string deleteBranch = "Delete current branch \"" + currentBranch + "\".";
             FailureRemedy = new Remedy.InputChooseBranch(this, message, result.Branches, "Cancel, don't change branch", 
                 (!result.CurrentBranchIsTrackingRemoteBranch && !result.DetachedHead_NotOnBranch ? renameBranch : null), currentBranch,
-                newBranch, MainBranch, 
+                newBranch, MainBranch,
+                deleteBranch, 
                 (name) => {
                 var step = new CheckoutBranch(false, name);
                 StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });

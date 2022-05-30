@@ -40,6 +40,7 @@
     </Compile>
     <Compile Include="Command\Branch\CreateBranch.cs" />
     <Compile Include="Command\Branch\FindCommonCommitOfTwoBranches.cs" />
+    <Compile Include="Command\Branch\ListCommits.cs" />
     <Compile Include="Command\Branch\SetTrackingRemoteBranch.cs" />
     <Compile Include="Command\Branch\MergeContinue.cs" />
     <Compile Include="Command\Branch\ResetCurrentBranchToPreviousCommit.cs" />
@@ -47,8 +48,13 @@
     <Compile Include="Command\Remote\ChangeUrl.cs" />
     <Compile Include="Command\Remote\ListRemotes.cs" />
     <Compile Include="Command\Repository\RemoteReachable.cs" />
+    <Compile Include="Command\WorkingTree\IsRevertActive.cs" />
+    <Compile Include="Command\WorkingTree\IsCherryPickActive.cs" />
     <Compile Include="GitRemote.cs" />
+    <Compile Include="GitCommit.cs" />
     <Compile Include="GitUtils.cs" />
+    <Compile Include="Result\DeleteCurrentBranchResult.cs" />
+    <Compile Include="Result\HasGitNoobTemporaryCommitResult.cs" />
     <Compile Include="Result\RenameBranch.cs" />
     <Compile Include="Result\RemotesResult.cs" />
     <Compile Include="Result\BranchesResult.cs" />

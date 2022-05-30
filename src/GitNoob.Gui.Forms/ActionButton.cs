@@ -8,7 +8,7 @@ namespace GitNoob.Gui.Forms
     {
         private Gui.Program.Action.IAction _action;
 
-        public ActionButton(string text, Gui.Program.Action.IAction action, ref Point location) : base()
+        public ActionButton(ToolTip toolTips, string text, Gui.Program.Action.IAction action, ref Point location) : base()
         {
             const int margin = 8;
 
@@ -22,16 +22,18 @@ namespace GitNoob.Gui.Forms
                 {
                     this.Image = Program.Utils.ImageUtils.IconToBitmapOfSize(_action.icon(), 48, 48, Color.Transparent);
                 }
-                catch
+                catch { }
+
+                if (toolTips != null)
                 {
-                    this.Text = text;
+                    toolTips.SetToolTip(this, text);
                 }
+
+                this.Click += ActionButton_Click;
             }
 
             this.Location = location;
             location.X = this.Left + this.Width + margin;
-
-            this.Click += ActionButton_Click;
         }
 
         private void ActionButton_Click(object sender, EventArgs e)

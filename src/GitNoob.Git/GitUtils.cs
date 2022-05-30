@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace GitNoob.Git
 {
@@ -19,5 +20,22 @@ namespace GitNoob.Git
                 return BitConverter.ToString(sha1.ComputeHash(randombytes)).Replace("-", string.Empty);
             }
         }
+
+        public static string EncodeUtf8Base64(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return string.Empty;
+
+            var bytes = Encoding.UTF8.GetBytes(value);
+            return Convert.ToBase64String(bytes);
+        }
+
+        public static string DecodeUtf8Base64(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return string.Empty;
+
+            var bytes = Convert.FromBase64String(value);
+            return Encoding.UTF8.GetString(bytes);
+        }
+
     }
 }

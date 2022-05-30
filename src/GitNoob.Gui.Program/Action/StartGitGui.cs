@@ -1,9 +1,12 @@
-﻿using System.Drawing;
+﻿using GitNoob.Gui.Program.Utils;
+using System.Drawing;
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class StartGitGui : IAction
+    public class StartGitGui : Action, IAction
     {
+        public StartGitGui(StepsExecutor.StepConfig Config) : base(Config) { }
+
         private static string _cacheExecutable = null;
         public static string GetExecutable()
         {
@@ -15,12 +18,6 @@ namespace GitNoob.Gui.Program.Action
             return _cacheExecutable;
         }
 
-        private ProgramWorkingDirectory Config;
-        public StartGitGui(ProgramWorkingDirectory Config)
-        {
-            this.Config = Config;
-        }
-
         public Icon icon()
         {
             return Utils.Resources.getIcon("git gui");
@@ -28,14 +25,17 @@ namespace GitNoob.Gui.Program.Action
 
         public void execute()
         {
-            var info = new System.Diagnostics.ProcessStartInfo
-            {
-                WorkingDirectory = Config.ProjectWorkingDirectory.Path.ToString(),
-                FileName = GetExecutable(),
-                UseShellExecute = false,
-            };
+            //direct execution, because also started as clickable link or button inside a Remedy
+            //don't use StepsExecutor
 
-            System.Diagnostics.Process.Start(info);
+            var batFile = new BatFile("run-gitgui", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow,
+                stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory,
+                stepConfig.Config.PhpIni);
+            batFile.AppendLine("start \"Git-Gui\" \"" + GetExecutable() + "\"");
+            batFile.AppendLine("exit /b 0");
+
+            batFile.Execute();
         }
     }
 }
+

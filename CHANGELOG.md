@@ -1,5 +1,15 @@
 # GitNoob changelog
 
+## Version 1.8
+* Add: hints on buttons.
+* Add: show history of current branch.
+* Add: git repair options button.
+* Add: repair option: show history of all branches.
+* Add: repair option: unpack last commit on current branch.
+* Fix: check for GitNoob Temporary Commits before merging.
+* renamed release distribution to GitNoob-x.x.zip
+* for automatic installation scripts https://github.com/MircoBabin/GitNoob/releases/latest/download/release.download.zip.url-location is a textfile and will contain an url to the latest release zip file
+
 ## Version 1.7
 * Fix: show, don't hide, Apache running window.
 
