@@ -19,6 +19,8 @@ ErrorLog "[APACHE_ERRORLOG]"
 CustomLog "[APACHE_CUSTOMLOG]" common
 
 <VirtualHost *:[APACHE_PORT]>
+    [APACHE_VIRTUALHOST_SSL]
+    
     ServerName localhost
     ServerAlias [COMPUTERNAME]
     DocumentRoot "[WEBROOT]"
@@ -53,6 +55,32 @@ The marker "\[APACHE_ERRORLOG\]" will be replaced with the errorlog filename. Us
 ## marker \[APACHE_CUSTOMLOG\]
 The marker "\[APACHE_CUSTOMLOG\]" will be replaced with the customlog filename. Using unix-style '/' as directory seperator.
 
+## marker \[APACHE_VIRTUALHOST_SSL\]
+The marker "\[APACHE_VIRTUALHOST_SSL\]" if configured setting **apacheUseSsl=true** will be replaced with:
+
+```
+SSLEngine on
+SSLCertificateKeyFile "[APACHE_VIRTUALHOST_SSL_CERTIFICATEKEYFILE_SLASH]"
+SSLCertificateFile "[APACHE_VIRTUALHOST_SSL_CERTIFICATEFILE_SLASH]"
+SSLCertificateChainFile "[APACHE_VIRTUALHOST_SSL_CERTIFICATECHAINFILE_SLASH]"
+```
+
+If configured setting **apacheUseSsl=false** then the marker will be replaced with an empty string.
+
+## marker \[APACHE_VIRTUALHOST_SSL_ONOFF]
+The marker "\[APACHE_VIRTUALHOST_SSL_ONOFF\]" will be replaced with:
+
+- **on**, if if configured setting **apacheUseSsl=true**
+- **off**, if if configured setting **apacheUseSsl=false**
+
+## marker \[APACHE_VIRTUALHOST_SSL_CERTIFICATEKEYFILE_SLASH\]
+The marker "\[APACHE_VIRTUALHOST_SSL_CERTIFICATEKEYFILE_SLASH\]" will be replaced with the configured **apacheSslCertificateKeyFile** setting. Using unix-style '/' as directory seperator.
+
+## marker \[APACHE_VIRTUALHOST_SSL_CERTIFICATEFILE_SLASH\]
+The marker "\[APACHE_VIRTUALHOST_SSL_CERTIFICATEFILE_SLASH\]" will be replaced with the configured **apacheSslCertificateFile** setting. Using unix-style '/' as directory seperator.
+
+## marker \[APACHE_VIRTUALHOST_SSL_CERTIFICATECHAINFILE_SLASH\]
+The marker "\[APACHE_VIRTUALHOST_SSL_CERTIFICATECHAINFILE_SLASH\]" will be replaced with the configured **apacheSslCertificateChainFile** setting. Using unix-style '/' as directory seperator.
 
 
 ## marker \[PROJECTNAME\]

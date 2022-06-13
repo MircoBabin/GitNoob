@@ -14,6 +14,10 @@ In the project configuration the section GitNoob can contain the settings:
 | apache | Value | (Optional) project apache settings name. E.g. "global" then there should also be a section \[apache-global\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | apachePath | Path | (Optional) Path to Apache binaries. %apachePath%\\bin should contain httpd.exe. e.g. "%binPath%\\apache". |
 | apacheConf | Path | (Optional) Path to Apache conf template file. |
+| apacheUseSsl | Boolean | (Optional) default false. Enable https, specify certificate via apacheSslCertificateKeyFile, apacheSslCertificateFile and apacheSslCertificateChainFile. e.g. apacheUseSsl=true |
+| apacheSslCertificateKeyFile | Path | (Optional) path to Apache certificate key file (SSLCertificateKeyFile). |
+| apacheSslCertificateFile | Path | (Optional) path to Apache certificate file (SSLCertificateFile). |
+| apacheSslCertificateChainFile | Path | (Optional) path to Apache certificate chain file (SSLCertificateChainFile). |
 | | | |
 | php | Value | (Optional) project php settings name. E.g. "5.6.40" then there should also be a section \[php-5.6.40\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | phpPath | Path | (Optional) Path to Php binaries. %phpPath% should contain php.exe. e.g. "%binPath%\\php-5.6.40". |
@@ -59,6 +63,10 @@ This section defines a working directory.
 | apache | Value | (Optional) project apache settings name. E.g. "global" then there should also be a section \[apache-global\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | apachePath | Path | (Optional) Path to Apache binaries. %apachePath%\\bin should contain httpd.exe. e.g. "%binPath%\\apache". |
 | apacheConf | Path | (Optional) Path to Apache conf template file. |
+| apacheUseSsl | Boolean | (Optional) default false. Enable https, specify certificate via apacheSslCertificateKeyFile, apacheSslCertificateFile and apacheSslCertificateChainFile. e.g. apacheUseSsl=true |
+| apacheSslCertificateKeyFile | Path | (Optional) path to Apache certificate key file (SSLCertificateKeyFile). |
+| apacheSslCertificateFile | Path | (Optional) path to Apache certificate file (SSLCertificateFile). |
+| apacheSslCertificateChainFile | Path | (Optional) path to Apache certificate chain file (SSLCertificateChainFile). |
 | | | |
 | php | Value | (Optional) project php settings name. E.g. "5.6.40" then there should also be a section \[php-5.6.40\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | phpPath | Path | (Optional) Path to Php binaries. %phpPath% should contain php.exe. e.g. "%binPath%\\php-5.6.40". |

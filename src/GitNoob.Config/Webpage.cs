@@ -2,15 +2,18 @@
 {
     public class Webpage
     {
+        public bool Https { get; set; }
         public string Homepage { get; set; }
 
         public void CopyFrom(Webpage other)
         {
+            Https = false;
             Homepage = other.Homepage;
         }
 
         public void useWorkingDirectory(WorkingDirectory WorkingDirectory)
         {
+            Https = WorkingDirectory.Apache.UseSsl.Value;
         }
 
         public string GetHomepageUrl(int port)
@@ -21,7 +24,8 @@
             if (port == 0)
                 return null;
 
-            return "http://localhost:" + port + "/";
+
+            return (Https ? "https" : "http") + "://localhost:" + port + "/";
         }
     }
 }

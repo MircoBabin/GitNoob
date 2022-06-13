@@ -44,6 +44,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             if (!running)
             {
+                var confFilename = StepsExecutor.Config.ApacheConf.ConfFullFilename;
                 var batFile = new BatFile("run-apache", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.showWindow,
                     StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory,
                     StepsExecutor.Config.PhpIni);
@@ -53,11 +54,12 @@ namespace GitNoob.Gui.Program.Action.Step
                 batFile.AppendLine("echo.");
                 batFile.AppendLine("echo Browse to " + StepsExecutor.Config.ProjectWorkingDirectory.Webpage.GetHomepageUrl(StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port));
                 batFile.AppendLine("echo.");
+                batFile.AppendLine("echo Apache configfile: " + confFilename);
                 batFile.AppendLine("echo Apache path: " + apacheBinPath);
                 batFile.AppendLine("httpd.exe -v");
                 batFile.AppendLine("echo.");
                 batFile.AppendLine("echo Do not close this dosprompt.");
-                batFile.AppendLine("httpd.exe -f \"" + StepsExecutor.Config.ApacheConf.ConfFullFilename + "\"");
+                batFile.AppendLine("httpd.exe -f \"" + confFilename + "\"");
                 batFile.AppendLine("if errorlevel 1 pause");
                 batFile.AppendLine("exit /b 0");
 

@@ -84,6 +84,11 @@ A section starting with "apache-" defines Apache settings. E.g. "\[apache-global
 | ---- | ---- | ----------- |
 | apachePath | Path | Path to Apache binaries. %apachePath%\\bin should contain httpd.exe. e.g. "%binPath%\\apache". |
 | apacheConf | Path | Path to Apache conf template file. |
+| apacheUseSsl | Boolean | (Optional) default false. Enable https, specify certificate via apacheSslCertificateKeyFile, apacheSslCertificateFile and apacheSslCertificateChainFile. e.g. apacheUseSsl=true |
+| apacheSslCertificateKeyFile | Path | (Optional) path to Apache certificate key file (SSLCertificateKeyFile). |
+| apacheSslCertificateFile | Path | (Optional) path to Apache certificate file (SSLCertificateFile). |
+| apacheSslCertificateChainFile | Path | (Optional) path to Apache certificate chain file (SSLCertificateChainFile). |
+
 
 ```
 [apache-global]

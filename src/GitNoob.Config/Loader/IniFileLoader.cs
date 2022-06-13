@@ -302,6 +302,11 @@ namespace GitNoob.Config.Loader
             ReadPath(ini, Section, "apachePath", apache.ApachePath);
             ReadFilename(ini, Section, "apacheConf", apache.ApacheConfTemplateFilename);
 
+            ReadBoolean(ini, Section, "apacheUseSsl", apache.UseSsl);
+            ReadFilename(ini, Section, "apacheSslCertificateKeyFile", apache.SslCertificateKeyFile);
+            ReadFilename(ini, Section, "apacheSslCertificateFile", apache.SslCertificateFile);
+            ReadFilename(ini, Section, "apacheSslCertificateChainFile", apache.SslCertificateChainFile);
+
             return apache;
         }
 

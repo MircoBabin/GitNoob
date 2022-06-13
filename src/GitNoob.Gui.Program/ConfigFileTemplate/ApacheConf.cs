@@ -85,6 +85,22 @@ namespace GitNoob.Gui.Program.ConfigFileTemplate
             {
                 php_loadmodule = "LoadModule php5_module \"" + dll.Replace('\\', '/') + "\"";
             }
+
+            string apacheSsl = string.Empty;
+            string apacheSslOnOff = "off";
+            string apacheSslCertificateKeyFile = _projectWorkingDirectory.Apache.SslCertificateKeyFile.ToString().Replace('\\', '/');
+            string apacheSslCertificateFile = _projectWorkingDirectory.Apache.SslCertificateFile.ToString().Replace('\\', '/');
+            string apacheSslCertificateChainFile = _projectWorkingDirectory.Apache.SslCertificateChainFile.ToString().Replace('\\', '/');
+            if (_projectWorkingDirectory.Apache.UseSsl.Value)
+            {
+                apacheSslOnOff = "on";
+                apacheSsl =
+                    "SSLEngine on" + Environment.NewLine +
+                    "SSLCertificateKeyFile \"" + apacheSslCertificateKeyFile + "\"" + Environment.NewLine +
+                    "SSLCertificateFile \"" + apacheSslCertificateFile + "\"" + Environment.NewLine +
+                    "SSLCertificateChainFile \"" + apacheSslCertificateChainFile + "\"" + Environment.NewLine;
+            }
+
             var contents = _projectWorkingDirectory.Apache.ApacheConfTemplateFilename.ReadAllText();
             contents = Utils.FileUtils.TemplateToContents(contents, _project, _projectWorkingDirectory,
                 new Dictionary<string, string>()
@@ -97,6 +113,12 @@ namespace GitNoob.Gui.Program.ConfigFileTemplate
                     { "APACHE_PIDFILE_SLASH", PidFullFilename.Replace('\\', '/') },
                     { "APACHE_ERRORLOG", "logs/error." + ProjectnameASCII + ".log" },
                     { "APACHE_CUSTOMLOG", "logs/access." + ProjectnameASCII + ".log" },
+
+                    { "APACHE_VIRTUALHOST_SSL", apacheSsl },
+                    { "APACHE_VIRTUALHOST_SSL_ONOFF", apacheSslOnOff },
+                    { "APACHE_VIRTUALHOST_SSL_CERTIFICATEKEYFILE_SLASH", apacheSslCertificateKeyFile },
+                    { "APACHE_VIRTUALHOST_SSL_CERTIFICATEFILE_SLASH", apacheSslCertificateFile },
+                    { "APACHE_VIRTUALHOST_SSL_CERTIFICATECHAINFILE_SLASH", apacheSslCertificateChainFile },
 
                     { "PROJECTNAME", ProjectnameASCII },
 
