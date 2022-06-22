@@ -1,5 +1,10 @@
 # GitNoob changelog
 
+## Version 1.9
+* Add: configuration for apache SSL certificate (https connections).
+* Add: copy exception details to Windows clipboard when opening working directory fails.
+* Add: check executable blocked status upon startup.
+
 ## Version 1.8
 * Add: hints on buttons.
 * Add: show history of current branch.
