@@ -69,7 +69,7 @@ For unattended installation scripts the following flow can be used for the lates
 1) Download https://github.com/MircoBabin/GitNoob/releases/latest/download/release.download.zip.url-location
 2) Read the text of this file into **latest-download-url**. The file only contains an url, so the encoding is ASCII. *The encoding UTF-8 may also be used to read the file, because ASCII is UTF-8 encoding.*
 3) Download the zip from the **latest-download-url** to local file **GitNoob.zip**. *Each release carries the version number in the filename. To prevent not knowing the downloaded filename, download to a fixed local filename.*
-4) Unpack the downloaded **GitNoob.zip** in the KeePass directory where KeePass.exe is located.
+4) Unpack the downloaded **GitNoob.zip** into a directory of your choice. Optionally create a Windows desktop shortcut to GitNoob.exe.
 
 # Contributions
 **Warning: GitNoob is a very opinionated tool.**
