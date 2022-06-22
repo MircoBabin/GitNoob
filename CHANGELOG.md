@@ -1,5 +1,8 @@
 # GitNoob changelog
 
+## Version 1.10
+* Fix: open working directory failed when Fiddler was not installed.
+
 ## Version 1.9
 * Add: configuration for apache SSL certificate (https connections).
 * Add: copy exception details to Windows clipboard when opening working directory fails.
