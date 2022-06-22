@@ -278,7 +278,8 @@ namespace GitNoob.Gui.Forms
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Git Noob - open working directory");
+                    Clipboard.SetText(ex.ToString());
+                    MessageBox.Show(ex.Message + Environment.NewLine + Environment.NewLine + "Error details are copied to the Windows clipboard.", "GitNoob - open working directory error");
                     return;
                 }
                 _forms.TryAdd(projectwd.WorkingDirectory, form);
