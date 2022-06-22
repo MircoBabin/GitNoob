@@ -11,7 +11,14 @@ namespace GitNoob.Gui.Program.Action
         {
             if (_cacheExecutable == null)
             {
-                _cacheExecutable = Utils.FileUtils.FindExePath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs\\Fiddler\\Fiddler.exe"));
+                try
+                {
+                    _cacheExecutable = Utils.FileUtils.FindExePath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs\\Fiddler\\Fiddler.exe"));
+                }
+                catch
+                {
+                    _cacheExecutable = string.Empty;
+                }
             }
 
             return _cacheExecutable;
@@ -20,7 +27,7 @@ namespace GitNoob.Gui.Program.Action
         public bool isStartable()
         {
             var fiddler = GetExecutable();
-            if (fiddler == null) return false;
+            if (string.IsNullOrEmpty(fiddler)) return false;
 
             if (!File.Exists(fiddler)) return false;
 
@@ -35,7 +42,10 @@ namespace GitNoob.Gui.Program.Action
 
         public void execute()
         {
-            System.Diagnostics.Process.Start(GetExecutable());
+            var executable = GetExecutable();
+            if (string.IsNullOrEmpty(executable)) return;
+
+            System.Diagnostics.Process.Start(executable);
         }
     }
 }

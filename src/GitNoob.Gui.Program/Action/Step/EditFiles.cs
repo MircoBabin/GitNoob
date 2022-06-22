@@ -24,8 +24,15 @@ namespace GitNoob.Gui.Program.Action.Step
 
                 if (_cacheExecutable == null)
                 {
-                    _cacheExecutable = Utils.FileUtils.FindExePath("notepad.exe");
-                    _cacheExecutableMultipleFiles = false;
+                    try
+                    {
+                        _cacheExecutable = Utils.FileUtils.FindExePath("notepad.exe");
+                        _cacheExecutableMultipleFiles = false;
+                    }
+                    catch
+                    {
+                        _cacheExecutable = string.Empty;
+                    }
                 }
             }
 
@@ -47,6 +54,8 @@ namespace GitNoob.Gui.Program.Action.Step
                 var setting = GetExecutable();
                 string exe = setting.Item1;
                 bool multipleFiles = setting.Item2;
+
+                if (string.IsNullOrEmpty(exe)) throw new Exception("Notepad++ and notepad are not found.");
 
                 if (multipleFiles)
                 {

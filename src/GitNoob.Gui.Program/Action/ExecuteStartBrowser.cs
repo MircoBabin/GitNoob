@@ -42,7 +42,14 @@ namespace GitNoob.Gui.Program.Action
                     executable = openCommand.Substring(0, openCommand.IndexOf(' '));
                 }
 
-                _cacheHttpHandler = Utils.FileUtils.FindExePath(executable);
+                try
+                {
+                    _cacheHttpHandler = Utils.FileUtils.FindExePath(executable);
+                }
+                catch
+                {
+                    _cacheHttpHandler = string.Empty;
+                }
             }
 
             return _cacheHttpHandler;

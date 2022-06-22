@@ -12,7 +12,14 @@ namespace GitNoob.Gui.Program.Action
         {
             if (_cacheExecutable == null)
             {
-                _cacheExecutable = Utils.FileUtils.FindExePath("gitk.exe");
+                try
+                {
+                    _cacheExecutable = Utils.FileUtils.FindExePath("gitk.exe");
+                }
+                catch
+                {
+                    _cacheExecutable = string.Empty;
+                }
             }
 
             return _cacheExecutable;
@@ -28,10 +35,13 @@ namespace GitNoob.Gui.Program.Action
             //direct execution, because also started as clickable link or button inside a Remedy
             //don't use StepsExecutor
 
+            var executable = GetExecutable();
+            if (string.IsNullOrEmpty(executable)) return;
+
             var batFile = new BatFile("run-gitkall", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow,
                 stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory,
                 stepConfig.Config.PhpIni);
-            batFile.AppendLine("start \"Git-Gitk-All\" \"" + GetExecutable() + "\" --all");
+            batFile.AppendLine("start \"Git-Gitk-All\" \"" + executable + "\" --all");
             batFile.AppendLine("exit /b 0");
 
             batFile.Execute();

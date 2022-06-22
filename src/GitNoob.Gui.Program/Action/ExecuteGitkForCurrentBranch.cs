@@ -12,7 +12,14 @@ namespace GitNoob.Gui.Program.Action
         {
             if (_cacheExecutable == null)
             {
-                _cacheExecutable = Utils.FileUtils.FindExePath("gitk.exe");
+                try
+                {
+                    _cacheExecutable = Utils.FileUtils.FindExePath("gitk.exe");
+                }
+                catch
+                {
+                    _cacheExecutable = string.Empty;
+                }
             }
 
             return _cacheExecutable;
@@ -25,9 +32,12 @@ namespace GitNoob.Gui.Program.Action
 
         public void execute()
         {
+            var executable = GetExecutable();
+            if (string.IsNullOrEmpty(executable)) return;
+
             var executor = new StepsExecutor.StepsExecutor(stepConfig, new List<StepsExecutor.IExecutableByStepsExecutor>()
             {
-                new Step.StartGitkForCurrentBranch(GetExecutable()),
+                new Step.StartGitkForCurrentBranch(executable),
             }, StepsExecutor.StepsExecutor.LockFrontend.No);
             executor.execute();
         }

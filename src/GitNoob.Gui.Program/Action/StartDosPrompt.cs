@@ -12,7 +12,14 @@ namespace GitNoob.Gui.Program.Action
         {
             if (_cacheExectable == null)
             {
-                _cacheExectable = FileUtils.FindExePath("%ComSpec%");
+                try
+                {
+                    _cacheExectable = FileUtils.FindExePath("%ComSpec%");
+                }
+                catch
+                {
+                    _cacheExectable = string.Empty;
+                }
             }
 
             return _cacheExectable;
@@ -51,10 +58,13 @@ namespace GitNoob.Gui.Program.Action
 
         public void execute()
         {
+            var executable = GetExecutable();
+            if (string.IsNullOrEmpty(executable)) return;
+
             var info = new ProcessStartInfo
             {
                 WorkingDirectory = Config.ProjectWorkingDirectory.Path.ToString(),
-                FileName = GetExecutable(),
+                FileName = executable,
                 UseShellExecute = false,
                 Arguments = "/K \"title " + FileUtils.DeriveFilename(String.Empty, Config.Project.Name) + "-" + Utils.FileUtils.DeriveFilename(String.Empty, Config.ProjectWorkingDirectory.Name) + "\"",
             };

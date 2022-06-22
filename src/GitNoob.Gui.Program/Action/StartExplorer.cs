@@ -9,7 +9,14 @@ namespace GitNoob.Gui.Program.Action
         {
             if (_cacheExecutable == null)
             {
-                _cacheExecutable = Utils.FileUtils.FindExePath("%windir%\\explorer.exe");
+                try
+                {
+                    _cacheExecutable = Utils.FileUtils.FindExePath("%windir%\\explorer.exe");
+                }
+                catch
+                {
+                    _cacheExecutable = string.Empty;
+                }
             }
 
             return _cacheExecutable;
