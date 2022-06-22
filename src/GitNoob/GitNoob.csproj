@@ -50,6 +50,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZoneIdentifier\IsFileBlocked.cs" />
+    <Compile Include="ZoneIdentifier\IZoneIdentifier.cs" />
+    <Compile Include="ZoneIdentifier\PersistentZoneIdentifier.cs" />
+    <Compile Include="ZoneIdentifier\STGM.cs" />
+    <Compile Include="ZoneIdentifier\UrlZone.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

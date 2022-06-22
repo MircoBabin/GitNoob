@@ -83,6 +83,26 @@ namespace GitNoob
             Process me = Process.GetCurrentProcess();
             string executableFileName = me.Modules[0].FileName;
 
+            {
+                var blocked = ZoneIdentifier.IsFileBlocked.CheckFile(executableFileName);
+                switch (blocked.Status)
+                {
+                    case ZoneIdentifier.IsFileBlocked.FileBlockedStatus.No:
+                        break;
+
+                    case ZoneIdentifier.IsFileBlocked.FileBlockedStatus.Yes:
+                        MessageBox.Show("The executable \"" + executableFileName + "\" is blocked. Use Windows Explorer and via properties unblock all GitNoob files.", "GitNoob");
+                        return;
+
+                    default:
+                        {
+                            var result = MessageBox.Show("The blocked status of the executable \"" + executableFileName + "\" could not be retrieved." + Environment.NewLine + blocked.Exception.Message + Environment.NewLine + Environment.NewLine + "Continue ?", "GitNoob", MessageBoxButtons.YesNo);
+                            if (result != DialogResult.Yes) return;
+                        }
+                        break;
+                }
+            }
+
             string rootConfigurationFilename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "GitNoob", "GitNoob.ini");
             if (args.Length >= 1)
             {
