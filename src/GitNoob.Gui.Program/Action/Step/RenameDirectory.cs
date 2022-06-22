@@ -39,7 +39,7 @@ namespace GitNoob.Gui.Program.Action.Step
                      The path specified by sourceDirName is invalid (for example, it is on an unmapped drive). 
                      */
 
-                    //Directory renamed/removed outside Git Noob e.g. in Windows Explorer
+                    //Directory renamed/removed outside GitNoob e.g. in Windows Explorer
                     if (!Directory.Exists(StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString())) break;
 
                     throw ex;
@@ -56,7 +56,7 @@ namespace GitNoob.Gui.Program.Action.Step
                      The directory or a file within it is being used by another process. (maybe)
                      */
 
-                    //Directory renamed/removed outside Git Noob e.g. in Windows Explorer
+                    //Directory renamed/removed outside GitNoob e.g. in Windows Explorer
                     if (!Directory.Exists(StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString())) break;
 
                     string details = String.Empty;

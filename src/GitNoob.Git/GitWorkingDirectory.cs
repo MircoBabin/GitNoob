@@ -503,6 +503,28 @@ namespace GitNoob.Git
             };
         }
 
+        public DeletedBranchesResult RetrieveDeletedBranches()
+        {
+            var result = new DeletedBranchesResult();
+
+            var command = new Command.Tag.ListTags(this);
+            command.WaitFor();
+            if (command.result != null)
+            {
+                foreach (var item in command.result)
+                {
+                    var tag = item.Value;
+
+                    if (tag.ShortName.StartsWith("gitnoob-deleted-branch-"))
+                    {
+                        result.DeletedBranches.Add(new GitDeletedBranch(tag));
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public ChangeCurrentBranchResult ChangeCurrentBranchTo(string branchname)
         {
             //explicitly no check for detached head.

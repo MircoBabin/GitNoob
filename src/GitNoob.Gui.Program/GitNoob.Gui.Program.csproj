@@ -50,10 +50,12 @@
     <Compile Include="Action\ExecuteAfterStatus.cs" />
     <Compile Include="Action\ExecuteDeleteLogfiles.cs" />
     <Compile Include="Action\ExecuteGitRepair.cs" />
+    <Compile Include="Action\Remedy\InputChooseDeletedBranch.cs" />
     <Compile Include="Action\Remedy\InputChooseRemote.cs" />
     <Compile Include="Action\Remedy\InputConfirmGitNoobTemporaryCommits.cs" />
     <Compile Include="Action\Remedy\MessageConfirmUnpackLastCommitOnCurrentBranch.cs" />
     <Compile Include="Action\Remedy\MessageConfirmDeleteBranch.cs" />
+    <Compile Include="Action\Remedy\MessageNoDeletedBranches.cs" />
     <Compile Include="Action\Remedy\SelectGitRepairOption.cs" />
     <Compile Include="Action\Remedy\MessageSetRemoteForBranchFailed.cs" />
     <Compile Include="Action\Remedy\MessageSetRemoteUrlFailed.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="Action\StartGitCredentialsViaKeePassCommanderOnGithub.cs" />
     <Compile Include="Action\StartGitGui.cs" />
     <Compile Include="Action\ExecuteMerge.cs" />
+    <Compile Include="Action\Step\AskUndeleteBranch.cs" />
     <Compile Include="Action\Step\AskUnpackLastCommitOnCurrentBranch.cs" />
     <Compile Include="Action\Step\AskGitRepairOption.cs" />
     <Compile Include="Action\Step\AskSetRemoteTrackingBranchForMainBranch.cs" />
@@ -158,6 +161,7 @@
     <Compile Include="Action\Step\StartNgrok.cs" />
     <Compile Include="Action\Step\StartApache.cs" />
     <Compile Include="Action\Step\Step.cs" />
+    <Compile Include="Action\FormatUtils.cs" />
     <Compile Include="ConfigIExecutor.cs" />
     <Compile Include="Utils\BatFile.cs" />
     <Compile Include="Utils\FileUtils.cs" />
@@ -181,6 +185,7 @@
       <Name>GitNoob.Git</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

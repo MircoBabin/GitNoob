@@ -25,11 +25,16 @@ namespace GitNoob.Gui.Program.Action.Remedy
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
                     } },
-                    /*
-                    { "Restore a deleted branch.", (input) => {
-                        //Todo
+
+                    /* todo
+                    { "Undelete a deleted branch.", (input) => {
+                        var step = new Step.AskUndeleteBranch();
+                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
                     } },
+                    */
+
+                    /*
                     { "Stage all changes and start Git Gui to commit.", (input) => {
                         //Todo
                         Done();

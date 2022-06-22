@@ -50,9 +50,11 @@
     <Compile Include="Command\Repository\RemoteReachable.cs" />
     <Compile Include="Command\WorkingTree\IsRevertActive.cs" />
     <Compile Include="Command\WorkingTree\IsCherryPickActive.cs" />
+    <Compile Include="GitDeletedBranch.cs" />
     <Compile Include="GitRemote.cs" />
     <Compile Include="GitCommit.cs" />
     <Compile Include="GitUtils.cs" />
+    <Compile Include="Result\DeletedBranchesResult.cs" />
     <Compile Include="Result\DeleteCurrentBranchResult.cs" />
     <Compile Include="Result\HasGitNoobTemporaryCommitResult.cs" />
     <Compile Include="Result\RenameBranch.cs" />
