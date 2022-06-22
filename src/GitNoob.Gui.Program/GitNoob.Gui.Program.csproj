@@ -164,6 +164,7 @@
     <Compile Include="Action\FormatUtils.cs" />
     <Compile Include="ConfigIExecutor.cs" />
     <Compile Include="Utils\BatFile.cs" />
+    <Compile Include="Utils\ExceptionUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConfigFileTemplate\ApacheConf.cs" />

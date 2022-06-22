@@ -278,7 +278,7 @@ namespace GitNoob.Gui.Forms
                 }
                 catch (Exception ex)
                 {
-                    Clipboard.SetText(ex.ToString());
+                    Clipboard.SetText(Program.Utils.ExceptionUtils.GetFullExceptionText(ex));
                     MessageBox.Show(ex.Message + Environment.NewLine + Environment.NewLine + "Error details are copied to the Windows clipboard.", "GitNoob - open working directory error");
                     return;
                 }
