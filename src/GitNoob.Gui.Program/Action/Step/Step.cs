@@ -51,7 +51,7 @@ namespace GitNoob.Gui.Program.Action.Step
                 }
                 catch (Exception ex)
                 {
-                    this.FailureRemedy = new Remedy.MessageException(this, new MessageWithLinks(), ex);
+                    this.FailureRemedy = new Remedy.MessageException(this, new VisualizerMessageWithLinks(), ex);
                     return false;
                 }
             }

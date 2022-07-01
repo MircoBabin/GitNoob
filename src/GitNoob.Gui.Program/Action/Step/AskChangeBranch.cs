@@ -12,7 +12,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             var result = StepsExecutor.Config.Git.RetrieveBranches();
 
-            var message = new MessageWithLinks("Change branch is not possible.");
+            var message = new VisualizerMessageWithLinks("Change branch is not possible.");
 
             if (result.Branches.Count == 0)
             {
@@ -21,7 +21,7 @@ namespace GitNoob.Gui.Program.Action.Step
             }
 
             //not really a failure, but a solution to choose a branch visually
-            message = new MessageWithLinks("Change branch to:");
+            message = new VisualizerMessageWithLinks("Change branch to:");
             string currentBranch = result.CurrentBranch;
             string renameBranch = "Rename current branch \"" + currentBranch + "\".";
             string newBranch = "Create a new branch based on the main branch \"" + MainBranch + "\".";

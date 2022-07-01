@@ -10,7 +10,7 @@
 
             var result = StepsExecutor.Config.Git.MergeFastForwardOnlyCurrentBranchIntoMainBranch();
 
-            var message = new MessageWithLinks("Merging into main branch (fast forward only) failed.");
+            var message = new VisualizerMessageWithLinks("Merging into main branch (fast forward only) failed.");
 
             if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
             {

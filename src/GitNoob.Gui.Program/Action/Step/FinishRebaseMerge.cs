@@ -12,7 +12,7 @@
 
             if (result.Rebasing && result.Merging)
             {
-                FailureRemedy = new Remedy.FinishRebaseMerge(this, new MessageWithLinks("A rebase and/or merge is in progress. Unable to detect wether a rebase or a merge is busy."), result.Rebasing, result.Merging);
+                FailureRemedy = new Remedy.FinishRebaseMerge(this, new VisualizerMessageWithLinks("A rebase and/or merge is in progress. Unable to detect wether a rebase or a merge is busy."), result.Rebasing, result.Merging);
                 return false;
             }
 
@@ -20,11 +20,11 @@
             {
                 if (result.Conflicts)
                 {
-                    FailureRemedy = new Remedy.ResolveRebaseConflicts(this, new MessageWithLinks("A rebase is in progress."), null, null);
+                    FailureRemedy = new Remedy.ResolveRebaseConflicts(this, new VisualizerMessageWithLinks("A rebase is in progress."), null, null);
                     return false;
                 }
 
-                FailureRemedy = new Remedy.FinishRebaseMerge(this, new MessageWithLinks("A rebase is in progress."), result.Rebasing, result.Merging);
+                FailureRemedy = new Remedy.FinishRebaseMerge(this, new VisualizerMessageWithLinks("A rebase is in progress."), result.Rebasing, result.Merging);
                 return false;
             }
 
@@ -32,11 +32,11 @@
             {
                 if (result.Conflicts)
                 {
-                    FailureRemedy = new Remedy.ResolveMergeConflicts(this, new MessageWithLinks("A merge is in progress."));
+                    FailureRemedy = new Remedy.ResolveMergeConflicts(this, new VisualizerMessageWithLinks("A merge is in progress."));
                     return false;
                 }
 
-                FailureRemedy = new Remedy.FinishRebaseMerge(this, new MessageWithLinks("A merge is in progress."), result.Rebasing, result.Merging);
+                FailureRemedy = new Remedy.FinishRebaseMerge(this, new VisualizerMessageWithLinks("A merge is in progress."), result.Rebasing, result.Merging);
                 return false;
             }
 

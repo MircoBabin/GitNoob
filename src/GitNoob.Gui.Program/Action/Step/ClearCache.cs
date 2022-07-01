@@ -13,7 +13,7 @@
 
             var executor = StepsExecutor.Executor;
 
-            var message = new MessageWithLinks("Clearing cache failed.");
+            var message = new VisualizerMessageWithLinks("Clearing cache failed.");
 
             var build = projecttype.ClearCache(executor);
             if (!build.Result)

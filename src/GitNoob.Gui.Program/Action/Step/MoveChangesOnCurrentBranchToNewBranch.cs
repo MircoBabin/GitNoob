@@ -16,7 +16,7 @@
 
             var result = StepsExecutor.Config.Git.MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranch(_currentBranch, _newBranch);
 
-            var message = new MessageWithLinks("Move changes is not possible.");
+            var message = new VisualizerMessageWithLinks("Move changes is not possible.");
 
             if (result.ErrorDetachedHead)
             {

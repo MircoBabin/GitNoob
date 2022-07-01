@@ -22,7 +22,7 @@ namespace GitNoob.Gui.Program.Action.Step
             }
             catch (Exception ex)
             {
-                FailureRemedy = new Remedy.MessageException(this, new MessageWithLinks(), ex);
+                FailureRemedy = new Remedy.MessageException(this, new VisualizerMessageWithLinks(), ex);
                 return false;
             }
 

@@ -12,7 +12,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             var result = StepsExecutor.Config.Git.RetrieveRemotes();
 
-            var message = new MessageWithLinks("Set remote branch for main branch \"" + MainBranch + "\" to:");
+            var message = new VisualizerMessageWithLinks("Set remote branch for main branch \"" + MainBranch + "\" to:");
 
             //not really a failure, but a solution to choose a remote branch visually
             FailureRemedy = new Remedy.InputChooseRemote(this, message, result.Remotes, "Cancel, don't set remote branch", (name) =>

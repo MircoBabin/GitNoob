@@ -4,7 +4,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageKeePassNotStarted : Remedy
     {
-        public MessageKeePassNotStarted(Step.Step Step, MessageWithLinks Message) :
+        public MessageKeePassNotStarted(Step.Step Step, VisualizerMessageWithLinks Message) :
             base(Step, ref Message)
         {
             VisualizerMessageText.AppendLink("Git Credentials via KeePassCommander", () => {
@@ -13,16 +13,16 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append(" is active, but KeePass is not started, is locked or does not contain the credentials.");
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Retry", (input) => {
+                    }),
+                    new VisualizerMessageButton("Retry", (input) => {
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { Step });
 
                         Done();
-                    } }
+                    }),
                 };
         }
     }

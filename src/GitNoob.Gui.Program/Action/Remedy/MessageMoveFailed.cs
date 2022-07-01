@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageMoveFailed : Remedy
     {
-        public MessageMoveFailed(Step.Step Step, MessageWithLinks Message, 
+        public MessageMoveFailed(Step.Step Step, VisualizerMessageWithLinks Message, 
             string fromBranch, string toBranch, string currentBranch,
             bool RenameFailed, bool RemoveRemoteFailed) :
             base(Step, ref Message)
@@ -25,11 +25,11 @@ namespace GitNoob.Gui.Program.Action.Remedy
             }
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } }
+                    }),
                 };
         }
     }

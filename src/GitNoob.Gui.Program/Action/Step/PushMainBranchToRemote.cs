@@ -16,7 +16,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             var result = StepsExecutor.Config.Git.PushMainBranchToRemote();
 
-            var message = new MessageWithLinks("Pushing main branch to remote failed.");
+            var message = new VisualizerMessageWithLinks("Pushing main branch to remote failed.");
 
             if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
             {

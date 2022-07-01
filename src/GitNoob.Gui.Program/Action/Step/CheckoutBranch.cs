@@ -33,7 +33,7 @@ namespace GitNoob.Gui.Program.Action.Step
             {
                 var result = StepsExecutor.Config.Git.ChangeCurrentBranchTo(_branchName);
 
-                var message = new MessageWithLinks("Changing branch failed.");
+                var message = new VisualizerMessageWithLinks("Changing branch failed.");
 
                 if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
                 {
@@ -58,7 +58,7 @@ namespace GitNoob.Gui.Program.Action.Step
             }
 
             {
-                var message = new MessageWithLinks("Changing branch succeeded.");
+                var message = new VisualizerMessageWithLinks("Changing branch succeeded.");
                 message.Append(Environment.NewLine);
                 message.Append(Environment.NewLine);
                 message.Append("Unpacking the temporary commit failed.");

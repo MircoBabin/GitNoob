@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class ResolveMergeConflicts : Remedy
     {
-        public ResolveMergeConflicts(Step.Step Step, MessageWithLinks Message) :
+        public ResolveMergeConflicts(Step.Step Step, VisualizerMessageWithLinks Message) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("There are merge conflicts. ");
@@ -25,21 +25,21 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append(".");
 
             VisualizerMessageButtons = 
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Abort the merge.", (input) => {
+                    new VisualizerMessageButton("Abort the merge.", (input) => {
                         var step = new Step.MergeAbort(true);
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
 
                         Done();
 
-                    } },
-                    { "The conflicts are manually resolved and committed. Continue the merge.", (input) => {
+                    }),
+                    new VisualizerMessageButton("The conflicts are manually resolved and committed. Continue the merge.", (input) => {
                         var step = new Step.MergeContinue();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
 
                         Done();
-                    } },
+                    }),
                 };
         }
     }

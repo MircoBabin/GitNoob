@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class RebaseCurrentBranchOntoMainBranch : Remedy
     {
-        public RebaseCurrentBranchOntoMainBranch(Step.Step Step, MessageWithLinks Message,
+        public RebaseCurrentBranchOntoMainBranch(Step.Step Step, VisualizerMessageWithLinks Message,
             string MainBranch, string CurrentBranch) :
             base(Step, ref Message)
         {
@@ -14,17 +14,17 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append("This may lead to rebase conflicts. Upon conflicts, the rebase can be aborted or the conflicts can be resolved.");
 
             VisualizerMessageButtons = 
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Don't rebase. The current branch \"" + CurrentBranch + "\" will not contain the downloaded changes.", (input) => {
+                    new VisualizerMessageButton("Don't rebase. The current branch \"" + CurrentBranch + "\" will not contain the downloaded changes.", (input) => {
                         Cancel();
-                    } },
-                    { "Start rebase. The current branch \"" + CurrentBranch + "\" will be updated to incorporate the changes of the main branch \"" + MainBranch + "\".", (input) => {
+                    }),
+                    new VisualizerMessageButton("Start rebase. The current branch \"" + CurrentBranch + "\" will be updated to incorporate the changes of the main branch \"" + MainBranch + "\".", (input) => {
                         var step = new Step.RebaseCurrentBranchOntoMainBranch();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
 
                         Done();
-                    } }
+                    }),
                 };
         }
     }

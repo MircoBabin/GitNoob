@@ -4,7 +4,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageRebasingOrMerging : Remedy
     {
-        public MessageRebasingOrMerging(Step.Step Step, MessageWithLinks Message, bool Rebasing, bool Merging) :
+        public MessageRebasingOrMerging(Step.Step Step, VisualizerMessageWithLinks Message, bool Rebasing, bool Merging) :
             base(Step, ref Message)
         {
             if (Rebasing)
@@ -20,11 +20,11 @@ namespace GitNoob.Gui.Program.Action.Remedy
             }
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
+                    }),
                 };
         }
     }

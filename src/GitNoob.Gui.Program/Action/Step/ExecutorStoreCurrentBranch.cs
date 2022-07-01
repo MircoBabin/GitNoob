@@ -10,7 +10,7 @@
 
             var result = StepsExecutor.Config.Git.RetrieveStatus();
 
-            var message = new MessageWithLinks("Storing current branch failed.");
+            var message = new VisualizerMessageWithLinks("Storing current branch failed.");
             if (result.DetachedHead_NotOnBranch)
             {
                 FailureRemedy = new Remedy.MessageDetachedHead(this, message);

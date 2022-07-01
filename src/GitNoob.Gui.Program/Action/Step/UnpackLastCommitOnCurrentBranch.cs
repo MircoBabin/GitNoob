@@ -14,7 +14,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             var result = StepsExecutor.Config.Git.UnpackLastCommitOnCurrentBranch(Git.GitWorkingDirectory.UnpackLastCommitType.All);
 
-            var message = new MessageWithLinks("Unpack last commit failed.");
+            var message = new VisualizerMessageWithLinks("Unpack last commit failed.");
 
             if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
             {

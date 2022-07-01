@@ -10,7 +10,7 @@
 
             var result = StepsExecutor.Config.Git.CommitAllChangesOnCurrentBranch(null);
 
-            var message = new MessageWithLinks("Committing all changes into a temporary commit is not possible.");
+            var message = new VisualizerMessageWithLinks("Committing all changes into a temporary commit is not possible.");
 
             if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
             {

@@ -10,7 +10,7 @@
 
             var result = StepsExecutor.Config.Git.RebaseContinue();
 
-            var message = new MessageWithLinks("Continuing rebase failed.");
+            var message = new VisualizerMessageWithLinks("Continuing rebase failed.");
 
             if (result.ErrorNotRebasing)
             {

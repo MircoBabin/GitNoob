@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageSetCommitterFailed : Remedy
     {
-        public MessageSetCommitterFailed(Step.Step Step, MessageWithLinks Message, 
+        public MessageSetCommitterFailed(Step.Step Step, VisualizerMessageWithLinks Message, 
             bool SetNameFailed, bool SetEmailFailed) :
             base(Step, ref Message)
         {
@@ -21,11 +21,11 @@ namespace GitNoob.Gui.Program.Action.Remedy
             }
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } }
+                    }),
                 };
         }
     }

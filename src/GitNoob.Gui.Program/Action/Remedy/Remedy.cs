@@ -10,16 +10,16 @@ namespace GitNoob.Gui.Program.Action.Remedy
         public Remedy FailureRemedy { get; set; }
 
         public IVisualizerMessageType VisualizerMessageType { get; protected set; }
-        public MessageWithLinks VisualizerMessageText { get; protected set; }
-        public Dictionary<string, System.Action<MessageInput>> VisualizerMessageButtons { get; protected set; }
+        public VisualizerMessageWithLinks VisualizerMessageText { get; protected set; }
+        public List<VisualizerMessageButton> VisualizerMessageButtons { get; protected set; }
 
-        protected Remedy(Step.Step Step, ref MessageWithLinks Message)
+        protected Remedy(Step.Step Step, ref VisualizerMessageWithLinks Message)
         {
             StepsExecutor = Step.StepsExecutor;
             FailureRemedy = null;
 
             VisualizerMessageType = IVisualizerMessageType.options;
-            VisualizerMessageText = new MessageWithLinks(Message);
+            VisualizerMessageText = new VisualizerMessageWithLinks(Message);
             VisualizerMessageText.Append(Environment.NewLine);
             VisualizerMessageText.Append(Environment.NewLine);
 

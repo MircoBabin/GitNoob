@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageConfirmUnpackLastCommitOnCurrentBranch : Remedy
     {
-        public MessageConfirmUnpackLastCommitOnCurrentBranch(Step.Step Step, MessageWithLinks Message, string currentBranch, string lastCommitId, string lastCommitMessage) :
+        public MessageConfirmUnpackLastCommitOnCurrentBranch(Step.Step Step, VisualizerMessageWithLinks Message, string currentBranch, string lastCommitId, string lastCommitMessage) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("Unpack last commit on current branch \"" + currentBranch + "\"." + Environment.NewLine);
@@ -15,16 +15,16 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append(lastCommitMessage);
 
             VisualizerMessageButtons = 
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Unpack last commit. Put changes of last commit into working directory and remove commit from current branch.", (input) => {
+                    }),
+                    new VisualizerMessageButton("Unpack last commit. Put changes of last commit into working directory and remove commit from current branch.", (input) => {
                         var step = new Step.UnpackLastCommitOnCurrentBranch();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
-                    } },
+                    }),
                 };
         }
     }

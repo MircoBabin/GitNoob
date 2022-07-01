@@ -12,7 +12,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             var result = StepsExecutor.Config.Git.RetrieveDeletedBranches();
 
-            var message = new MessageWithLinks("Undelete branch is not possible.");
+            var message = new VisualizerMessageWithLinks("Undelete branch is not possible.");
 
             if (result.DeletedBranches.Count == 0)
             {
@@ -21,7 +21,7 @@ namespace GitNoob.Gui.Program.Action.Step
             }
 
             //not really a failure, but a solution to choose a deleted branch visually
-            message = new MessageWithLinks("Undelete branch:");
+            message = new VisualizerMessageWithLinks("Undelete branch:");
             FailureRemedy = new Remedy.InputChooseDeletedBranch(this, message, result.DeletedBranches, "Cancel", 
                 MainBranch,
                 (branch) => {

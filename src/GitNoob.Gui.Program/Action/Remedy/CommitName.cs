@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class CommitName : Remedy
     {
-        public CommitName(Step.Step Step, MessageWithLinks Message,
+        public CommitName(Step.Step Step, VisualizerMessageWithLinks Message,
             string currentCommitName, string currentCommitEmail,
             string expectedCommitName, string expectedCommitEmail) :
             base(Step, ref Message)
@@ -23,18 +23,18 @@ namespace GitNoob.Gui.Program.Action.Remedy
             }
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
+                    }),
 
-                    { "Set commit name to " + expectedCommitName + " <" + expectedCommitEmail + "> and continue", (input) => {
+                    new VisualizerMessageButton("Set commit name to " + expectedCommitName + " <" + expectedCommitEmail + "> and continue", (input) => {
                         var step = new Step.SetCommitter(expectedCommitName, expectedCommitEmail);
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step, Step });
 
                         Done();
-                    } },
+                    }),
                 };
         }
     }

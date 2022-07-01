@@ -16,7 +16,7 @@
 
             var result = StepsExecutor.Config.Git.ChangeCommitter(_name, _email);
 
-            var message = new MessageWithLinks("Set commit name to " + _name + " <" + _email + "> failed.");
+            var message = new VisualizerMessageWithLinks("Set commit name to " + _name + " <" + _email + "> failed.");
 
             if (result.ErrorChangingName || result.ErrorChangingEmail)
             {

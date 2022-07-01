@@ -7,7 +7,7 @@ namespace GitNoob.Gui.Program.Action
     public interface IVisualizerMessage
     {
         IVisualizerMessageType VisualizerMessageType { get; }
-        MessageWithLinks VisualizerMessageText { get; }
-        Dictionary<string, System.Action<MessageInput>> VisualizerMessageButtons { get; }
+        VisualizerMessageWithLinks VisualizerMessageText { get; }
+        List<VisualizerMessageButton> VisualizerMessageButtons { get; }
     }
 }

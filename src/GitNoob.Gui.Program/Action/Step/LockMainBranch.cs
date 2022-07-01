@@ -18,7 +18,7 @@ namespace GitNoob.Gui.Program.Action.Step
             var status = StepsExecutor.Config.Git.RetrieveStatus();
             var result = StepsExecutor.Config.Git.AcquireGitLockForMainBranch(status.CommitFullName, _message);
 
-            var message = new MessageWithLinks("Logical locking main branch failed.");
+            var message = new VisualizerMessageWithLinks("Logical locking main branch failed.");
 
             if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
             {

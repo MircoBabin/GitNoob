@@ -95,7 +95,7 @@ namespace GitNoob.Gui.Program.Action.StepsExecutor
                             }
                             catch (Exception ex)
                             {
-                                var remedy = new Remedy.MessageException(null, new MessageWithLinks(String.Empty), ex);
+                                var remedy = new Remedy.MessageException(null, new VisualizerMessageWithLinks(String.Empty), ex);
                                 remedy.StepsExecutor = this;
                                 remedy.execute();
                                 return;

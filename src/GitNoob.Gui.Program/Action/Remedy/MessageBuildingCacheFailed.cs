@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageBuildingCacheFailed : Remedy
     {
-        public MessageBuildingCacheFailed(Step.Step Step, MessageWithLinks Message, Config.IProjectType_ActionResult result) :
+        public MessageBuildingCacheFailed(Step.Step Step, VisualizerMessageWithLinks Message, Config.IProjectType_ActionResult result) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("Building the cache failed.");
@@ -14,11 +14,11 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append(result.Message);
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } }
+                    }),
                 };
         }
     }

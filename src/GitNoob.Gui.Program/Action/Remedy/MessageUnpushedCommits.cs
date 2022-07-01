@@ -4,17 +4,17 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageUnpushedCommits : Remedy
     {
-        public MessageUnpushedCommits(Step.Step Step, MessageWithLinks Message, string branchName) :
+        public MessageUnpushedCommits(Step.Step Step, VisualizerMessageWithLinks Message, string branchName) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("Branch \"" + branchName + "\" has unpushed commits.");
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } }
+                    }),
                 };
         }
     }

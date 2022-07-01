@@ -14,7 +14,7 @@
             BusyMessage = "Busy - creating new branch \"" + _branchName + "\" onto main branch \"" + MainBranch + "\"";
 
             {
-                var message = new MessageWithLinks("Ensuring main branch existance failed.");
+                var message = new VisualizerMessageWithLinks("Ensuring main branch existance failed.");
 
                 var result = StepsExecutor.Config.Git.EnsureMainBranchExistance();
                 if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
@@ -45,7 +45,7 @@
             {
                 var result = StepsExecutor.Config.Git.CreateNewBranch(_branchName, MainBranch, true);
 
-                var message = new MessageWithLinks("Creating new branch failed.");
+                var message = new VisualizerMessageWithLinks("Creating new branch failed.");
 
                 if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
                 {

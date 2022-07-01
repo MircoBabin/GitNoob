@@ -4,21 +4,21 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageDeleteAllChangesFailed : Remedy
     {
-        public MessageDeleteAllChangesFailed(Step.Step Step, MessageWithLinks Message) :
+        public MessageDeleteAllChangesFailed(Step.Step Step, VisualizerMessageWithLinks Message) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("There are still working tree changes and/or staged uncommitted files.");
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Start Git Gui and inspect the changes left.", (input) => {
+                    }),
+                    new VisualizerMessageButton("Start Git Gui and inspect the changes left.", (input) => {
                         StepsExecutor.StartGitGui();
                         Cancel();
-                    } },
+                    }),
                 };
         }
     }

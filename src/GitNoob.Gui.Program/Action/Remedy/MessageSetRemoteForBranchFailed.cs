@@ -5,18 +5,18 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageSetRemoteForBranchFailed : Remedy
     {
-        public MessageSetRemoteForBranchFailed(Step.Step Step, MessageWithLinks Message, 
+        public MessageSetRemoteForBranchFailed(Step.Step Step, VisualizerMessageWithLinks Message, 
             string BranchName, string RemoteName) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("Error setting tracking remote branch to \"" + RemoteName + "/" + BranchName + "\" for branch \"" + BranchName + "\"");
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } }
+                    }),
                 };
         }
     }

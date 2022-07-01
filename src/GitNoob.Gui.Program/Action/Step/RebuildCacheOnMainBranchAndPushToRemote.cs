@@ -26,7 +26,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             var result = StepsExecutor.Config.Git.BuildCacheAndCommitOnMainBranch(StepsExecutor.Executor, "Rebuild cache");
 
-            var message = new MessageWithLinks("Rebuilding cache failed.");
+            var message = new VisualizerMessageWithLinks("Rebuilding cache failed.");
 
             if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
             {
@@ -90,7 +90,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             var pushResult = StepsExecutor.Config.Git.PushMainBranchToRemote();
 
-            message = new MessageWithLinks("Pushing cache to remote failed.");
+            message = new VisualizerMessageWithLinks("Pushing cache to remote failed.");
 
             if (pushResult.ErrorRebaseInProgress || pushResult.ErrorMergeInProgress)
             {

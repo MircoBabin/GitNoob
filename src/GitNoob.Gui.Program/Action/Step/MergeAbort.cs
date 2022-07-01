@@ -14,7 +14,7 @@
 
             var result = StepsExecutor.Config.Git.MergeAbort(null);
 
-            var message = new MessageWithLinks("Aborting merge failed.");
+            var message = new VisualizerMessageWithLinks("Aborting merge failed.");
 
             if (!_presentRemedy)
             {

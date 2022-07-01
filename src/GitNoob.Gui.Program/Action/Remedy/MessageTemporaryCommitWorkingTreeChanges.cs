@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageTemporaryCommitWorkingTreeChanges : Remedy
     {
-        public MessageTemporaryCommitWorkingTreeChanges(Step.Step Step, MessageWithLinks Message) :
+        public MessageTemporaryCommitWorkingTreeChanges(Step.Step Step, VisualizerMessageWithLinks Message) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("There are working tree changes.");
@@ -18,17 +18,17 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append("- When changing to such a branch from within GitNoob, the temporary commit will be unpacked and removed.");
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Create a temporary commit for all working tree changes. So the working tree will be clean. Then retry.", (input) => {
+                    }),
+                    new VisualizerMessageButton("Create a temporary commit for all working tree changes. So the working tree will be clean. Then retry.", (input) => {
                         var step = new Step.TemporaryCommitChangesOnCurrentBranch();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step, Step });
 
                         Done();
-                    } },
+                    }),
                 };
         }
     }

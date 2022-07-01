@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageUnknownResult : Remedy
     {
-        public MessageUnknownResult(Step.Step Step, MessageWithLinks Message, Object result) :
+        public MessageUnknownResult(Step.Step Step, VisualizerMessageWithLinks Message, Object result) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("The result of the operation is unknown.");
@@ -33,14 +33,14 @@ namespace GitNoob.Gui.Program.Action.Remedy
             }
 
             VisualizerMessageButtons = 
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Copy message to Windows clipboard", (input) => {
+                    }),
+                    new VisualizerMessageButton("Copy message to Windows clipboard", (input) => {
                         StepsExecutor.CopyToClipboard(VisualizerMessageText.Message.ToString());
-                    } }
+                    }),
                 };
         }
     }

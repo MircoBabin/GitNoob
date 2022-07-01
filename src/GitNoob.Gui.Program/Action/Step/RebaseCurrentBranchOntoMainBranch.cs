@@ -10,7 +10,7 @@
 
             var result = StepsExecutor.Config.Git.RebaseCurrentBranchOntoMainBranch();
 
-            var message = new MessageWithLinks("Rebasing current branch onto main branch failed.");
+            var message = new VisualizerMessageWithLinks("Rebasing current branch onto main branch failed.");
 
             if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
             {

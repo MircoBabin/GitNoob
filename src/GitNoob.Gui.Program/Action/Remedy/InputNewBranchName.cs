@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class InputNewBranchName : Remedy
     {
-        public InputNewBranchName(Step.Step Step, MessageWithLinks Message, 
+        public InputNewBranchName(Step.Step Step, VisualizerMessageWithLinks Message, 
             string MoveButtonText, System.Action<string> OnMoveButtonAction) :
             base(Step, ref Message)
         {
@@ -15,12 +15,12 @@ namespace GitNoob.Gui.Program.Action.Remedy
 
             VisualizerMessageType = IVisualizerMessageType.input;
             VisualizerMessageButtons = 
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { MoveButtonText, (input) => {
+                    }),
+                    new VisualizerMessageButton(MoveButtonText, (input) => {
                         if (input.inputValue.ToLowerInvariant().StartsWith("gitnoob-")) return;
                         if (input.inputValue.ToLowerInvariant().StartsWith("gitlock-")) return;
 
@@ -37,7 +37,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 
                         OnMoveButtonAction(input.inputValue);
                         Done();
-                    } }
+                    }),
                 };
         }
     }

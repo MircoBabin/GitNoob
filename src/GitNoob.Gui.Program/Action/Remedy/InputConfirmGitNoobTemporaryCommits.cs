@@ -11,7 +11,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
             return (value == "sure" || value == "\"sure\"");
         }
 
-        public InputConfirmGitNoobTemporaryCommits(Step.Step Step, MessageWithLinks Message, uint NumberOfCommits) :
+        public InputConfirmGitNoobTemporaryCommits(Step.Step Step, VisualizerMessageWithLinks Message, uint NumberOfCommits) :
             base(Step, ref Message)
         {
             if (NumberOfCommits == 1)
@@ -32,17 +32,17 @@ namespace GitNoob.Gui.Program.Action.Remedy
 
             VisualizerMessageType = IVisualizerMessageType.input;
             VisualizerMessageButtons = 
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Continue with having GitNoob Temporary Commits." + Environment.NewLine +
+                    }),
+                    new VisualizerMessageButton("Continue with having GitNoob Temporary Commits." + Environment.NewLine +
                       "I'm sure and have typed in \"sure\"." + Environment.NewLine, (input) => {
                         if (!isSure(input.inputValue)) return;
 
                         Done();
-                    } },
+                    }),
                 };
         }
     }

@@ -50,6 +50,7 @@
     <Compile Include="Action\ExecuteAfterStatus.cs" />
     <Compile Include="Action\ExecuteDeleteLogfiles.cs" />
     <Compile Include="Action\ExecuteGitRepair.cs" />
+    <Compile Include="Action\VisualizerMessageButton.cs" />
     <Compile Include="Action\Remedy\InputChooseDeletedBranch.cs" />
     <Compile Include="Action\Remedy\InputChooseRemote.cs" />
     <Compile Include="Action\Remedy\InputConfirmGitNoobTemporaryCommits.cs" />
@@ -63,7 +64,7 @@
     <Compile Include="Action\StartSmtpServer.cs" />
     <Compile Include="Action\IAction.cs" />
     <Compile Include="Action\IVisualizerMessage.cs" />
-    <Compile Include="Action\MessageInput.cs" />
+    <Compile Include="Action\VisualizerInput.cs" />
     <Compile Include="Action\Remedy\CommitName.cs" />
     <Compile Include="Action\Remedy\InputChooseBranch.cs" />
     <Compile Include="Action\Remedy\MessageTemporaryCommitWorkingTreeChanges.cs" />
@@ -97,7 +98,8 @@
     <Compile Include="Action\StartFiddler.cs" />
     <Compile Include="Action\StepsExecutor\IExecutableByStepsExecutor.cs" />
     <Compile Include="Action\IVisualizer.cs" />
-    <Compile Include="Action\MessageWithLinks.cs" />
+    <Compile Include="Action\VisualizerMessageSubButton.cs" />
+    <Compile Include="Action\VisualizerMessageWithLinks.cs" />
     <Compile Include="Action\Remedy\InputNewBranchName.cs" />
     <Compile Include="Action\Remedy\MessageKeePassNotStarted.cs" />
     <Compile Include="Action\Remedy\MessageStagedUncommittedFiles.cs" />

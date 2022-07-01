@@ -4,31 +4,31 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class InputChooseRemote : Remedy
     {
-        public InputChooseRemote(Step.Step Step, MessageWithLinks Message,
+        public InputChooseRemote(Step.Step Step, VisualizerMessageWithLinks Message,
             IEnumerable<Git.GitRemote> remotes, string CancelText, System.Action<string> OnSelectedRemoteAction,
             string newRemoteText, System.Action OnCreateRemoteAction) :
             base(Step, ref Message)
         {
-            VisualizerMessageButtons = new Dictionary<string, System.Action<MessageInput>>();
+            VisualizerMessageButtons = new List<VisualizerMessageButton>();
             if (!string.IsNullOrWhiteSpace(CancelText))
             {
-                VisualizerMessageButtons.Add(CancelText, (input) => { Cancel(); });
+                VisualizerMessageButtons.Add(new VisualizerMessageButton(CancelText, (input) => { Cancel(); }));
             }
 
             foreach (var remote in remotes)
             {
-                VisualizerMessageButtons.Add(remote.RemoteName + " - " + remote.Url, (input) => {
+                VisualizerMessageButtons.Add(new VisualizerMessageButton(remote.RemoteName + " - " + remote.Url, (input) => {
                     OnSelectedRemoteAction(remote.RemoteName);
                     Done();
-                });
+                }));
             }
 
             if (!string.IsNullOrWhiteSpace(newRemoteText))
             {
-                VisualizerMessageButtons.Add(newRemoteText, (input) => {
+                VisualizerMessageButtons.Add(new VisualizerMessageButton(newRemoteText, (input) => {
                     OnCreateRemoteAction();
                     Done();
-                });
+                }));
             }
         }
     }

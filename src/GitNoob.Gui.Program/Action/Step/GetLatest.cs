@@ -17,7 +17,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             var result = StepsExecutor.Config.Git.GetLatest();
 
-            var message = new MessageWithLinks("Get latest is not possible.");
+            var message = new VisualizerMessageWithLinks("Get latest is not possible.");
 
             if (result.ErrorNonEmptyAndNotAGitRepository)
             {
@@ -78,7 +78,7 @@ namespace GitNoob.Gui.Program.Action.Step
             }
 
             //not really a failure, but a solution to present a message
-            message = new MessageWithLinks("Get latest has been successfull.");
+            message = new VisualizerMessageWithLinks("Get latest has been successfull.");
 
             if (result.CurrentBranchIsBehindMainBranch)
             {

@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageRemoteNotReachable : Remedy
     {
-        public MessageRemoteNotReachable(Step.Step Step, MessageWithLinks Message, string remoteUrl) :
+        public MessageRemoteNotReachable(Step.Step Step, VisualizerMessageWithLinks Message, string remoteUrl) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("Remote \"");
@@ -27,12 +27,12 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append(Environment.NewLine);
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Execute the check command in a command prompt. And manually investigate the problem.", (input) => {
+                    }),
+                    new VisualizerMessageButton("Execute the check command in a command prompt. And manually investigate the problem.", (input) => {
                         StepsExecutor.Executor.OpenBatFileInNewWindow(
                             "@echo off" + Environment.NewLine +
                             "    echo %cd%" + Environment.NewLine +
@@ -43,7 +43,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
                             "    echo." + Environment.NewLine +
                             "    echo." + Environment.NewLine +
                             "    pause" + Environment.NewLine, null);
-                    } }
+                    }),
                 };
         }
     }

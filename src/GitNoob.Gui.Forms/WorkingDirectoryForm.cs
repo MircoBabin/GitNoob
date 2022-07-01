@@ -586,7 +586,7 @@ namespace GitNoob.Gui.Forms
                 foreach (var item in message.VisualizerMessageButtons)
                 {
                     ErrorButton button = _errorButtons[no];
-                    button.ShowErrorButton(input, item.Key, item.Value, ref location, size);
+                    button.ShowErrorButton(input, item.text, item.onClicked, ref location, size);
 
                     no++;
                 }

@@ -35,7 +35,7 @@
 
             var result = StepsExecutor.Config.Git.RetrieveStatus();
 
-            var message = new MessageWithLinks(_message);
+            var message = new VisualizerMessageWithLinks(_message);
 
             if (_rebasingMerging != null)
             {

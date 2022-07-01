@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessagePushConflicts : Remedy
     {
-        public MessagePushConflicts(Step.Step Step, MessageWithLinks Message, string branchName) :
+        public MessagePushConflicts(Step.Step Step, VisualizerMessageWithLinks Message, string branchName) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("Branch \"" + branchName + "\" could not be updated in the remote repository.");
@@ -15,11 +15,11 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append("Start the merge again.");
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } }
+                    }),
                 };
         }
     }

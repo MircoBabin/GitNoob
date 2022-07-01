@@ -10,7 +10,7 @@
 
             var result = StepsExecutor.Config.Git.MergeContinue();
 
-            var message = new MessageWithLinks("Continuing merge failed.");
+            var message = new VisualizerMessageWithLinks("Continuing merge failed.");
 
             if (result.ErrorNotMerging)
             {

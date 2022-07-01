@@ -14,7 +14,7 @@
 
             var result = StepsExecutor.Config.Git.RebaseAbort();
 
-            var message = new MessageWithLinks("Aborting rebase failed.");
+            var message = new VisualizerMessageWithLinks("Aborting rebase failed.");
 
             if (!_presentRemedy)
             {

@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageException : Remedy
     {
-        public MessageException(Step.Step Step, MessageWithLinks Message, Exception ex) :
+        public MessageException(Step.Step Step, VisualizerMessageWithLinks Message, Exception ex) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("An exception occurred:");
@@ -13,14 +13,14 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append(ex.Message);
 
             VisualizerMessageButtons = 
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Copy details to Windows clipboard", (input) => {
+                    }),
+                    new VisualizerMessageButton("Copy details to Windows clipboard", (input) => {
                         StepsExecutor.CopyToClipboard(ex.ToString());
-                    } }
+                    }),
                 };
         }
     }

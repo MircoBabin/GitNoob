@@ -4,21 +4,21 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageStagedUncommittedFiles : Remedy
     {
-        public MessageStagedUncommittedFiles(Step.Step Step, MessageWithLinks Message) :
+        public MessageStagedUncommittedFiles(Step.Step Step, VisualizerMessageWithLinks Message) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("There are staged, uncommitted files in the git staging area.");
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Start Git Gui and manually commit or unstage the staged files", (input) => {
+                    }),
+                    new VisualizerMessageButton("Start Git Gui and manually commit or unstage the staged files", (input) => {
                         StepsExecutor.StartGitGui();
                         Cancel();
-                    } }
+                    }),
                 };
         }
     }

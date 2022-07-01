@@ -4,7 +4,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageChanges : Remedy
     {
-        public MessageChanges(Step.Step Step, MessageWithLinks Message, bool WorkingTreeChanges, bool StagedUncommittedFiles) :
+        public MessageChanges(Step.Step Step, VisualizerMessageWithLinks Message, bool WorkingTreeChanges, bool StagedUncommittedFiles) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("There are ");
@@ -21,11 +21,11 @@ namespace GitNoob.Gui.Program.Action.Remedy
             }
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
+                    }),
                 };
         }
     }

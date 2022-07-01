@@ -11,7 +11,7 @@ namespace GitNoob.Gui.Program.Action.Step
             BusyMessage = "Busy - retrieving status";
 
             var result = StepsExecutor.Config.Git.RetrieveStatus();
-            var message = new MessageWithLinks();
+            var message = new VisualizerMessageWithLinks();
 
             if (result.Rebasing || result.Merging)
             {

@@ -3,28 +3,28 @@ using System.Text;
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class MessageWithLinks
+    public class VisualizerMessageWithLinks
     {
         public StringBuilder Message { get; set; }
         public Dictionary<string, System.Action> Links { get; set; }
 
         private int _linkno = 0;
 
-        public MessageWithLinks()
+        public VisualizerMessageWithLinks()
         {
             this.Message = new StringBuilder();
 
             this.Links = new Dictionary<string, System.Action>();
         }
 
-        public MessageWithLinks(string Message)
+        public VisualizerMessageWithLinks(string Message)
         {
             this.Message = new StringBuilder(Message);
 
             this.Links = new Dictionary<string, System.Action>();
         }
 
-        public MessageWithLinks(MessageWithLinks Message)
+        public VisualizerMessageWithLinks(VisualizerMessageWithLinks Message)
         {
             this.Message = new StringBuilder(Message.Message.ToString().TrimEnd());
 

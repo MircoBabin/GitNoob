@@ -6,7 +6,7 @@ namespace GitNoob.Gui.Forms
 {
     class ErrorButton : Button
     {
-        private System.Action<Program.Action.MessageInput> _action = null;
+        private System.Action<Program.Action.VisualizerInput> _action = null;
         private TextBox _input = null;
 
         public ErrorButton() : base()
@@ -18,7 +18,7 @@ namespace GitNoob.Gui.Forms
         {
             if (_action != null)
             {
-                Program.Action.MessageInput input = new Program.Action.MessageInput();
+                Program.Action.VisualizerInput input = new Program.Action.VisualizerInput();
 
                 if (_input != null)
                 {
@@ -29,7 +29,7 @@ namespace GitNoob.Gui.Forms
             }
         }
 
-        public void ShowErrorButton(TextBox Input, string Description, System.Action<Program.Action.MessageInput> Action, ref Point Location, Size size)
+        public void ShowErrorButton(TextBox Input, string Description, System.Action<Program.Action.VisualizerInput> Action, ref Point Location, Size size)
         {
             _action = Action;
             _input = Input;

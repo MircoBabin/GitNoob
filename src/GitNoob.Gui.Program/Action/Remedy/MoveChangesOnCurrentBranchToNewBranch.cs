@@ -4,7 +4,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MoveChangesOnCurrentBranchToNewBranch : Remedy
     {
-        public MoveChangesOnCurrentBranchToNewBranch(Step.Step Step, MessageWithLinks Message, string CurrentBranch, bool WorkingTreeChanges, bool UnpushedCommits) :
+        public MoveChangesOnCurrentBranchToNewBranch(Step.Step Step, VisualizerMessageWithLinks Message, string CurrentBranch, bool WorkingTreeChanges, bool UnpushedCommits) :
             base(Step, ref Message)
         {
             var orgmessage = this.VisualizerMessageText.Message.ToString();
@@ -22,13 +22,13 @@ namespace GitNoob.Gui.Program.Action.Remedy
             }
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Move changes on current branch \"" + CurrentBranch + "\" to a new branch.", (input) => {
-                        var message = new MessageWithLinks(orgmessage);
+                    }),
+                    new VisualizerMessageButton("Move changes on current branch \"" + CurrentBranch + "\" to a new branch.", (input) => {
+                        var message = new VisualizerMessageWithLinks(orgmessage);
                         message.Append("Move changes on current branch \"" + CurrentBranch + "\" to a new branch.");
 
                         var remedy = new InputNewBranchName(Step, message, "Move changes", (NewBranchName) =>
@@ -39,7 +39,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { remedy, Step });
                         Done();
-                    } },
+                    }),
                 };
         }
     }

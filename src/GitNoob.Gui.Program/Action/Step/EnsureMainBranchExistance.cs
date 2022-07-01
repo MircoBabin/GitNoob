@@ -15,7 +15,7 @@
 
             var result = StepsExecutor.Config.Git.EnsureMainBranchExistance();
 
-            var message = new MessageWithLinks(_message);
+            var message = new VisualizerMessageWithLinks(_message);
 
             if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
             {

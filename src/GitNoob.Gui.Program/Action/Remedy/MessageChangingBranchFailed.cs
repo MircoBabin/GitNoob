@@ -4,17 +4,17 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageChangingBranchFailed : Remedy
     {
-        public MessageChangingBranchFailed(Step.Step Step, MessageWithLinks Message, string branchName) :
+        public MessageChangingBranchFailed(Step.Step Step, VisualizerMessageWithLinks Message, string branchName) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("Could not change branch to \"" + branchName + "\".");
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } }
+                    }),
                 };
         }
     }

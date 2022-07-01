@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageDetachedHead : Remedy
     {
-        public MessageDetachedHead(Step.Step Step, MessageWithLinks Message) :
+        public MessageDetachedHead(Step.Step Step, VisualizerMessageWithLinks Message) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("There is no current branch, git is in a detached HEAD state.");
@@ -13,11 +13,11 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append("Change branch to an existing branch.");
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } }
+                    }),
                 };
         }
     }

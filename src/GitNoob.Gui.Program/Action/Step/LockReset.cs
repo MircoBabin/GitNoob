@@ -17,7 +17,7 @@ namespace GitNoob.Gui.Program.Action.Step
 
             var result = _lock.Reset();
 
-            var message = new MessageWithLinks("Resetting Logical lock for branch \"" + _lock.branchName + "\" failed.");
+            var message = new VisualizerMessageWithLinks("Resetting Logical lock for branch \"" + _lock.branchName + "\" failed.");
 
             if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
             {

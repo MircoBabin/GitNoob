@@ -12,7 +12,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
             return (value == "sure" || value == "\"sure\"");
         }
 
-        public InputConfirmDeleteAllChanges(Step.Step Step, MessageWithLinks Message) :
+        public InputConfirmDeleteAllChanges(Step.Step Step, VisualizerMessageWithLinks Message) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("Delete all working tree changes and staged uncommitted files.");
@@ -27,12 +27,12 @@ namespace GitNoob.Gui.Program.Action.Remedy
 
             VisualizerMessageType = IVisualizerMessageType.input;
             VisualizerMessageButtons = 
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton( "Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Backup current changes, fully copy directory \"" + StepsExecutor.Config.ProjectWorkingDirectory.Path + "\" to \"" + Path.GetFileName(CopyTo) + "\"." + Environment.NewLine + 
+                    }),
+                    new VisualizerMessageButton("Backup current changes, fully copy directory \"" + StepsExecutor.Config.ProjectWorkingDirectory.Path + "\" to \"" + Path.GetFileName(CopyTo) + "\"." + Environment.NewLine + 
                       "Then delete all changes." + Environment.NewLine +
                       "I'm sure and have typed in \"sure\"." + Environment.NewLine, (input) => {
                         if (!isSure(input.inputValue)) return;
@@ -42,11 +42,11 @@ namespace GitNoob.Gui.Program.Action.Remedy
                             new Step.DeleteWorkingTreeChangesAndStagedUncommittedFiles()
                         });
                         Done();
-                    } },
-                    { "Start Git Gui and inspect the changes that are about to be lost.", (input) => {
+                    }),
+                    new VisualizerMessageButton("Start Git Gui and inspect the changes that are about to be lost.", (input) => {
                         StepsExecutor.StartGitGui();
-                    } },
-                    { "Delete all changes irreversible." + Environment.NewLine + 
+                    }),
+                    new VisualizerMessageButton("Delete all changes irreversible." + Environment.NewLine + 
                       "I'm sure and have typed in \"sure\"." + Environment.NewLine +
                       Environment.NewLine +
                       "I have (optionally) created a copy of the directory to backup the current changes.", (input) => {
@@ -56,7 +56,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
                             new Step.DeleteWorkingTreeChangesAndStagedUncommittedFiles()
                         });
                         Done();
-                    } }
+                    }),
                 };
         }
     }

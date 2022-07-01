@@ -18,7 +18,7 @@
             {
                 var result = StepsExecutor.Config.Git.RenameBranch(_branchName, _newName);
 
-                var message = new MessageWithLinks("Renaming branch failed.");
+                var message = new VisualizerMessageWithLinks("Renaming branch failed.");
 
                 if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
                 {

@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageConfirmDeleteBranch : Remedy
     {
-        public MessageConfirmDeleteBranch(Step.Step Step, MessageWithLinks Message, string branchName) :
+        public MessageConfirmDeleteBranch(Step.Step Step, VisualizerMessageWithLinks Message, string branchName) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("Delete branch \"" + branchName + "\"." + Environment.NewLine);
@@ -13,14 +13,14 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append("The commits are not deleted. A local tag \"gitnoob-deleted-branch-...\" will be created pointing to the last commit. The commits stay reachable and are not garbage collected.");
 
             VisualizerMessageButtons = 
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Delete branch \"" + branchName + "\".", (input) => {
+                    }),
+                    new VisualizerMessageButton("Delete branch \"" + branchName + "\".", (input) => {
                         Done();
-                    } },
+                    }),
                 };
         }
     }

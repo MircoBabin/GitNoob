@@ -17,7 +17,7 @@
         {
             BusyMessage = "Busy - setting remote for \"" + _branchName + "\"";
 
-            var message = new MessageWithLinks("Setting remote for \"" + _branchName + "\" failed.");
+            var message = new VisualizerMessageWithLinks("Setting remote for \"" + _branchName + "\" failed.");
 
             var result = StepsExecutor.Config.Git.SetRemoteForBranch(_branchName, _remoteName, _remoteUrl);
             if (result.ErrorSettingRemoteUrl)

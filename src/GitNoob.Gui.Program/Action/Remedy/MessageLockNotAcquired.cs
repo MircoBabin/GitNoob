@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class MessageLockNotAcquired : Remedy
     {
-        public MessageLockNotAcquired(Step.Step Step, MessageWithLinks Message, Git.Result.GitLockResult result) :
+        public MessageLockNotAcquired(Step.Step Step, VisualizerMessageWithLinks Message, Git.Result.GitLockResult result) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("The branch \"" + result.GitLock.branchName + "\" is logically locked. This indicates a coworker is currently also merging changes into this branch.");
@@ -37,22 +37,22 @@ namespace GitNoob.Gui.Program.Action.Remedy
             if (!String.IsNullOrWhiteSpace(result.LockedMessage)) VisualizerMessageText.Append(result.LockedMessage);
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Retry. Contact the coworker and ask when finished.", (input) => {
+                    }),
+                    new VisualizerMessageButton("Retry. Contact the coworker and ask when finished.", (input) => {
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { Step });
 
                         Done();
-                    } },
-                    { "The lock is abondoned. The coworker is not merging changes. Reset the abondoned logical lock and continue.", (input) => {
+                    }),
+                    new VisualizerMessageButton("The lock is abondoned. The coworker is not merging changes. Reset the abondoned logical lock and continue.", (input) => {
                         var step = new Step.LockReset(result.GitLock);
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step, Step });
 
                         Done();
-                    } },
+                    }),
                 };
         }
     }

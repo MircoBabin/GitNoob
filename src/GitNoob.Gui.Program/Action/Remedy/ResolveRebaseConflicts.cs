@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class ResolveRebaseConflicts : Remedy
     {
-        public ResolveRebaseConflicts(Step.Step Step, MessageWithLinks Message,
+        public ResolveRebaseConflicts(Step.Step Step, VisualizerMessageWithLinks Message,
             string MainBranch, string CurrentBranch) :
             base(Step, ref Message)
         {
@@ -36,21 +36,21 @@ namespace GitNoob.Gui.Program.Action.Remedy
             VisualizerMessageText.Append(".");
 
             VisualizerMessageButtons = 
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Abort the rebase.", (input) => {
+                    new VisualizerMessageButton("Abort the rebase.", (input) => {
                         var step = new Step.RebaseAbort(true);
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
 
                         Done();
 
-                    } },
-                    { "The conflicts are manually resolved and committed. Continue the rebase.", (input) => {
+                    }),
+                    new VisualizerMessageButton("The conflicts are manually resolved and committed. Continue the rebase.", (input) => {
                         var step = new Step.RebaseContinue();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
 
                         Done();
-                    } }
+                    }),
                 };
         }
     }

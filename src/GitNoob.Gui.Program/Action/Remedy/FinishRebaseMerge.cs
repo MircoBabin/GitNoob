@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class FinishRebaseMerge : Remedy
     {
-        public FinishRebaseMerge(Step.Step Step, MessageWithLinks Message, bool Rebasing, bool Merging) : 
+        public FinishRebaseMerge(Step.Step Step, VisualizerMessageWithLinks Message, bool Rebasing, bool Merging) : 
             base(Step, ref Message)
         {
             if ((Rebasing && Merging) || (!Rebasing && !Merging))
@@ -14,25 +14,25 @@ namespace GitNoob.Gui.Program.Action.Remedy
                 VisualizerMessageText.Append(Environment.NewLine);
 
                 VisualizerMessageButtons =
-                    new Dictionary<string, System.Action<MessageInput>>()
+                    new List<VisualizerMessageButton>()
                     {
-                        { "Check if rebase or merge is still in progress.", (input) => {
+                        new VisualizerMessageButton("Check if rebase or merge is still in progress.", (input) => {
                             StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { Step });
 
                             Done();
-                        } },
-                        { "Abort the rebase.", (input) => {
+                        }),
+                        new VisualizerMessageButton("Abort the rebase.", (input) => {
                             var step = new Step.RebaseAbort(false);
                             StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step, Step });
 
                             Done();
-                        } },
-                        { "Abort the merge.", (input) => {
+                        }),
+                        new VisualizerMessageButton("Abort the merge.", (input) => {
                             var step = new Step.MergeAbort(false);
                             StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step, Step });
 
                             Done();
-                        } },
+                        }),
                     };
             }
             else if (Rebasing)
@@ -41,19 +41,19 @@ namespace GitNoob.Gui.Program.Action.Remedy
                 VisualizerMessageText.Append(Environment.NewLine);
 
                 VisualizerMessageButtons =
-                    new Dictionary<string, System.Action<MessageInput>>()
+                    new List<VisualizerMessageButton>()
                     {
-                        { "Check if rebase is still in progress.", (input) => {
+                        new VisualizerMessageButton("Check if rebase is still in progress.", (input) => {
                             StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { Step });
 
                             Done();
-                        } },
-                        { "Abort the rebase.", (input) => {
+                        }),
+                        new VisualizerMessageButton("Abort the rebase.", (input) => {
                             var step = new Step.RebaseAbort(false);
                             StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step, Step });
 
                             Done();
-                        } },
+                        }),
                     };
             }
             else if (Merging)
@@ -62,19 +62,19 @@ namespace GitNoob.Gui.Program.Action.Remedy
                 VisualizerMessageText.Append(Environment.NewLine);
 
                 VisualizerMessageButtons =
-                    new Dictionary<string, System.Action<MessageInput>>()
+                    new List<VisualizerMessageButton>()
                     {
-                        { "Check if merge is still in progress.", (input) => {
+                        new VisualizerMessageButton("Check if merge is still in progress.", (input) => {
                             StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { Step });
 
                             Done();
-                        } },
-                        { "Abort the merge.", (input) => {
+                        }),
+                        new VisualizerMessageButton("Abort the merge.", (input) => {
                             var step = new Step.MergeAbort(false);
                             StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step, Step });
 
                             Done();
-                        } },
+                        }),
                     };
             }
 

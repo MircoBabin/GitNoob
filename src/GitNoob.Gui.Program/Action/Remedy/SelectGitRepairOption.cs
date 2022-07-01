@@ -5,41 +5,41 @@ namespace GitNoob.Gui.Program.Action.Remedy
 {
     public class SelectGitRepairOption : Remedy
     {
-        public SelectGitRepairOption(Step.Step Step, MessageWithLinks Message) :
+        public SelectGitRepairOption(Step.Step Step, VisualizerMessageWithLinks Message) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("Choose a repair option.");
 
             VisualizerMessageButtons =
-                new Dictionary<string, System.Action<MessageInput>>()
+                new List<VisualizerMessageButton>()
                 {
-                    { "Cancel", (input) => {
+                    new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
-                    } },
-                    { "Show history of all branches / tags / remotes", (input) => {
+                    }),
+                    new VisualizerMessageButton("Show history of all branches / tags / remotes", (input) => {
                         StepsExecutor.StartGitkAll();
                         Done();
-                    } },
-                    { "Unpack last commit on current branch.", (input) => {
+                    }),
+                    new VisualizerMessageButton("Unpack last commit on current branch.", (input) => {
                         var step = new Step.AskUnpackLastCommitOnCurrentBranch();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
-                    } },
+                    }),
 
                     /* todo
-                    { "Undelete a deleted branch.", (input) => {
+                    new VisualizerMessageButton("Undelete a deleted branch.", (input) => {
                         var step = new Step.AskUndeleteBranch();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
-                    } },
+                    }),
                     */
 
                     /*
-                    { "Stage all changes and start Git Gui to commit.", (input) => {
+                    new VisualizerMessageButton("Stage all changes and start Git Gui to commit.", (input) => {
                         //Todo
                         Done();
-                    } },
-                    { "Force main branch to point to a specific commit. And push this change forced to remote.", (input) => {
+                    }),
+                    new VisualizerMessageButton("Force main branch to point to a specific commit. And push this change forced to remote.", (input) => {
                         //Todo
 
                         //also create a local branch on last commit of current main branch, so the commits will not be lost.
@@ -48,7 +48,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
                         //StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
 
                         Done();
-                    } },
+                    }),
                     */
                 };
         }

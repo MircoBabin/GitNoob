@@ -16,7 +16,7 @@
             {
                 var result = StepsExecutor.Config.Git.DeleteCurrentBranch(_branchName);
 
-                var message = new MessageWithLinks("Deleting current branch failed.");
+                var message = new VisualizerMessageWithLinks("Deleting current branch failed.");
 
                 if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
                 {

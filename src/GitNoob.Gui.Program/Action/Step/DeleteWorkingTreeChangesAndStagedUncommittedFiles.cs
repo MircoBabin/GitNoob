@@ -10,7 +10,7 @@
 
             var result = StepsExecutor.Config.Git.DeleteWorkingTreeChangesAndStagedUncommittedFiles();
 
-            var message = new MessageWithLinks("Deleting all working tree changes and staged uncommitted files failed.");
+            var message = new VisualizerMessageWithLinks("Deleting all working tree changes and staged uncommitted files failed.");
 
             if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
             {
