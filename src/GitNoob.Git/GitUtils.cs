@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -37,5 +38,26 @@ namespace GitNoob.Git
             return Encoding.UTF8.GetString(bytes);
         }
 
+        public static string FormatDateTimeForGit(DateTime time)
+        {
+            return time.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ssK", CultureInfo.InvariantCulture); //iso 8601 without fraction of seconds
+        }
+
+        public static GitBranch CreateTemporaryBranchAndCheckout(GitWorkingDirectory GitWorkingDirectory, string branchFromBranchNameOrCommitId)
+        {
+            string tempbranchname = "gitnoob-tempbranch-" + GenerateRandomSha1();
+
+            var create = new Command.Branch.CreateBranch(GitWorkingDirectory, tempbranchname, branchFromBranchNameOrCommitId, true);
+            create.WaitFor();
+
+            var tempbranch = new Command.Branch.GetCurrentBranch(GitWorkingDirectory);
+            tempbranch.WaitFor();
+            if (tempbranch.shortname != tempbranchname)
+            {
+                return null;
+            }
+
+            return tempbranch.branch;
+        }
     }
 }

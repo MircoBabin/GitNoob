@@ -38,6 +38,8 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Command\Branch\AmendLastCommit.cs" />
+    <Compile Include="Command\Branch\CherryPickOneCommit.cs" />
     <Compile Include="Command\Branch\CreateBranch.cs" />
     <Compile Include="Command\Branch\FindCommonCommitOfTwoBranches.cs" />
     <Compile Include="Command\Branch\ListCommits.cs" />
@@ -47,6 +49,7 @@
     <Compile Include="Command\Config\SetCommitter.cs" />
     <Compile Include="Command\Remote\ChangeUrl.cs" />
     <Compile Include="Command\Remote\ListRemotes.cs" />
+    <Compile Include="Command\Repository\CommitsAreTheSame.cs" />
     <Compile Include="Command\Repository\RemoteReachable.cs" />
     <Compile Include="Command\WorkingTree\IsRevertActive.cs" />
     <Compile Include="Command\WorkingTree\IsCherryPickActive.cs" />
@@ -61,6 +64,7 @@
     <Compile Include="Result\RemotesResult.cs" />
     <Compile Include="Result\BranchesResult.cs" />
     <Compile Include="Result\BuildCacheAndCommitOnMainBranchResult.cs" />
+    <Compile Include="Result\TouchCommitAndAuthorTimestampsOfCurrentBranchResult.cs" />
     <Compile Include="Result\SetRemoteForBranchResult.cs" />
     <Compile Include="Result\UnpackLastTemporaryCommitOnCurrentBranchResult.cs" />
     <Compile Include="Result\CreateNewBranchResult.cs" />
@@ -90,7 +94,7 @@
     <Compile Include="Command\Branch\FastForwardCurrentBranchToRemote.cs" />
     <Compile Include="Command\Branch\GetRemoteBranch.cs" />
     <Compile Include="Command\Branch\HasBranchUnpushedChanges.cs" />
-    <Compile Include="Command\Tag\CreateTagToLastCommitOnCurrentBranch.cs" />
+    <Compile Include="Command\Tag\CreateTagToLastCommitOfBranch.cs" />
     <Compile Include="Command\Tag\DeleteLocalTag.cs" />
     <Compile Include="Command\Tag\DeleteRemoteTag.cs" />
     <Compile Include="Command\Tag\FetchTagFromRemote.cs" />

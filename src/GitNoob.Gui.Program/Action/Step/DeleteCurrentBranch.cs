@@ -14,7 +14,7 @@
             BusyMessage = "Busy - deleting current branch \"" + _branchName + "\"";
 
             {
-                var result = StepsExecutor.Config.Git.DeleteCurrentBranch(_branchName);
+                var result = StepsExecutor.Config.Git.DeleteCurrentBranch(_branchName, string.Empty);
 
                 var message = new VisualizerMessageWithLinks("Deleting current branch failed.");
 

@@ -250,7 +250,7 @@ namespace GitNoob.Git
                         var delete = new Command.Tag.DeleteLocalTag(gitworkingdirectory, lockTagName);
                         delete.WaitFor();
 
-                        var create = new Command.Tag.CreateTagToLastCommitOnCurrentBranch(gitworkingdirectory, lockTagName, rawlockmessage);
+                        var create = new Command.Tag.CreateTagToLastCommitOfBranch(gitworkingdirectory, null, lockTagName, rawlockmessage);
                         create.WaitFor();
 
                         locktag = GetLockTag();

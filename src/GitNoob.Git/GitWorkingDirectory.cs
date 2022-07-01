@@ -377,7 +377,59 @@ namespace GitNoob.Git
             };
         }
 
-        public DeleteCurrentBranchResult DeleteCurrentBranch(string branchname)
+        private bool CreateDeletedBranchUndoTag(string branchName, string mainBranch, string message)
+        {
+            string tagname;
+            Command.Tag.ListTags list;
+            GitTag found = null;
+            do
+            {
+                tagname =
+                    "gitnoob-deleted-branch-" + GitUtils.GenerateRandomSha1();
+                list = new Command.Tag.ListTags(this);
+                list.WaitFor();
+
+                found = null;
+                foreach (var tag in list.result)
+                {
+                    if (tag.Value.ShortName == tagname)
+                    {
+                        found = tag.Value;
+                        break;
+                    }
+                }
+            } while (found != null);
+
+            var createtag = new Command.Tag.CreateTagToLastCommitOfBranch(this, branchName, tagname,
+                "deleted-branch [" + GitUtils.EncodeUtf8Base64(branchName) + "]" +
+                "[" + GitUtils.EncodeUtf8Base64(mainBranch) + "]" +
+                "[" + DateTime.UtcNow.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") + "]" +
+                "[" + GitUtils.EncodeUtf8Base64(message) + "]"
+                );
+            createtag.WaitFor();
+
+            list = new Command.Tag.ListTags(this);
+            list.WaitFor();
+
+            found = null;
+            foreach (var tag in list.result)
+            {
+                if (tag.Value.ShortName == tagname)
+                {
+                    found = tag.Value;
+                    break;
+                }
+            }
+
+            if (found == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public DeleteCurrentBranchResult DeleteCurrentBranch(string branchname, string message)
         {
             var currentbranch = new Command.Branch.GetCurrentBranch(this);
             var changes = new Command.WorkingTree.HasChanges(this);
@@ -418,48 +470,7 @@ namespace GitNoob.Git
                 };
             }
 
-            string tagname;
-            Command.Tag.ListTags list;
-            GitTag found = null;
-            do
-            {
-                tagname =
-                    "gitnoob-deleted-branch-" + GitUtils.GenerateRandomSha1();
-                list = new Command.Tag.ListTags(this);
-                list.WaitFor();
-
-                found = null;
-                foreach (var tag in list.result)
-                {
-                    if (tag.Value.ShortName == tagname)
-                    {
-                        found = tag.Value;
-                        break;
-                    }
-                }
-            } while (found != null);
-
-            var createtag = new Command.Tag.CreateTagToLastCommitOnCurrentBranch(this, tagname, 
-                "deleted-branch [" + GitUtils.EncodeUtf8Base64(branchname) + "]" +
-                "[" + GitUtils.EncodeUtf8Base64(MainBranch) + "]" + 
-                "[" + DateTime.UtcNow.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'") + "]"
-                );
-            createtag.WaitFor();
-
-            list = new Command.Tag.ListTags(this);
-            list.WaitFor();
-
-            found = null;
-            foreach (var tag in list.result)
-            {
-                if (tag.Value.ShortName == tagname)
-                {
-                    found = tag.Value;
-                    break;
-                }
-            }
-
-            if (found == null)
+            if (!CreateDeletedBranchUndoTag(branchname, MainBranch, message))
             {
                 return new DeleteCurrentBranchResult()
                 {
@@ -987,6 +998,135 @@ namespace GitNoob.Git
                 HasGitNoobTemporaryCommit = (count > 0),
                 HasNoGitNoobTemporaryCommit = (count == 0),
                 NumberOfGitNoobTemporaryCommits = count,
+            };
+        }
+
+        public TouchCommitAndAuthorTimestampsOfCurrentBranchResult TouchCommitAndAuthorTimestampsOfCurrentBranch(DateTime toTime)
+        {
+            var currentbranch = new Command.Branch.GetCurrentBranch(this);
+            var changes = new Command.WorkingTree.HasChanges(this);
+            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
+            var merging = new Command.WorkingTree.IsMergeActive(this);
+            var baseCommit = new Command.Branch.FindCommonCommitOfTwoBranches(this, MainBranch, currentbranch.shortname);
+            currentbranch.WaitFor();
+            changes.WaitFor();
+            rebasing.WaitFor();
+            merging.WaitFor();
+            baseCommit.WaitFor();
+
+            if (currentbranch.shortname == MainBranch ||
+                changes.stagedUncommittedFiles != false || 
+                changes.workingtreeChanges != false || 
+                rebasing.result != false || 
+                merging.result != false || 
+                currentbranch.DetachedHead != false ||
+                !String.IsNullOrWhiteSpace(currentbranch.branch.RemoteBranchFullName) ||
+                String.IsNullOrWhiteSpace(baseCommit.commitid))
+            {
+                return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
+                {
+                    CurrentBranch = currentbranch.shortname,
+
+                    ErrorCurrentBranchIsMainBranch = (currentbranch.shortname == MainBranch),
+                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
+                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
+                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
+                    ErrorRebaseInProgress = (rebasing.result != false),
+                    ErrorMergeInProgress = (merging.result != false),
+                    ErrorCurrentBranchIsTrackingRemoteBranch = !String.IsNullOrWhiteSpace(currentbranch.branch.RemoteBranchFullName),
+                    ErrorNoCommonCommitWithMainBranch = String.IsNullOrWhiteSpace(baseCommit.commitid),
+                };
+            }
+
+            //commits on current branch
+            var commits = new Command.Branch.ListCommits(this, baseCommit.commitid, currentbranch.shortname);
+            commits.WaitFor();
+            if (commits.result == null || commits.result.Count == 0)
+            {
+                return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
+                {
+                    CurrentBranch = currentbranch.shortname,
+
+                    NoCommitsToTouch = true,
+                };
+            }
+            commits.result.Reverse(); //Reverse so that commits are: oldest first, newest last
+
+            //create a new temporary branch
+            var tempbranch = GitUtils.CreateTemporaryBranchAndCheckout(this, baseCommit.commitid);
+            if (tempbranch == null)
+            {
+                return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
+                {
+                    CurrentBranch = currentbranch.shortname,
+
+                    ErrorCreatingTemporaryBranch = true,
+                };
+            }
+
+            //cherry pick each commit and amend commit & author timestamp
+            foreach (var commit in commits.result)
+            {
+                var cherrypick = new Command.Branch.CherryPickOneCommit(this, commit.CommitId);
+                cherrypick.WaitFor();
+
+                var lastcommit = new Command.Branch.GetLastCommitOfBranch(this, tempbranch.ShortName);
+                lastcommit.WaitFor();
+
+                var same = new Command.Repository.CommitsAreTheSame(this, commit.CommitId, lastcommit.commitid);
+                same.WaitFor();
+
+                if (same.result != true)
+                {
+                    var checkout = new Command.Branch.ChangeBranchTo(this, currentbranch.shortname);
+                    checkout.WaitFor();
+
+                    var deletetemp = new Command.Branch.DeleteBranch(this, tempbranch.ShortName, true);
+                    deletetemp.WaitFor();
+
+                    return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
+                    {
+                        CurrentBranch = currentbranch.shortname,
+
+                        ErrorCherryPickingCommit = true,
+                    };
+
+                }
+
+                var touch = new Command.Branch.AmendLastCommit(this, toTime, toTime);
+                touch.WaitFor();
+            }
+
+            //delete original current branch
+            if (!CreateDeletedBranchUndoTag(currentbranch.shortname, MainBranch, "Touched commit & author timestamps"))
+            {
+                var checkout = new Command.Branch.ChangeBranchTo(this, currentbranch.shortname);
+                checkout.WaitFor();
+
+                var deletetemp = new Command.Branch.DeleteBranch(this, tempbranch.ShortName, true);
+                deletetemp.WaitFor();
+
+                return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
+                {
+                    CurrentBranch = currentbranch.shortname,
+
+                    ErrorCreatingSafetyTag = true,
+                };
+            }
+
+            var delete = new Command.Branch.DeleteBranch(this, currentbranch.shortname, true);
+            delete.WaitFor();
+
+            //Rename current checked out temporary branch to original current branch
+            var rename = new Command.Branch.RenameBranch(this, tempbranch.ShortName, currentbranch.shortname);
+            rename.WaitFor();
+
+            return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
+            {
+                CurrentBranch = currentbranch.shortname,
+
+                Touched = true,
+                NumberOfTouchedCommits = (uint) commits.result.Count,
             };
         }
 

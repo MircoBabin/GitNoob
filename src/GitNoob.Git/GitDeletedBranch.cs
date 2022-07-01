@@ -7,6 +7,7 @@ namespace GitNoob.Git
         public string BranchName { get; set; }
         public string MainBranchName { get; set; }
         public DateTime? DeletionTime { get; set; }
+        public string Message { get; set; }
 
         public GitTag Tag { get; set; }
 
@@ -22,6 +23,7 @@ namespace GitNoob.Git
             BranchName = String.Empty;
             MainBranchName = String.Empty;
             DeletionTime = null;
+            Message = String.Empty;
 
             var parts = deletedmessage.Split('[');
             int partno = 0;
@@ -55,6 +57,14 @@ namespace GitNoob.Git
                             try
                             {
                                 DeletionTime = DateTime.Parse(value);
+                            }
+                            catch { }
+                            break;
+
+                        case 4:
+                            try
+                            {
+                                Message = GitUtils.DecodeUtf8Base64(value);
                             }
                             catch { }
                             break;

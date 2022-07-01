@@ -50,6 +50,9 @@
     <Compile Include="Action\ExecuteAfterStatus.cs" />
     <Compile Include="Action\ExecuteDeleteLogfiles.cs" />
     <Compile Include="Action\ExecuteGitRepair.cs" />
+    <Compile Include="Action\Remedy\MessageConfirmTouchTimestampsOnCurrentBranch.cs" />
+    <Compile Include="Action\Step\AskTouchTimestampsOnCurrentBranch.cs" />
+    <Compile Include="Action\Step\TouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Action\VisualizerMessageButton.cs" />
     <Compile Include="Action\Remedy\InputChooseDeletedBranch.cs" />
     <Compile Include="Action\Remedy\InputChooseRemote.cs" />

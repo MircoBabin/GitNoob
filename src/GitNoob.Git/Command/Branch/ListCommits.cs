@@ -4,6 +4,7 @@ namespace GitNoob.Git.Command.Branch
 {
     public class ListCommits : Command
     {
+        //Commits are in reversed order. Newest first, oldest last
         public List<GitCommit> result { get; private set; }
 
         public ListCommits(GitWorkingDirectory gitworkingdirectory, string afterCommitId, string uptoCommitId) : base(gitworkingdirectory)
