@@ -1,5 +1,8 @@
 # GitNoob changelog
 
+## Version 1.11
+* Fix: starting Ngrok when apache is configured to use SSL (https).
+
 ## Version 1.10
 * Fix: open working directory failed when Fiddler was not installed.
 

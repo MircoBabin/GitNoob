@@ -87,7 +87,9 @@ namespace GitNoob.Gui.Program.Action.Step
                 {
                     WorkingDirectory = StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString(),
                     FileName = _ngrokExe,
-                    Arguments = "http -host-header=localhost:" + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port + " localhost:" + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port,
+                    Arguments = "http" + 
+                        " -host-header=localhost:" + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port +
+                        " " + (StepsExecutor.Config.ProjectWorkingDirectory.Apache.UseSsl.Value ? "https" : "http") +"://localhost:" + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port,
                     UseShellExecute = false,
                 };
                 System.Diagnostics.Process.Start(info);
