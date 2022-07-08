@@ -2,6 +2,9 @@
 
 ## Version 1.11
 * Fix: starting Ngrok when apache is configured to use SSL (https).
+* Add: delete branch
+* Add: repair option: undelete a deleted branch.
+* Add: repair option: set/touch the author and commit timestamps of all unmerged commits on the current branch.
 
 ## Version 1.10
 * Fix: open working directory failed when Fiddler was not installed.

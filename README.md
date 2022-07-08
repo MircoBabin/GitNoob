@@ -17,6 +17,7 @@ GitNoob solves the following problems:
 - Merging your current branch with upstream. Without those annoying merge commits which make the git history unreadable.
 - Logical locking the main branch when merging. If everyone in the team uses GitNoob, one can merge and may have to resolve conflicts only once. Because the others will not merge until this merge is finished.
 - Changing branch / creating a branch. Taking into account possible working tree changes.
+- Deleting a branch. With the safety first feature to also undelete the deleted branch.
 - Flushing all your current changes down the toilet. To be able to start over, continue with a clean slate.
 - When having committed to the wrong branch (e.g. the main branch) provide a remedy to move the commits to a new branch.
 - Prevent git disaster from happening when: in detached head state, inside rebase, inside merge, having working tree changes, having staged uncommitted files.
