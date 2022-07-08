@@ -30,7 +30,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
                     VisualizerMessageText.Append((today - time.Date).TotalDays + " days ago");
                 }
 
-                VisualizerMessageText.Append(" - " + FormatUtils.DateTimeToString(time));
+                VisualizerMessageText.Append(" - " + Git.GitUtils.DateTimeToHumanString(time));
                 VisualizerMessageText.Append(Environment.NewLine);
             }
 

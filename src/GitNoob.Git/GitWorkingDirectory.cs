@@ -347,26 +347,31 @@ namespace GitNoob.Git
                 };
             }
 
+            {
+                var command = new Command.Branch.ListBranches(this, false, branchname);
+                command.WaitFor();
+
+                if (command.result.Count > 0)
+                {
+                    return new CreateNewBranchResult()
+                    {
+                        ErrorBranchAlreadyExists = true,
+                    };
+                }
+            }
+
             var create = new Command.Branch.CreateBranch(this, branchname, branchFromBranchName, checkoutNewBranch);
             create.WaitFor();
 
             currentbranch = new Command.Branch.GetCurrentBranch(this);
-            var command = new Command.Branch.ListBranches(this, true);
-            command.WaitFor();
-            currentbranch.WaitFor();
-
             bool created = false;
-            if (command.result != null)
             {
-                foreach (var branch in command.result)
-                {
-                    if (branch.ShortName == branchname)
-                    {
-                        created = true;
-                        break;
-                    }
-                }
+                var command = new Command.Branch.ListBranches(this, false, branchname);
+                command.WaitFor();
+
+                created = (command.result.Count > 0);
             }
+            currentbranch.WaitFor();
 
             return new CreateNewBranchResult()
             {
@@ -484,23 +489,9 @@ namespace GitNoob.Git
             var delete = new Command.Branch.DeleteBranch(this, branchname, true);
             delete.WaitFor();
 
-            var branchesCommand = new Command.Branch.ListBranches(this, true);
+            var branchesCommand = new Command.Branch.ListBranches(this, false, branchname);
             branchesCommand.WaitFor();
-
-            bool deleted = true;
-            if (branchesCommand.result != null)
-            {
-                foreach (var branch in branchesCommand.result)
-                {
-                    if (branch.ShortName == branchname)
-                    {
-                        deleted = false;
-                        break;
-                    }
-                }
-            }
-
-            if (!deleted)
+            if (branchesCommand.result.Count != 0)
             {
                 return new DeleteCurrentBranchResult()
                 {
@@ -532,6 +523,19 @@ namespace GitNoob.Git
                     }
                 }
             }
+
+            result.Sort();
+
+            return result;
+        }
+
+        public CreateNewBranchResult UndeleteBranch(GitDeletedBranch deleted, string branchname, bool checkoutNewBranch)
+        {
+            var result = CreateNewBranch(branchname, deleted.Tag.Commit, checkoutNewBranch);
+            if (!result.Created) return result;
+
+            var deltag = new Command.Tag.DeleteLocalTag(this, deleted.Tag.ShortName);
+            deltag.WaitFor();
 
             return result;
         }
@@ -1098,7 +1102,7 @@ namespace GitNoob.Git
             }
 
             //delete original current branch
-            if (!CreateDeletedBranchUndoTag(currentbranch.shortname, MainBranch, "Touched commit & author timestamps"))
+            if (!CreateDeletedBranchUndoTag(currentbranch.shortname, MainBranch, "Touched commit & author timestamps to " + GitUtils.DateTimeToHumanString(toTime)))
             {
                 var checkout = new Command.Branch.ChangeBranchTo(this, currentbranch.shortname);
                 checkout.WaitFor();

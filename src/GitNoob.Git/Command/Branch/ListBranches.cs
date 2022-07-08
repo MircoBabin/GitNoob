@@ -20,7 +20,14 @@ namespace GitNoob.Git.Command.Branch
             }
             else
             {
-                command += "\"" + oneBranchName + "\"";
+                if (oneBranchName.StartsWith("refs/"))
+                {
+                    command += "\"" + oneBranchName + "\"";
+                }
+                else
+                {
+                    command += "\"refs/heads/" + oneBranchName + "\"";
+                }
             }
             RunGit("list", command);
 

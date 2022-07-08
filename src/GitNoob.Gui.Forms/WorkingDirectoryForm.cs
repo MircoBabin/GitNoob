@@ -537,8 +537,7 @@ namespace GitNoob.Gui.Forms
             panelError.AutoScroll = false;
             while (_errorButtons.Count < message.VisualizerMessageButtons.Count)
             {
-                var button = new ErrorButton();
-                this.panelError.Controls.Add(button);
+                var button = new ErrorButton(this.panelError.Controls);
 
                 _errorButtons.Add(button);
             };
@@ -586,14 +585,14 @@ namespace GitNoob.Gui.Forms
                 foreach (var item in message.VisualizerMessageButtons)
                 {
                     ErrorButton button = _errorButtons[no];
-                    button.ShowErrorButton(input, item.text, item.onClicked, ref location, size);
+                    button.ShowErrorButton(toolTips, input, item, ref location, size);
 
                     no++;
                 }
                 while (no < _errorButtons.Count)
                 {
                     ErrorButton button = _errorButtons[no];
-                    button.Visible = false;
+                    button.HideErrorButton();
 
                     no++;
                 }

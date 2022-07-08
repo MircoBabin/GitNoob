@@ -78,7 +78,7 @@ namespace GitNoob.Gui.Forms
             }
 
             if (!string.IsNullOrWhiteSpace(appendText)) labeltext.Append(appendText);
-            label.Text = labeltext.ToString();
+            label.Text = labeltext.ToString().Replace("&", "&&");
 
             foreach(var link in mylinks)
             {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GitNoob.Gui.Program.Action.Remedy
 {
@@ -19,11 +20,16 @@ namespace GitNoob.Gui.Program.Action.Remedy
 
             foreach (var branch in branches)
             {
-                string message = FormatUtils.DateTimeToString(branch.DeletionTime) + " - \"" + branch.BranchName + "\" with main branch \"" + branch.MainBranchName + "\"";
+                VisualizerMessageSubButton showHistory = new VisualizerMessageSubButton(Utils.Resources.getIcon("gitk"), "Deleted branch history", (input) =>
+                {
+                    StepsExecutor.StartGitk(new List<string>() { branch.Tag.ShortName, branch.MainBranchName, MainBranch });
+                });
+
+                string message = Git.GitUtils.DateTimeToHumanString(branch.DeletionTime) + " - \"" + branch.BranchName + "\" with main branch \"" + branch.MainBranchName + "\"." + Environment.NewLine + branch.Message;
                 VisualizerMessageButtons.Add(new VisualizerMessageButton(message, (input) => {
                     OnSelectedBranchAction(branch);
                     Done();
-                }));
+                }, new List<VisualizerMessageSubButton>() { showHistory } ));
             }
         }
     }

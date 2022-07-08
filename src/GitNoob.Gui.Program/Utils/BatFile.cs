@@ -36,6 +36,11 @@ namespace GitNoob.Gui.Program.Utils
             _contents.AppendLine("chcp 65001 >nul 2>&1"); //Set UTF-8 codepage
         }
 
+        public void Append(string text)
+        {
+            _contents.Append(text);
+        }
+
         public void AppendLine(string line)
         {
             _contents.AppendLine(line);

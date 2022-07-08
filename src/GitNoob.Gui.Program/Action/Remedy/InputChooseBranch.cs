@@ -54,18 +54,18 @@ namespace GitNoob.Gui.Program.Action.Remedy
                 }));
             }
 
-            /* TODO - enable when repair function "Restore deleted branch" is ready
             if (!string.IsNullOrWhiteSpace(DeleteBranchText))
             {
-                VisualizerMessageButtons.Add(DeleteBranchText, (input) => {
-                    var remedy = new MessageConfirmDeleteBranch(Step, new MessageWithLinks(), CurrentBranch);
-                    var step = new Step.DeleteCurrentBranch(CurrentBranch);
-                    StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { remedy, step });
-
+                VisualizerMessageButtons.Add(new VisualizerMessageButton(DeleteBranchText, (input) => {
+                    var remedy = new InputConfirmDeleteBranch(Step, new VisualizerMessageWithLinks(), CurrentBranch, (inputMsg) =>
+                    {
+                        var step = new Step.DeleteCurrentBranch(CurrentBranch, inputMsg.inputValue);
+                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
+                    });
+                    StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { remedy });
                     Done();
-                });
+                }));
             }
-            */
         }
     }
 }

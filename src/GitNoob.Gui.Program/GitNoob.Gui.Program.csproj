@@ -51,14 +51,17 @@
     <Compile Include="Action\ExecuteDeleteLogfiles.cs" />
     <Compile Include="Action\ExecuteGitRepair.cs" />
     <Compile Include="Action\Remedy\MessageConfirmTouchTimestampsOnCurrentBranch.cs" />
+    <Compile Include="Action\Remedy\MessageBranchAlreadyExists.cs" />
+    <Compile Include="Action\StartGitk.cs" />
     <Compile Include="Action\Step\AskTouchTimestampsOnCurrentBranch.cs" />
+    <Compile Include="Action\Step\UndeleteBranch.cs" />
     <Compile Include="Action\Step\TouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Action\VisualizerMessageButton.cs" />
     <Compile Include="Action\Remedy\InputChooseDeletedBranch.cs" />
     <Compile Include="Action\Remedy\InputChooseRemote.cs" />
     <Compile Include="Action\Remedy\InputConfirmGitNoobTemporaryCommits.cs" />
     <Compile Include="Action\Remedy\MessageConfirmUnpackLastCommitOnCurrentBranch.cs" />
-    <Compile Include="Action\Remedy\MessageConfirmDeleteBranch.cs" />
+    <Compile Include="Action\Remedy\InputConfirmDeleteBranch.cs" />
     <Compile Include="Action\Remedy\MessageNoDeletedBranches.cs" />
     <Compile Include="Action\Remedy\SelectGitRepairOption.cs" />
     <Compile Include="Action\Remedy\MessageSetRemoteForBranchFailed.cs" />
@@ -166,7 +169,6 @@
     <Compile Include="Action\Step\StartNgrok.cs" />
     <Compile Include="Action\Step\StartApache.cs" />
     <Compile Include="Action\Step\Step.cs" />
-    <Compile Include="Action\FormatUtils.cs" />
     <Compile Include="ConfigIExecutor.cs" />
     <Compile Include="Utils\BatFile.cs" />
     <Compile Include="Utils\ExceptionUtils.cs" />

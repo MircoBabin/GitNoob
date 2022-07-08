@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GitNoob.Gui.Program.Action.Step
 {
@@ -22,12 +23,22 @@ namespace GitNoob.Gui.Program.Action.Step
 
             //not really a failure, but a solution to choose a deleted branch visually
             message = new VisualizerMessageWithLinks("Undelete branch:");
-            FailureRemedy = new Remedy.InputChooseDeletedBranch(this, message, result.DeletedBranches, "Cancel", 
+            FailureRemedy = new Remedy.InputChooseDeletedBranch(this, message, result.DeletedBranches, "Cancel",
                 MainBranch,
                 (branch) => {
-                //var step = new UndeleteBranch(false, branch);
-                //StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
-            });
+                    var msg = new VisualizerMessageWithLinks("Undelete branch " + branch.BranchName + ", deleted on " + Git.GitUtils.DateTimeToHumanString(branch.DeletionTime) + ".");
+                    if (!string.IsNullOrWhiteSpace(branch.Message))
+                    {
+                        msg.Append(Environment.NewLine);
+                        msg.Append(branch.Message);
+                    }
+
+                    var remedy = new Remedy.InputNewBranchName(this, msg, "Undelete branch. Create new branch on last commit of deleted branch.", (input) => {
+                        var undeleteStep = new UndeleteBranch(branch, input);
+                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { undeleteStep });
+                    });
+                    StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { remedy });
+                });
             return false;
         }
     }

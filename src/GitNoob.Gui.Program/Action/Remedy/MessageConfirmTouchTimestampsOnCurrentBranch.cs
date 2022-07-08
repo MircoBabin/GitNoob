@@ -9,7 +9,8 @@ namespace GitNoob.Gui.Program.Action.Remedy
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("Set the author and commit timestamps of all unmerged commits on the current branch \"" + currentBranch + "\"." + Environment.NewLine);
-
+            VisualizerMessageText.Append(Environment.NewLine);
+            VisualizerMessageText.Append("This will recreate all unmerged commits. The original commits are saved and can be restored by repair option: undelete a deleted branch.");
             VisualizerMessageButtons = 
                 new List<VisualizerMessageButton>()
                 {

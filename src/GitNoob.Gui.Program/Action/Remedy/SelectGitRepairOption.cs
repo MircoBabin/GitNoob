@@ -31,19 +31,23 @@ namespace GitNoob.Gui.Program.Action.Remedy
                         Done();
                     }),
 
-                    /* todo
                     new VisualizerMessageButton("Undelete a deleted branch.", (input) => {
                         var step = new Step.AskUndeleteBranch();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
                     }),
-                    */
 
                     /*
                     new VisualizerMessageButton("Stage all changes and start Git Gui to commit.", (input) => {
                         //Todo
                         Done();
                     }),
+
+                    new VisualizerMessageButton("Show git reference log.", (input) => {
+                        //Todo, with undelete (create branch) option - like undelete a deleted branch.
+                        Done();
+                    }),
+
                     new VisualizerMessageButton("Force main branch to point to a specific commit. And push this change forced to remote.", (input) => {
                         //Todo
 

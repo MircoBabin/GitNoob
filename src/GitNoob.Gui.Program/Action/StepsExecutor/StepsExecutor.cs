@@ -192,6 +192,12 @@ namespace GitNoob.Gui.Program.Action.StepsExecutor
             action.execute();
         }
 
+        public void StartGitk(List<string> branches)
+        {
+            var action = new StartGitk(_stepConfig, branches);
+            action.execute();
+        }
+
         public void StartGitkAll()
         {
             var action = new StartGitkAll(_stepConfig);

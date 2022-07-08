@@ -65,6 +65,12 @@
                     return false;
                 }
 
+                if (result.ErrorBranchAlreadyExists)
+                {
+                    FailureRemedy = new Remedy.MessageBranchAlreadyExists(this, message, _branchName);
+                    return false;
+                }
+
                 if (result.Created)
                 {
                     StepsExecutor.CurrentBranchChangedTo(result.CurrentBranch);

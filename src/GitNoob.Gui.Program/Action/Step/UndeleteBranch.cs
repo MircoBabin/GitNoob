@@ -1,24 +1,24 @@
 ﻿namespace GitNoob.Gui.Program.Action.Step
 {
-    public class DeleteCurrentBranch : Step
+    public class UndeleteBranch : Step
     {
+        private Git.GitDeletedBranch _deletedBranch;
         private string _branchName;
-        private string _message;
 
-        public DeleteCurrentBranch(string BranchName, string Message) : base()
+        public UndeleteBranch(Git.GitDeletedBranch DeletedBranch, string BranchName) : base()
         {
+            _deletedBranch = DeletedBranch;
             _branchName = BranchName;
-            _message = Message;
         }
 
         protected override bool run()
         {
-            BusyMessage = "Busy - deleting current branch \"" + _branchName + "\"";
+            BusyMessage = "Busy - creating new branch \"" + _branchName + "\" from deleted branch \"" + _deletedBranch.BranchName + "\"";
 
             {
-                var result = StepsExecutor.Config.Git.DeleteCurrentBranch(_branchName, _message);
+                var result = StepsExecutor.Config.Git.UndeleteBranch(_deletedBranch, _branchName, true);
 
-                var message = new VisualizerMessageWithLinks("Deleting current branch failed.");
+                var message = new VisualizerMessageWithLinks("Creating new branch failed.");
 
                 if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
                 {
@@ -38,13 +38,20 @@
                     return false;
                 }
 
-                StepsExecutor.CurrentBranchChangedTo(null);
-
-                if (!result.Deleted)
+                if (result.ErrorBranchAlreadyExists)
                 {
+                    FailureRemedy = new Remedy.MessageBranchAlreadyExists(this, message, _branchName);
+                    return false;
+                }
+
+                if (!result.Created)
+                {
+                    StepsExecutor.CurrentBranchChangedTo(null);
                     FailureRemedy = new Remedy.MessageUnknownResult(this, message, result);
                     return false;
                 }
+
+                StepsExecutor.CurrentBranchChangedTo(result.CurrentBranch);
             }
 
             return true;

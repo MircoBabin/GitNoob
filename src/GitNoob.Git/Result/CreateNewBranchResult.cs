@@ -12,6 +12,7 @@ namespace GitNoob.Git.Result
         public bool ErrorWorkingTreeChanges { get; set; }
         public bool ErrorRebaseInProgress { get; set; }
         public bool ErrorMergeInProgress { get; set; }
+        public bool ErrorBranchAlreadyExists { get; set; }
         public bool ErrorCreating { get; set; }
 
         public CreateNewBranchResult()
@@ -24,6 +25,7 @@ namespace GitNoob.Git.Result
             ErrorWorkingTreeChanges = false;
             ErrorRebaseInProgress = false;
             ErrorMergeInProgress = false;
+            ErrorBranchAlreadyExists = false;
             ErrorCreating = false;
         }
     }
