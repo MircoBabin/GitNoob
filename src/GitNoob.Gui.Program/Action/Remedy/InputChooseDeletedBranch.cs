@@ -22,7 +22,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
             {
                 VisualizerMessageSubButton showHistory = new VisualizerMessageSubButton(Utils.Resources.getIcon("gitk"), "Deleted branch history", (input) =>
                 {
-                    StepsExecutor.StartGitk(new List<string>() { branch.Tag.ShortName, branch.MainBranchName, MainBranch });
+                    StepsExecutor.StartGitk(new List<string>() { branch.Tag.ShortName, branch.MainBranchName, MainBranch }, branch.Tag.PointingToCommitId);
                 });
 
                 string message = Git.GitUtils.DateTimeToHumanString(branch.DeletionTime) + " - \"" + branch.BranchName + "\" with main branch \"" + branch.MainBranchName + "\"." + Environment.NewLine + branch.Message;

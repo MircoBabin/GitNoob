@@ -192,9 +192,9 @@ namespace GitNoob.Gui.Program.Action.StepsExecutor
             action.execute();
         }
 
-        public void StartGitk(List<string> branches)
+        public void StartGitk(List<string> branches, string focusOnCommitId)
         {
-            var action = new StartGitk(_stepConfig, branches);
+            var action = new StartGitk(_stepConfig, branches, focusOnCommitId);
             action.execute();
         }
 

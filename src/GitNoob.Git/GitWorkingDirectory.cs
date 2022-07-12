@@ -531,7 +531,7 @@ namespace GitNoob.Git
 
         public CreateNewBranchResult UndeleteBranch(GitDeletedBranch deleted, string branchname, bool checkoutNewBranch)
         {
-            var result = CreateNewBranch(branchname, deleted.Tag.Commit, checkoutNewBranch);
+            var result = CreateNewBranch(branchname, deleted.Tag.PointingToCommitId, checkoutNewBranch);
             if (!result.Created) return result;
 
             var deltag = new Command.Tag.DeleteLocalTag(this, deleted.Tag.ShortName);

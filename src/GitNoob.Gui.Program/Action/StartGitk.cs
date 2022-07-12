@@ -7,9 +7,11 @@ namespace GitNoob.Gui.Program.Action
     public class StartGitk : Action, IAction
     {
         private List<string> branches;
-        public StartGitk(StepsExecutor.StepConfig Config, List<string> branches) : base(Config) 
+        private string focusOnCommitId;
+        public StartGitk(StepsExecutor.StepConfig Config, List<string> branches, string focusOnCommitId) : base(Config) 
         {
             this.branches = branches;
+            this.focusOnCommitId = focusOnCommitId;
         }
 
         private static string _cacheExecutable = null;
@@ -47,6 +49,10 @@ namespace GitNoob.Gui.Program.Action
                 stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory,
                 stepConfig.Config.PhpIni);
             batFile.Append("start \"Git-Gitk-Branches\" \"" + executable + "\"");
+            if (!string.IsNullOrWhiteSpace(focusOnCommitId))
+            {
+                batFile.Append(" \"--select-commit=" + focusOnCommitId + "\"");
+            }
             if (branches != null)
             {
                 foreach(var branch in branches)

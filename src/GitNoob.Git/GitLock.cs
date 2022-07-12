@@ -320,7 +320,7 @@ namespace GitNoob.Git
                     list.WaitFor();
 
                     GitTag remotetag = GetLockTag();
-                    if (remotetag == null || remotetag.Commit != locktag.Commit || remotetag.Message != locktag.Message)
+                    if (remotetag == null || remotetag.PointingToCommitId != locktag.PointingToCommitId || remotetag.Message != locktag.Message)
                     {
                         string lockedby = String.Empty;
                         DateTime? lockedtime = null;
@@ -400,7 +400,7 @@ namespace GitNoob.Git
             fetch.WaitFor();
 
             var remotetag = GetLockTag();
-            if (remotetag == null || remotetag.Commit != acquiredTag.Commit || remotetag.Message != acquiredTag.Message)
+            if (remotetag == null || remotetag.PointingToCommitId != acquiredTag.PointingToCommitId || remotetag.Message != acquiredTag.Message)
             {
                 string lockedby = String.Empty;
                 DateTime? lockedtime = null;

@@ -1,5 +1,8 @@
 # GitNoob changelog
 
+## Version 1.12
+* Fix: undelete a deleted branch was wrongly determining the commitid.
+
 ## Version 1.11
 * Fix: starting Ngrok when apache is configured to use SSL (https).
 * Add: delete branch
