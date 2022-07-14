@@ -1,5 +1,8 @@
 # GitNoob changelog
 
+## Version 1.13
+* Fix: use Ngrok v3.
+
 ## Version 1.12
 * Fix: undelete a deleted branch was wrongly determining the commitid.
 
