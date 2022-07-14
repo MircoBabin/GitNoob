@@ -299,6 +299,16 @@ namespace GitNoob.Gui.Program.Utils
                 info.EnvironmentVariables["PHPRC"] = phpIni.IniPath; /* Directory containing php.ini */
                 info.EnvironmentVariables["Path"] = info.EnvironmentVariables["Path"] + ";" + projectworkingdirectory.Php.Path.ToString();
 
+                if (!string.IsNullOrEmpty(projectworkingdirectory.Ngrok.AuthToken))
+                {
+                    info.EnvironmentVariables["NGROK_AUTHTOKEN"] = projectworkingdirectory.Ngrok.AuthToken;
+                }
+
+                if (!string.IsNullOrEmpty(projectworkingdirectory.Ngrok.ApiKey))
+                {
+                    info.EnvironmentVariables["NGROK_API_KEY"] = projectworkingdirectory.Ngrok.ApiKey;
+                }
+
                 //Global Composer bin directory, e.g. for php-cs-fixer
                 //    %appdata%\Composer\\vendor\bin
                 string composerGlobalBin = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Composer\\vendor\\bin");

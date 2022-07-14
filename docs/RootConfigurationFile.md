@@ -65,7 +65,7 @@ assembly=c:\MyCompany\MyCompanyProjectTypes.dll
 ```
 
 # section \[projects\]
-This section defines the project ini files. The "project" key may be repeated multiple times.
+This section defines the [project ini](ProjectConfigurationFile.md "Project Configuration File") files. The "project" key may be repeated multiple times.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -120,7 +120,10 @@ A section starting with "ngrok-" defines Ngrok settings. E.g. "\[ngrok-global\]"
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | ngrokPath | Path | Path to Ngrok binaries. %ngrokPath% should contain ngrok.exe. e.g. "%binPath%\\ngrok". |
-| ngrokPort | Integer | Port on localhost where the Ngrok dashboard is running. e.g. the default port "4040" |
+| ngrokPort | Integer | Port on localhost where the Ngrok dashboard is running. e.g. the default port "4040". |
+| ngrokAgentConfigurationFile | Path | (Optional) Ngrok Agent Configuration File (ngrok.yml). Will be specified as commandline parameter "--config=ngrokAgentConfigurationFile". |
+| ngrokAuthToken | String | (Optional) Ngrok authtoken to use. Will be set as environment variable NGROK_AUTHTOKEN. The authtoken can also be set in the Ngrok Agent Configuration File (ngrok.yml). |
+| ngrokApiKey | String | (Optional) Ngrok apikey for https://api.ngrok.com. Will be set as environment variable NGROK_API_KEY. |
 
 ```
 [ngrok-global]

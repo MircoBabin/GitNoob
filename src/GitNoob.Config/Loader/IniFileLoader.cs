@@ -358,6 +358,14 @@ namespace GitNoob.Config.Loader
                 catch { }
             }
 
+            ReadFilename(ini, Section, "ngrokAgentConfigurationFile", ngrok.AgentConfigurationFile);
+
+            value = ReadValue(ini, Section, "ngrokAuthToken");
+            if (!string.IsNullOrWhiteSpace(value)) ngrok.AuthToken = value;
+
+            value = ReadValue(ini, Section, "ngrokApiKey");
+            if (!string.IsNullOrWhiteSpace(value)) ngrok.ApiKey = value;
+
             return ngrok;
         }
 

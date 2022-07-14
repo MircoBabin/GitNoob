@@ -25,7 +25,10 @@ In the project configuration the section GitNoob can contain the settings:
 | | | |
 | ngrok | Value | (Optional) project ngrok settings name. E.g. "global" then there should also be a section \[ngrok-global\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | ngrokPath | Path | (Optional) Path to Ngrok binaries. %ngrokPath% should contain ngrok.exe. e.g. "%binPath%\\ngrok". |
-| ngrokPort | Integer | (Optional) Port on localhost where the Ngrok dashboard is running. e.g. the default port "4040" |
+| ngrokPort | Integer | (Optional) Port on localhost where the Ngrok dashboard is running. e.g. the default port "4040". |
+| ngrokAgentConfigurationFile | Path | (Optional) Ngrok Agent Configuration File (ngrok.yml). Will be specified as commandline parameter "--config=ngrokAgentConfigurationFile". |
+| ngrokAuthToken | String | (Optional) Ngrok authtoken to use. Will be set as environment variable NGROK_AUTHTOKEN. The authtoken can also be set in the Ngrok Agent Configuration File (ngrok.yml). |
+| ngrokApiKey | String | (Optional) Ngrok apikey for https://api.ngrok.com. Will be set as environment variable NGROK_API_KEY. |
 | | | |
 | smtpserver | Value | (Optional) project smtpserver settings name. E.g. "papercut" then there should also be a section \[smtpserver-papercut\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | smtpServerExecutable | Path | (Optional) Smtp server executable. |
@@ -74,7 +77,10 @@ This section defines a working directory.
 | | | |
 | ngrok | Value | (Optional) project ngrok settings name. E.g. "global" then there should also be a section \[ngrok-global\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | ngrokPath | Path | (Optional) Path to Ngrok binaries. %ngrokPath% should contain ngrok.exe. e.g. "%binPath%\\ngrok". |
-| ngrokPort | Integer | (Optional) Port on localhost where the Ngrok dashboard is running. e.g. the default port "4040" |
+| ngrokPort | Integer | (Optional) Port on localhost where the Ngrok dashboard is running. e.g. the default port "4040". |
+| ngrokAgentConfigurationFile | Path | (Optional) Ngrok Agent Configuration File (ngrok.yml). Will be specified as commandline parameter "--config=ngrokAgentConfigurationFile". |
+| ngrokAuthToken | String | (Optional) Ngrok authtoken to use. Will be set as environment variable NGROK_AUTHTOKEN. The authtoken can also be set in the Ngrok Agent Configuration File (ngrok.yml). |
+| ngrokApiKey | String | (Optional) Ngrok apikey for https://api.ngrok.com. Will be set as environment variable NGROK_API_KEY. |
 | | | |
 | smtpserver | Value | (Optional) project smtpserver settings name. E.g. "papercut" then there should also be a section \[smtpserver-papercut\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | smtpServerExecutable | Path | (Optional) Smtp server executable. |

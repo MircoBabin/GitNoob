@@ -14,14 +14,19 @@ namespace GitNoob.Gui.Program
         private string _phpIniPath;
         private string _tempDirectory;
         private string _workingDirectory;
+        private string _ngrokAuthToken;
+        private string _ngrokApiKey;
 
-        public ConfigIExecutor(bool NeedsPhp, string PhpExePath, string PhpIniPath, string TempDirectory, string WorkingDirectory)
+        public ConfigIExecutor(bool NeedsPhp, string PhpExePath, string PhpIniPath, string TempDirectory, string WorkingDirectory,
+                               string NgrokAuthToken, string NgrokApiKey)
         {
             _needsPhp = NeedsPhp;
             _phpExePath = PhpExePath;
             _phpIniPath = PhpIniPath;
             _tempDirectory = TempDirectory;
             _workingDirectory = WorkingDirectory;
+            _ngrokAuthToken = NgrokAuthToken;
+            _ngrokApiKey = NgrokApiKey;
         }
 
         public string GetPhpExe()
@@ -67,6 +72,16 @@ namespace GitNoob.Gui.Program
                 }
             }
 
+            if (!string.IsNullOrEmpty(_ngrokAuthToken))
+            {
+                envs.Add("NGROK_AUTHTOKEN",  _ngrokAuthToken);
+            }
+
+            if (!string.IsNullOrEmpty(_ngrokApiKey))
+            {
+                envs.Add("NGROK_API_KEY", _ngrokApiKey);
+            }
+
             var console = new Git.Command.ConsoleExecutor(batFile, commandline, _workingDirectory, null, null, paths, envs);
             console.WaitFor();
 
@@ -89,6 +104,16 @@ namespace GitNoob.Gui.Program
                 _appendToPath.Add(_phpExePath);
                 _environmentVariables.Add("PHPRC", _phpIniPath); /* Directory containing php.ini */
             };
+
+            if (!string.IsNullOrEmpty(_ngrokAuthToken))
+            {
+                _environmentVariables.Add("NGROK_AUTHTOKEN", _ngrokAuthToken);
+            }
+
+            if (!string.IsNullOrEmpty(_ngrokApiKey))
+            {
+                _environmentVariables.Add("NGROK_API_KEY", _ngrokApiKey);
+            }
 
             var _process = new Process();
             _process.StartInfo.FileName = batFile;

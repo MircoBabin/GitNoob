@@ -46,7 +46,9 @@ namespace GitNoob.Gui.Program.Action
                 phpPath,
                 phpIniPath,
                 FileUtils.TempDirectoryForProject(Config.Project, Config.ProjectWorkingDirectory),
-                Config.ProjectWorkingDirectory.Path.ToString()
+                Config.ProjectWorkingDirectory.Path.ToString(),
+                Config.ProjectWorkingDirectory.Ngrok.AuthToken,
+                Config.ProjectWorkingDirectory.Ngrok.ApiKey
             );
         }
 
