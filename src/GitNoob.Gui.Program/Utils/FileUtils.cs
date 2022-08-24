@@ -1,9 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace GitNoob.Gui.Program.Utils
@@ -101,7 +99,8 @@ namespace GitNoob.Gui.Program.Utils
 
         public static string TempDirectoryForProject(Config.Project project, Config.WorkingDirectory projectworkingdirectory)
         {
-            var path = Path.Combine(Path.GetTempPath(), "GitNoob");
+            // Don't use Path.GetTempPath() as files inside may be deleted by the Windows OS at unexpected moments, when GitNoob is still running.
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GitNoob");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -288,37 +287,6 @@ namespace GitNoob.Gui.Program.Utils
                     catch { }
                 }
             }
-        }
-
-        public static void Execute_ProcessStartInfo(ProcessStartInfo info, Config.WorkingDirectory projectworkingdirectory,
-            ConfigFileTemplate.PhpIni phpIni)
-        {
-            if (projectworkingdirectory.ProjectType != null &&
-                projectworkingdirectory.ProjectType.Capabilities.NeedsPhp)
-            {
-                info.EnvironmentVariables["PHPRC"] = phpIni.IniPath; /* Directory containing php.ini */
-                info.EnvironmentVariables["Path"] = info.EnvironmentVariables["Path"] + ";" + projectworkingdirectory.Php.Path.ToString();
-
-                if (!string.IsNullOrEmpty(projectworkingdirectory.Ngrok.AuthToken))
-                {
-                    info.EnvironmentVariables["NGROK_AUTHTOKEN"] = projectworkingdirectory.Ngrok.AuthToken;
-                }
-
-                if (!string.IsNullOrEmpty(projectworkingdirectory.Ngrok.ApiKey))
-                {
-                    info.EnvironmentVariables["NGROK_API_KEY"] = projectworkingdirectory.Ngrok.ApiKey;
-                }
-
-                //Global Composer bin directory, e.g. for php-cs-fixer
-                //    %appdata%\Composer\\vendor\bin
-                string composerGlobalBin = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Composer\\vendor\\bin");
-                if (Directory.Exists(composerGlobalBin))
-                {
-                    info.EnvironmentVariables["Path"] = info.EnvironmentVariables["Path"] + ";" + composerGlobalBin;
-                }
-            }
-
-            Process.Start(info);
         }
     }
 }

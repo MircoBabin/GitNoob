@@ -2,8 +2,10 @@
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class StartGitCredentialsViaKeePassCommanderOnGithub : IAction
+    public class StartGitCredentialsViaKeePassCommanderOnGithub : Action, IAction
     {
+        public StartGitCredentialsViaKeePassCommanderOnGithub(StepsExecutor.StepConfig Config) : base(Config) { }
+
         public Icon icon()
         {
             return null;
@@ -11,7 +13,7 @@ namespace GitNoob.Gui.Program.Action
 
         public void execute()
         {
-            System.Diagnostics.Process.Start("https://github.com/MircoBabin/GitCredentialsViaKeePassCommander");
+            Utils.BatFile.StartWebBrowser("https://github.com/MircoBabin/GitCredentialsViaKeePassCommander", stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
         }
     }
 }

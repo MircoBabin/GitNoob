@@ -2,8 +2,10 @@
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class StartExplorer : IAction
+    public class StartExplorer : Action, IAction
     {
+        public StartExplorer(StepsExecutor.StepConfig Config) : base(Config) { }
+
         private static string _cacheExecutable = null;
         private static string GetExecutable()
         {
@@ -22,12 +24,6 @@ namespace GitNoob.Gui.Program.Action
             return _cacheExecutable;
         }
 
-        private ProgramWorkingDirectory Config;
-        public StartExplorer(ProgramWorkingDirectory Config)
-        {
-            this.Config = Config;
-        }
-
         public Icon icon()
         {
             var explorer = GetExecutable();
@@ -36,10 +32,9 @@ namespace GitNoob.Gui.Program.Action
 
         public void execute()
         {
-            var path = Config.ProjectWorkingDirectory.Path.ToString();
-            if (!path.EndsWith("\\")) path = path + "\\";
+            var path = stepConfig.Config.ProjectWorkingDirectory.Path.ToString();
 
-            System.Diagnostics.Process.Start(path);
+            Utils.BatFile.StartWindowsExplorer(path, stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
         }
     }
 }

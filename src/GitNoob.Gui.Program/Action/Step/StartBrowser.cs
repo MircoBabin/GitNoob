@@ -12,7 +12,7 @@
 
         protected override bool run()
         {
-            System.Diagnostics.Process.Start(_url);
+            Utils.BatFile.StartWebBrowser(_url, StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory, StepsExecutor.Config.PhpIni);
 
             return true;
         }

@@ -4,8 +4,10 @@ using System.IO;
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class StartFiddler : IAction
+    public class StartFiddler : Action, IAction
     {
+        public StartFiddler(StepsExecutor.StepConfig Config) : base(Config) { }
+
         private static string _cacheExecutable = null;
         private static string GetExecutable()
         {
@@ -45,7 +47,8 @@ namespace GitNoob.Gui.Program.Action
             var executable = GetExecutable();
             if (string.IsNullOrEmpty(executable)) return;
 
-            System.Diagnostics.Process.Start(executable);
+            Utils.BatFile.StartExecutable(executable, null, 
+                stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
         }
     }
 }

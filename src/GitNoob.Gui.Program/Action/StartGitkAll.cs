@@ -38,13 +38,13 @@ namespace GitNoob.Gui.Program.Action
             var executable = GetExecutable();
             if (string.IsNullOrEmpty(executable)) return;
 
-            var batFile = new BatFile("run-gitkall", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow,
+            var batFile = new BatFile("run-gitkall", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow, "GitNoob - Git History (all)",
                 stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory,
                 stepConfig.Config.PhpIni);
             batFile.AppendLine("start \"Git-Gitk-All\" \"" + executable + "\" --all");
             batFile.AppendLine("exit /b 0");
 
-            batFile.Execute();
+            batFile.Start();
         }
     }
 }

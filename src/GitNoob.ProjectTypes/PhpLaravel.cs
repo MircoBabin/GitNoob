@@ -144,7 +144,7 @@ namespace GitNoob.ProjectTypes
                     break;
 
                 case 104:
-                    message.AppendLine("Error during artisan route:clear. There must be at least one route, and each route must point to a class and function name. Anonymous functions must not be used.");
+                    message.AppendLine("Error during artisan route:clear.");
                     break;
 
                 case 105:

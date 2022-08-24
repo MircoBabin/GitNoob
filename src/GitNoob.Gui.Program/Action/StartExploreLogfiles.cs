@@ -43,10 +43,7 @@ namespace GitNoob.Gui.Program.Action
             var paths = GetPaths(stepConfig);
             foreach (var path in paths)
             {
-                if (path.EndsWith("\\"))
-                    System.Diagnostics.Process.Start(path);
-                else
-                    System.Diagnostics.Process.Start(path + "\\");
+                Utils.BatFile.StartWindowsExplorer(path, stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
             }
         }
     }

@@ -45,11 +45,10 @@ namespace GitNoob.Gui.Program.Action.Step
             if (!running)
             {
                 var confFilename = StepsExecutor.Config.ApacheConf.ConfFullFilename;
-                var batFile = new BatFile("run-apache", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.showWindow,
+                var batFile = new BatFile("run-apache", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.showWindow, "Apache for " + StepsExecutor.Config.ApacheConf.ProjectnameASCII,
                     StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory,
-                    StepsExecutor.Config.PhpIni);
-                batFile.AppendLine("title Apache for " + StepsExecutor.Config.ApacheConf.ProjectnameASCII);
-                batFile.AppendLine("cd /D \"" + apacheBinPath + "\"");
+                    StepsExecutor.Config.PhpIni,
+                    apacheBinPath);
                 batFile.AppendLine("echo This dosprompt is running Apache webserver on port " + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port + ".");
                 batFile.AppendLine("echo.");
                 batFile.AppendLine("echo Browse to " + StepsExecutor.Config.ProjectWorkingDirectory.Webpage.GetHomepageUrl(StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port));
@@ -63,7 +62,7 @@ namespace GitNoob.Gui.Program.Action.Step
                 batFile.AppendLine("if errorlevel 1 pause");
                 batFile.AppendLine("exit /b 0");
 
-                batFile.Execute();
+                batFile.Start();
             }
 
             return true;

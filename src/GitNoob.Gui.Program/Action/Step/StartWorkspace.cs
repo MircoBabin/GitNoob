@@ -16,13 +16,13 @@ namespace GitNoob.Gui.Program.Action.Step
         {
             BusyMessage = "Busy - starting workspace " + _filename;
 
-            var batFile = new BatFile("run-workspace", (_asAdministrator ? BatFile.RunAsType.runAsAdministrator : BatFile.RunAsType.runAsInvoker), BatFile.WindowType.hideWindow,
+            var batFile = new BatFile("run-workspace", (_asAdministrator ? BatFile.RunAsType.runAsAdministrator : BatFile.RunAsType.runAsInvoker), BatFile.WindowType.hideWindow, "GitNoob - Workspace",
                 StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory,
                 StepsExecutor.Config.PhpIni);
             batFile.AppendLine("start \"Workspace\" \"" + _filename + "\"");
             batFile.AppendLine("exit /b 0");
 
-            batFile.Execute();
+            batFile.Start();
 
             return true;
         }

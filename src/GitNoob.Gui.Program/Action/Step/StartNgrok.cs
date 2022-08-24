@@ -83,35 +83,19 @@ namespace GitNoob.Gui.Program.Action.Step
 
             if (!running)
             {
-                var info = new System.Diagnostics.ProcessStartInfo
-                {
-                    WorkingDirectory = StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString(),
-                    FileName = _ngrokExe,
-                    Arguments = "http",
-                    UseShellExecute = false,
-                };
-
+                string commandline = "http";
                 if (!StepsExecutor.Config.ProjectWorkingDirectory.Ngrok.AgentConfigurationFile.isEmpty())
                 {
-                    info.Arguments +=
+                    commandline +=
                         " \"--config=" + StepsExecutor.Config.ProjectWorkingDirectory.Ngrok.AgentConfigurationFile + "\"";
                 }
 
-                info.Arguments +=
+                commandline +=
                     " --host-header=localhost:" + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port +
                     " " + (StepsExecutor.Config.ProjectWorkingDirectory.Apache.UseSsl.Value ? "https" : "http") + "://localhost:" + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port;
 
-                if (!string.IsNullOrEmpty(StepsExecutor.Config.ProjectWorkingDirectory.Ngrok.AuthToken))
-                {
-                    info.EnvironmentVariables["NGROK_AUTHTOKEN"] = StepsExecutor.Config.ProjectWorkingDirectory.Ngrok.AuthToken;
-                }
-
-                if (!string.IsNullOrEmpty(StepsExecutor.Config.ProjectWorkingDirectory.Ngrok.ApiKey))
-                {
-                    info.EnvironmentVariables["NGROK_API_KEY"] = StepsExecutor.Config.ProjectWorkingDirectory.Ngrok.ApiKey;
-                }
-
-                System.Diagnostics.Process.Start(info);
+                Utils.BatFile.StartExecutable(_ngrokExe, commandline,
+                    StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory, StepsExecutor.Config.PhpIni);
             }
 
             return true;

@@ -33,7 +33,12 @@ namespace GitNoob.Gui.Program.Action.Remedy
                         Cancel();
                     }),
                     new VisualizerMessageButton("Execute the check command in a command prompt. And manually investigate the problem.", (input) => {
-                        StepsExecutor.Executor.OpenBatFileInNewWindow(
+                        var batfile = new Utils.BatFile("git-remote",
+                            Utils.BatFile.RunAsType.runAsInvoker, Utils.BatFile.WindowType.showWindow, "Git remote",
+                            this.StepsExecutor.Config.Project,
+                            this.StepsExecutor.Config.ProjectWorkingDirectory,
+                            this.StepsExecutor.Config.PhpIni);
+                        batfile.Append(
                             "@echo off" + Environment.NewLine +
                             "    echo %cd%" + Environment.NewLine +
                             "    echo git ls-remote \"" + remoteUrl + "\"" + Environment.NewLine +
@@ -42,7 +47,8 @@ namespace GitNoob.Gui.Program.Action.Remedy
                             "    git ls-remote \"" + remoteUrl + "\"" + Environment.NewLine +
                             "    echo." + Environment.NewLine +
                             "    echo." + Environment.NewLine +
-                            "    pause" + Environment.NewLine, null);
+                            "    pause" + Environment.NewLine);
+                        batfile.Start();
                     }),
                 };
         }

@@ -169,7 +169,6 @@
     <Compile Include="Action\Step\StartNgrok.cs" />
     <Compile Include="Action\Step\StartApache.cs" />
     <Compile Include="Action\Step\Step.cs" />
-    <Compile Include="ConfigIExecutor.cs" />
     <Compile Include="Utils\BatFile.cs" />
     <Compile Include="Utils\ExceptionUtils.cs" />
     <Compile Include="Utils\FileUtils.cs" />

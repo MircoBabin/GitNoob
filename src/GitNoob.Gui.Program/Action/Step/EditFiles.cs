@@ -67,27 +67,15 @@ namespace GitNoob.Gui.Program.Action.Step
                         cmdline.Append("\"");
                     }
 
-                    var info = new System.Diagnostics.ProcessStartInfo
-                    {
-                        WorkingDirectory = StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString(),
-                        FileName = exe,
-                        Arguments = cmdline.ToString(),
-                        UseShellExecute = false,
-                    };
-                    System.Diagnostics.Process.Start(info);
+                    Utils.BatFile.StartExecutable(exe, cmdline.ToString(),
+                        StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory, StepsExecutor.Config.PhpIni);
                 }
                 else
                 {
                     foreach (var file in _files)
                     {
-                        var info = new System.Diagnostics.ProcessStartInfo
-                        {
-                            WorkingDirectory = StepsExecutor.Config.ProjectWorkingDirectory.Path.ToString(),
-                            FileName = exe,
-                            Arguments = "\"" + file +"\"",
-                            UseShellExecute = false,
-                        };
-                        System.Diagnostics.Process.Start(info);
+                        Utils.BatFile.StartExecutable(exe, "\"" + file + "\"",
+                            StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory, StepsExecutor.Config.PhpIni);
                     }
 
                 }

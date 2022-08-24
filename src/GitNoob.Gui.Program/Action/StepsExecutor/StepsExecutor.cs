@@ -176,13 +176,13 @@ namespace GitNoob.Gui.Program.Action.StepsExecutor
 
         public void StartExplorer()
         {
-            var action = new StartExplorer(Config);
+            var action = new StartExplorer(_stepConfig);
             action.execute();
         }
 
         public void StartGitCredentialsViaKeePassCommanderOnGithub()
         {
-            var action = new StartGitCredentialsViaKeePassCommanderOnGithub();
+            var action = new StartGitCredentialsViaKeePassCommanderOnGithub(_stepConfig);
             action.execute();
         }
 

@@ -26,8 +26,6 @@ namespace GitNoob.Config
     public interface IExecutor
     {
         string GetPhpExe();
-        IExecutorResult ExecuteBatFile(string batFileContents, string commandline = null);
-
-        void OpenBatFileInNewWindow(string batFileContents, string commandline = null);
+        IExecutorResult ExecuteBatFile(string batFileContents);
     }
 }

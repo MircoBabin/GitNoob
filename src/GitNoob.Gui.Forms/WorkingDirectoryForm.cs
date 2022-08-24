@@ -317,8 +317,13 @@ namespace GitNoob.Gui.Forms
 
             Point location = new Point(lblStatusValue.Location.X, lblStatusValue.Location.Y + 26);
 
-            Program.Action.StartDosPrompt ActionStartDosPrompt = new Program.Action.StartDosPrompt(Config);
-            Program.Action.StepsExecutor.StepConfig StepConfig = new Program.Action.StepsExecutor.StepConfig(Config, this, ActionStartDosPrompt);
+            Program.Action.StepsExecutor.StepConfig StepConfig = new Program.Action.StepsExecutor.StepConfig(Config, this, 
+                new Program.Utils.BatFile(
+                    "iexecutor",
+                    Program.Utils.BatFile.RunAsType.runAsInvoker, Program.Utils.BatFile.WindowType.hideWindow,
+                    "ProjectType - Executor",
+                    Config.Project, Config.ProjectWorkingDirectory,
+                    Config.PhpIni));
             ActionChangeBranch = new Program.Action.ExecuteChangeBranch(StepConfig);
             ActionAfterStatus = new Program.Action.ExecuteAfterStatus(StepConfig);
 
@@ -333,7 +338,7 @@ namespace GitNoob.Gui.Forms
                 this.panelStatus.Controls.Add(new ActionButton(toolTips, "Browser", browser, ref location));
             }
 
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explorer", new Program.Action.StartExplorer(Config), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explorer", new Program.Action.StartExplorer(StepConfig), ref location));
 
             var workspace = new Program.Action.ExecuteWorkspace(StepConfig);
             if (workspace.isStartable())
@@ -341,7 +346,7 @@ namespace GitNoob.Gui.Forms
                 this.panelStatus.Controls.Add(new ActionButton(toolTips, "Editor", workspace, ref location));
             }
 
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "DOS prompt", ActionStartDosPrompt, ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "DOS prompt", new Program.Action.StartDosPrompt(StepConfig), ref location));
             this.panelStatus.Controls.Add(new ActionButton(toolTips, "Git Gui", new Program.Action.StartGitGui(StepConfig), ref location));
 
             if (lblMainbranch.Location.X > location.X) location.X = lblMainbranch.Location.X;
@@ -400,7 +405,7 @@ namespace GitNoob.Gui.Forms
                 this.panelStatus.Controls.Add(new ActionButton(toolTips, "Smtp Server", smtpserver, ref location));
             }
 
-            var fiddler = new Program.Action.StartFiddler();
+            var fiddler = new Program.Action.StartFiddler(StepConfig);
             if (browser.isStartable() && fiddler.isStartable())
             {
                 this.panelStatus.Controls.Add(new ActionButton(toolTips, "Fiddler", fiddler, ref location));

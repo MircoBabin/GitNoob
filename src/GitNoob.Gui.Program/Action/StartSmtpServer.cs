@@ -36,7 +36,8 @@ namespace GitNoob.Gui.Program.Action
         {
             if (!isStartable()) return;
 
-            System.Diagnostics.Process.Start(GetExecutable());
+            Utils.BatFile.StartExecutable(GetExecutable(), null,
+                stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
         }
     }
 }
