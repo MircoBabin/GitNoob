@@ -1,5 +1,9 @@
 # GitNoob changelog
 
+## Version 1.14
+* Fix: workspace-run-as-administrator works again.
+* Fix: use LocalApplicationData path for intermediate files. As files in the temp path may be deleted by the Windows OS at unexpected moments, when GitNoob is still running.
+
 ## Version 1.13
 * Fix: use Ngrok v3.
 
