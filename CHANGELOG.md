@@ -1,5 +1,10 @@
 # GitNoob changelog
 
+## Version 1.15
+* Fix: start explorer multiple times.
+* Fix: exiting the dosprompt, sometimes "exit" had to be entered twice.
+* Add: "Run as administrator" on dosprompt button via right mouseclick.
+
 ## Version 1.14
 * Fix: workspace-run-as-administrator works again.
 * Fix: use LocalApplicationData path for intermediate files. As files in the temp path may be deleted by the Windows OS at unexpected moments, when GitNoob is still running.

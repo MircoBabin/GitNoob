@@ -329,36 +329,51 @@ namespace GitNoob.Gui.Forms
 
             Point empty = new Point(0,0);
             { 
-                new ActionButton(null, "", null, ref empty);
+                new ActionButton(null, "", null, null, ref empty);
             }
 
             var browser = new Program.Action.ExecuteStartBrowser(StepConfig);
             if (browser.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Browser", browser, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Browser", null, browser, ref location));
             }
 
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explorer", new Program.Action.StartExplorer(StepConfig), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explorer", null, new Program.Action.StartExplorer(StepConfig), ref location));
 
             var workspace = new Program.Action.ExecuteWorkspace(StepConfig);
             if (workspace.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Editor", workspace, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Editor", null, workspace, ref location));
             }
 
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "DOS prompt", new Program.Action.StartDosPrompt(StepConfig), ref location));
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Git Gui", new Program.Action.StartGitGui(StepConfig), ref location));
+            var DosPrompt = new Program.Action.StartDosPrompt(StepConfig);
+            var DosPromptContext = new ContextMenu();
+            {
+                var item = new MenuItem()
+                {
+                    Text = "Run as administrator",
+                };
+
+                item.Click += (object sender, EventArgs e) =>
+                {
+                    DosPrompt.executeAsAdministrator();
+                };
+
+                DosPromptContext.MenuItems.Add(item);
+            }
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "DOS prompt", DosPromptContext, DosPrompt, ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Git Gui", null, new Program.Action.StartGitGui(StepConfig), ref location));
 
             if (lblMainbranch.Location.X > location.X) location.X = lblMainbranch.Location.X;
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Current branch history", new Program.Action.ExecuteGitkForCurrentBranch(StepConfig), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Current branch history", null, new Program.Action.ExecuteGitkForCurrentBranch(StepConfig), ref location));
 
             location.X += empty.X;
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Get latest", new Program.Action.ExecuteGetLatest(StepConfig), ref location));
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Merge", new Program.Action.ExecuteMerge(StepConfig), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Get latest", null, new Program.Action.ExecuteGetLatest(StepConfig), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Merge", null, new Program.Action.ExecuteMerge(StepConfig), ref location));
 
             location.X += empty.X;
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Delete all changes", new Program.Action.ExecuteDeleteAllChanges(StepConfig), ref location));
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Repair options", new Program.Action.ExecuteGitRepair(StepConfig), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Delete all changes", null, new Program.Action.ExecuteDeleteAllChanges(StepConfig), ref location));
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Repair options", null, new Program.Action.ExecuteGitRepair(StepConfig), ref location));
 
             //Second row
             location.X = lblStatusValue.Location.X;
@@ -368,13 +383,13 @@ namespace GitNoob.Gui.Forms
             var exploreLogFiles = new Program.Action.StartExploreLogfiles(StepConfig);
             if (exploreLogFiles.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explore logfiles", exploreLogFiles, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explore logfiles", null, exploreLogFiles, ref location));
                 count++;
             }
             var openConfigFiles = new Program.Action.ExecuteOpenConfigfiles(StepConfig);
             if (openConfigFiles.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Open configfiles", openConfigFiles, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Open configfiles", null, openConfigFiles, ref location));
                 count++;
             }
 
@@ -384,14 +399,14 @@ namespace GitNoob.Gui.Forms
             var clearCache = new Program.Action.ExecuteClearCache(StepConfig);
             if (clearCache.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Clear cache", clearCache, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Clear cache", null, clearCache, ref location));
                 count++;
             }
 
             var deleteLogFiles = new Program.Action.ExecuteDeleteLogfiles(StepConfig);
             if (deleteLogFiles.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Delete logfiles", deleteLogFiles, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Delete logfiles", null, deleteLogFiles, ref location));
                 count++;
             }
 
@@ -402,19 +417,19 @@ namespace GitNoob.Gui.Forms
             var smtpserver = new Program.Action.StartSmtpServer(StepConfig);
             if (smtpserver.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Smtp Server", smtpserver, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Smtp Server", null, smtpserver, ref location));
             }
 
             var fiddler = new Program.Action.StartFiddler(StepConfig);
             if (browser.isStartable() && fiddler.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Fiddler", fiddler, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Fiddler", null, fiddler, ref location));
             }
 
             var ngrok = new Program.Action.ExecuteStartNgrok(StepConfig);
             if (browser.isStartable() && ngrok.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Ngrok", ngrok, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Ngrok", null, ngrok, ref location));
             }
         }
 

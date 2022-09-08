@@ -29,18 +29,25 @@ namespace GitNoob.Gui.Program.Action
         public Icon icon()
         {
             var cmd = GetExecutable();
-            return Utils.ImageUtils.LoadIconForFile(cmd);
+            return ImageUtils.LoadIconForFile(cmd);
         }
 
         public void execute()
         {
+            doExecute(false);
+        }
+
+        public void executeAsAdministrator()
+        {
+            doExecute(true);
+        }
+
+        private void doExecute(bool asAdministrator)
+        {
             var executable = GetExecutable();
             if (string.IsNullOrEmpty(executable)) return;
 
-            var batfile = new BatFile("run-dosprompt", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.showWindow, FileUtils.DeriveFilename(String.Empty, stepConfig.Config.Project.Name) + "-" + Utils.FileUtils.DeriveFilename(String.Empty, stepConfig.Config.ProjectWorkingDirectory.Name),
-                stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
-            batfile.AppendLine("cmd /k");
-            batfile.Start();
+            BatFile.StartDosPrompt(asAdministrator, stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
         }
     }
 }

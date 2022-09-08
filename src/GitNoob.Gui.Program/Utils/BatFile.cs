@@ -28,17 +28,29 @@ namespace GitNoob.Gui.Program.Utils
             if (!openWithPath.EndsWith("\\")) openWithPath = openWithPath + "\\";
 
             var bat = new BatFile(
-                "windows-explorer", RunAsType.runAsInvoker, WindowType.hideWindow, "GitNoob - start Windows Explorer",
+                "windows-explorer", RunAsType.runAsInvoker, WindowType.hideWindow, 
+                "GitNoob - start Windows Explorer",
                 project, projectworkingdirectory, phpIni, openWithPath);
-            bat.AppendLine("start \"\" \"" + openWithPath + "\"");
+            bat.AppendLine("%SystemRoot%\\explorer.exe \"" + openWithPath + "\"");
             bat.Start();
+        }
+
+        public static void StartDosPrompt(bool asAdministrator, Config.Project project, Config.WorkingDirectory projectworkingdirectory, ConfigFileTemplate.PhpIni phpIni)
+        {
+            var bat = new BatFile(
+                "executable", (asAdministrator ? RunAsType.runAsAdministrator : RunAsType.runAsInvoker), WindowType.showWindow, 
+                FileUtils.DeriveFilename(String.Empty, project.Name) + "-" + FileUtils.DeriveFilename(String.Empty, projectworkingdirectory.Name),
+                project, projectworkingdirectory, phpIni);
+
+            bat.StartAndKeepDosPromptOpen();
         }
 
         public static void StartExecutable(string exeFilename, string commandLine,
             Config.Project project, Config.WorkingDirectory projectworkingdirectory, ConfigFileTemplate.PhpIni phpIni)
         {
             var bat = new BatFile(
-                "executable", RunAsType.runAsInvoker, WindowType.hideWindow, "GitNoob - start executable",
+                "executable", RunAsType.runAsInvoker, WindowType.hideWindow, 
+                "GitNoob - start executable",
                 project, projectworkingdirectory, phpIni);
             bat.AppendLine("start \"\" \"" + exeFilename + "\"" + (!string.IsNullOrWhiteSpace(commandLine) ? " " + commandLine : ""));
             bat.Start();
@@ -48,7 +60,8 @@ namespace GitNoob.Gui.Program.Utils
             Config.Project project, Config.WorkingDirectory projectworkingdirectory, ConfigFileTemplate.PhpIni phpIni)
         {
             var bat = new BatFile(
-                "url", RunAsType.runAsInvoker, WindowType.hideWindow, "GitNoob - start browser",
+                "url", RunAsType.runAsInvoker, WindowType.hideWindow, 
+                "GitNoob - start browser",
                 project, projectworkingdirectory, phpIni);
             bat.AppendLine("start \"\" \"" + url + "\"");
             bat.Start();
@@ -171,6 +184,45 @@ namespace GitNoob.Gui.Program.Utils
                     info.CreateNoWindow = true;
                     info.WindowStyle = ProcessWindowStyle.Hidden;
                     break;
+            }
+
+            Process.Start(info);
+        }
+
+        public void StartAndKeepDosPromptOpen()
+        {
+            if (_window != WindowType.showWindow)
+            {
+                throw new Exception("BatFile.StartAndKeepDosPromptOpen can only be used with showWindow");
+            }
+
+            var orgTitle = _windowTitle;
+            string batFile;
+            try
+            {
+                if (_runAs == RunAsType.runAsAdministrator)
+                {
+                    _windowTitle = "Administrator: " + _windowTitle;
+                }
+                batFile = WriteBatFile();
+            } 
+            finally
+            {
+                _windowTitle = orgTitle;
+            }
+
+            var exe = FileUtils.FindExePath("%ComSpec%");
+            var info = new ProcessStartInfo
+            {
+                FileName = exe,
+                Arguments = "/K \"" + batFile + "\"",
+
+                UseShellExecute = true,
+            };
+
+            if (_runAs == RunAsType.runAsAdministrator)
+            {
+                info.Verb = "runas";
             }
 
             Process.Start(info);
