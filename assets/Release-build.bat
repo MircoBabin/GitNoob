@@ -37,6 +37,9 @@ echo !!! Versions do not match.
 pause
 goto :eof
 
+:append_filename
+    set filenames=%filenames% "%~dp0..\bin\Release\%~1"
+goto:eof
 
 :build_zip
 echo.
@@ -47,16 +50,13 @@ echo.
 
 del /q "Release\*" >nul 2>&1
 
-set files="%~dp0..\bin\Release\GitNoob.Config.dll"
-set files=%files% "%~dp0..\bin\Release\GitNoob.exe"
-set files=%files% "%~dp0..\bin\Release\GitNoob.exe.config"
-set files=%files% "%~dp0..\bin\Release\GitNoob.Git.dll"
-set files=%files% "%~dp0..\bin\Release\GitNoob.Gui.Forms.dll"
-set files=%files% "%~dp0..\bin\Release\GitNoob.Gui.Forms.dll.config"
-set files=%files% "%~dp0..\bin\Release\GitNoob.Gui.Program.dll"
-set files=%files% "%~dp0..\bin\Release\GitNoob.ProjectTypes.dll"
+del Release_filenames.txt >nul 2>&1
+"%~dp0..\bin\Release\GitNoob.exe" "--installationFilenames=Release_filenames.txt"
+set filenames=
+for /f "tokens=* delims=" %%a in (Release_filenames.txt) do call :append_filename "%%a"
+del Release_filenames.txt >nul 2>&1
 
-"%sz_exe%" a -tzip -mx7 "Release\GitNoob-%GitNoobReleaseVersion%.zip" %files%
+"%sz_exe%" a -tzip -mx7 "Release\GitNoob-%GitNoobReleaseVersion%.zip" %filenames%
 "%sz_exe%" a -tzip -mx7 "Release\GitNoob-%GitNoobReleaseVersion%-debugpack.zip" "%~dp0..\bin"
 
 echo.

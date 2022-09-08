@@ -20,11 +20,34 @@ namespace GitNoob
             public static extern bool SetForegroundWindow(IntPtr hWnd);
         }
 
-        private static void OutputVersion(string filename)
+        private static void OutputVersion(string outputFilename)
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version;
 
-            File.WriteAllText(filename, version.Major + "." + version.Minor);
+            File.WriteAllText(outputFilename, version.Major + "." + version.Minor, Encoding.ASCII);
+        }
+
+        private static void OutputInstallationFilenames(string outputFilename)
+        {
+            List<string> filenames = new List<string>()
+            {
+                "GitNoob.Config.dll",
+                "GitNoob.exe",
+                "GitNoob.exe.config",
+                "GitNoob.Git.dll",
+                "GitNoob.Gui.Forms.dll",
+                "GitNoob.Gui.Forms.dll.config",
+                "GitNoob.Gui.Program.dll",
+                "GitNoob.ProjectTypes.dll",
+            };
+
+            StringBuilder output = new StringBuilder();
+            foreach(var filename in filenames)
+            {
+                output.AppendLine(filename);
+            }
+
+            File.WriteAllText(outputFilename, output.ToString(), Encoding.ASCII);
         }
 
         private static bool CheckConfigs(List<Config.IConfig> configs)
@@ -79,6 +102,19 @@ namespace GitNoob
                 }
                 return;
             }
+
+            if (args.Length == 1 &&
+                args[0].Length > 24 && args[0].Substring(0, 24).ToLowerInvariant() == "--installationfilenames=")
+            {
+                // "--installationFilenames=d:\Projects\GitNoob\assets\Release_filenames.txt"
+                var filename = args[0].Substring(24).Trim();
+                if (!string.IsNullOrWhiteSpace(filename) && filename.IndexOfAny(Path.GetInvalidPathChars()) < 0)
+                {
+                    OutputInstallationFilenames(filename);
+                }
+                return;
+            }
+
 
             Process me = Process.GetCurrentProcess();
             string executableFileName = me.Modules[0].FileName;
