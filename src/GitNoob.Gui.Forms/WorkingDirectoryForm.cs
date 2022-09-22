@@ -365,7 +365,34 @@ namespace GitNoob.Gui.Forms
             this.panelStatus.Controls.Add(new ActionButton(toolTips, "Git Gui", null, new Program.Action.StartGitGui(StepConfig), ref location));
 
             if (lblMainbranch.Location.X > location.X) location.X = lblMainbranch.Location.X;
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Current branch history", null, new Program.Action.ExecuteGitkForCurrentBranch(StepConfig), ref location));
+            var HistoryContext = new ContextMenu();
+            {
+                var item = new MenuItem()
+                {
+                    Text = "Show history of one file",
+                };
+
+                item.Click += (object sender, EventArgs e) =>
+                {
+                    ViewHistoryOfFile(StepConfig);
+                };
+
+                HistoryContext.MenuItems.Add(item);
+
+                item = new MenuItem()
+                {
+                    Text = "Show history of all branches / tags / remotes",
+                };
+
+                item.Click += (object sender, EventArgs e) =>
+                {
+                    ViewHistoryOfAll(StepConfig);
+                };
+
+                HistoryContext.MenuItems.Add(item);
+
+            }
+            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Current branch history", HistoryContext, new Program.Action.ExecuteGitkForCurrentBranch(StepConfig), ref location));
 
             location.X += empty.X;
             this.panelStatus.Controls.Add(new ActionButton(toolTips, "Get latest", null, new Program.Action.ExecuteGetLatest(StepConfig), ref location));
@@ -430,6 +457,31 @@ namespace GitNoob.Gui.Forms
             if (browser.isStartable() && ngrok.isStartable())
             {
                 this.panelStatus.Controls.Add(new ActionButton(toolTips, "Ngrok", null, ngrok, ref location));
+            }
+        }
+
+        private void ViewHistoryOfAll(Program.Action.StepsExecutor.StepConfig StepConfig)
+        {
+            var gitk = new Program.Action.StartGitkAll(StepConfig);
+            gitk.execute();
+        }
+
+        private void ViewHistoryOfFile(Program.Action.StepsExecutor.StepConfig StepConfig)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "Show history of one file";
+                openFileDialog.InitialDirectory = StepConfig.Config.ProjectWorkingDirectory.Path.ToString();
+                openFileDialog.Filter = "All files (*.*)|*.*";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    var gitk = new Program.Action.StartGitk(StepConfig,
+                        new List<string>() { "HEAD", StepConfig.Config.ProjectWorkingDirectory.Git.MainBranch },
+                        null,
+                        new List<string>() { openFileDialog.FileName });
+                    gitk.execute();
+                }
             }
         }
 

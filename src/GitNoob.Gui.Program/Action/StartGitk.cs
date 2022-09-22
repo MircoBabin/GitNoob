@@ -8,10 +8,13 @@ namespace GitNoob.Gui.Program.Action
     {
         private List<string> branches;
         private string focusOnCommitId;
-        public StartGitk(StepsExecutor.StepConfig Config, List<string> branches, string focusOnCommitId) : base(Config) 
+        private List<string> filenames;
+
+        public StartGitk(StepsExecutor.StepConfig Config, List<string> branches, string focusOnCommitId, List<string> filenames = null) : base(Config) 
         {
             this.branches = branches;
             this.focusOnCommitId = focusOnCommitId;
+            this.filenames = filenames;
         }
 
         private static string _cacheExecutable = null;
@@ -58,6 +61,14 @@ namespace GitNoob.Gui.Program.Action
                 foreach(var branch in branches)
                 {
                     batFile.Append(" \"" + branch + "\"");
+                }
+            }
+            if (filenames != null)
+            {
+                batFile.Append(" -- ");
+                foreach(var filename in filenames)
+                {
+                    batFile.Append(" \"" + filename + "\"");
                 }
             }
             batFile.AppendLine(string.Empty);
