@@ -6,6 +6,7 @@
 * Add: "Show history of one file" on current branch history button via right mouseclick.
 * Add: "Show history of all branches / tags / remotes" on current branch history button via right mouseclick.
 * Fix: set committer name & email.
+* Fix: touch commit timestamps.
 
 ## Version 1.15
 * Fix: start explorer multiple times.

@@ -1102,7 +1102,7 @@ namespace GitNoob.Git
             }
 
             //delete original current branch
-            if (!CreateDeletedBranchUndoTag(currentbranch.shortname, MainBranch, "Touched commit & author timestamps to " + GitUtils.DateTimeToHumanString(toTime)))
+            if (!CreateDeletedBranchUndoTag(currentbranch.shortname, MainBranch, "Touched commit and author timestamps to " + GitUtils.DateTimeToHumanString(toTime)))
             {
                 var checkout = new Command.Branch.ChangeBranchTo(this, currentbranch.shortname);
                 checkout.WaitFor();
