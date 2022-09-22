@@ -73,8 +73,29 @@ namespace GitNoob.Gui.Program.Utils
             string extensionValue = String.Empty;
             using (var key = Registry.ClassesRoot.OpenSubKey(extension, false))
             {
-                if (key != null) extensionValue = (string)key.GetValue("");
+                if (key != null)
+                {
+                    extensionValue = (string)key.GetValue("");
+
+                    //Windows/11: HKEY_CLASSES_ROOT\.code-workspace\OpenWithProgids
+                    if (string.IsNullOrWhiteSpace(extensionValue))
+                    {
+                        using (var subkey = key.OpenSubKey("OpenWithProgids"))
+                        {
+                            if (subkey != null)
+                            {
+                                var names = subkey.GetValueNames();
+                                if (names.Length > 0)
+                                {
+                                    extensionValue = names[0];
+                                }
+                            }
+                        }
+                    }
+                }
             }
+
+
 
             //Query from HKEY_CLASSES_ROOT\{extensionValue}\shell\open\command
             string openCommand = String.Empty;
