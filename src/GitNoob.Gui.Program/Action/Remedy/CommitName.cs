@@ -31,7 +31,7 @@ namespace GitNoob.Gui.Program.Action.Remedy
 
                     new VisualizerMessageButton("Set commit name to " + expectedCommitName + " <" + expectedCommitEmail + "> and continue", (input) => {
                         var step = new Step.SetCommitter(expectedCommitName, expectedCommitEmail);
-                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step, Step });
+                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
 
                         Done();
                     }),
