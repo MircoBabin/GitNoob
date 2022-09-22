@@ -1,5 +1,12 @@
 # GitNoob changelog
 
+## Version 1.16
+* Project migrated to Visual Studio 2019 Community Edition.
+* Fix: show correct icon on Windows/11.
+* Add: "Show history of one file" on current branch history button via right mouseclick.
+* Add: "Show history of all branches / tags / remotes" on current branch history button via right mouseclick.
+* Fix: set committer name & email.
+
 ## Version 1.15
 * Fix: start explorer multiple times.
 * Fix: exiting the dosprompt, sometimes "exit" had to be entered twice.
