@@ -22,3 +22,6 @@ src/GitNoob.Gui.Program/.vs
 src/GitNoob.ProjectTypes/bin
 src/GitNoob.ProjectTypes/obj
 src/GitNoob.ProjectTypes/.vs
+src/GitNoobUpdater/bin
+src/GitNoobUpdater/obj
+src/GitNoobUpdater/.vs
