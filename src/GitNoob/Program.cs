@@ -214,7 +214,7 @@ namespace GitNoob
 
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-                    Application.Run(new Gui.Forms.ChooseProjectForm(programPath, configs, licenseText));
+                    Application.Run(new Gui.Forms.ChooseProjectForm(configs, programPath, licenseText));
                 }
                 else
                 {

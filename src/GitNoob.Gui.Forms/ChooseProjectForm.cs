@@ -1,38 +1,15 @@
 ﻿using GitNoob.Gui.Forms.Properties;
 using System;
-using System.IO;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace GitNoob.Gui.Forms
 {
-    public partial class ChooseProjectForm : Form
+    public partial class ChooseProjectForm : GitNoobBaseForm
     {
-        private class NativeMethods
-        {
-            // P/Invoke constants
-            public const int WM_SYSCOMMAND = 0x112;
-            public const int MF_STRING = 0x0;
-            public const int MF_SEPARATOR = 0x800;
-
-            // P/Invoke declarations
-            [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-            public static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
-
-            [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-            public static extern bool AppendMenu(IntPtr hMenu, int uFlags, int uIDNewItem, string lpNewItem);
-        }
-        // ID for the About item on the system menu
-        private int SYSMENU_ABOUT_ID = 0x1;
-        private int SYSMENU_CHECKFORUPDATE_ID = 0x2;
-
-        private string _programPath;
-        private string _GitNoobUpdaterExe;
         private List<Config.IConfig> _configs;
-        private string _licenseText;
         private ConcurrentDictionary<Config.WorkingDirectory, WorkingDirectoryForm> _forms;
 
         private class ProjectWorkingDirectory
@@ -47,14 +24,10 @@ namespace GitNoob.Gui.Forms
             }
         }
 
-        public ChooseProjectForm(string programPath, List<Config.IConfig> configs, string licenseText)
+        public ChooseProjectForm(List<Config.IConfig> configs, string programPath, string licenseText) : 
+            base(programPath, licenseText)
         {
-            _programPath = programPath;
-            _GitNoobUpdaterExe = Path.Combine(_programPath, "GitNoobUpdater.exe");
-            if (!File.Exists(_GitNoobUpdaterExe)) _GitNoobUpdaterExe = null;
-
             _configs = configs;
-            _licenseText = licenseText;
             _forms = new ConcurrentDictionary<Config.WorkingDirectory, WorkingDirectoryForm>();
 
             InitializeComponent();
@@ -64,54 +37,6 @@ namespace GitNoob.Gui.Forms
             this.Load += ChooseProjectForm_Load;
 
             BuildForm();
-        }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-
-            // Get a handle to a copy of this form's system (window) menu
-            IntPtr hSysMenu = NativeMethods.GetSystemMenu(this.Handle, false);
-
-            // Add a separator
-            NativeMethods.AppendMenu(hSysMenu, NativeMethods.MF_SEPARATOR, 0, string.Empty);
-
-            if (_GitNoobUpdaterExe != null)
-            {
-                // Add the Check for update item
-                NativeMethods.AppendMenu(hSysMenu, NativeMethods.MF_STRING, SYSMENU_CHECKFORUPDATE_ID, "Check for GitNoob update");
-            }
-
-            // Add the About menu item
-            NativeMethods.AppendMenu(hSysMenu, NativeMethods.MF_STRING, SYSMENU_ABOUT_ID, "&About GitNoob");
-
-        }
-
-        protected override void WndProc(ref Message m)
-        {
-            base.WndProc(ref m);
-
-            // Test if the Check for update was selected from the system menu
-            if ((m.Msg == NativeMethods.WM_SYSCOMMAND) && ((int)m.WParam == SYSMENU_CHECKFORUPDATE_ID))
-            {
-                if (System.Diagnostics.Debugger.IsAttached)
-                {
-                    System.Diagnostics.Process.Start(_GitNoobUpdaterExe, "debugger");
-                }
-                else
-                {
-                    System.Diagnostics.Process.Start(_GitNoobUpdaterExe);
-                }
-                return;
-            }
-
-            // Test if the About item was selected from the system menu
-            if ((m.Msg == NativeMethods.WM_SYSCOMMAND) && ((int)m.WParam == SYSMENU_ABOUT_ID))
-            {
-                AboutForm about = new AboutForm(_licenseText);
-                about.ShowDialog();
-                return;
-            }
         }
 
         private void ChooseProjectForm_Load(object sender, EventArgs e)
@@ -303,7 +228,7 @@ namespace GitNoob.Gui.Forms
             {
                 try
                 {
-                    form = new WorkingDirectoryForm(new Program.ProgramWorkingDirectory(projectwd.Project, projectwd.WorkingDirectory), WorkingDirectoryForm_ChooseProject);
+                    form = new WorkingDirectoryForm(new Program.ProgramWorkingDirectory(projectwd.Project, projectwd.WorkingDirectory), WorkingDirectoryForm_ChooseProject, _programPath, _licenseText);
                 }
                 catch (Exception ex)
                 {

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace GitNoob.Gui.Forms
 {
-    public partial class WorkingDirectoryForm : Form, Program.Action.IVisualizer
+    public partial class WorkingDirectoryForm : GitNoobBaseForm, Program.Action.IVisualizer
     {
         public Program.ProgramWorkingDirectory Config { get; }
 
@@ -17,7 +17,8 @@ namespace GitNoob.Gui.Forms
 
         private int _originalHeight;
 
-        public WorkingDirectoryForm(Program.ProgramWorkingDirectory config, System.Action chooseProject)
+        public WorkingDirectoryForm(Program.ProgramWorkingDirectory config, System.Action chooseProject, string programPath, string licenseText) :
+            base(programPath, licenseText)
         {
             Config = config;
             _chooseProject = chooseProject;
