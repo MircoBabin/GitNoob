@@ -94,7 +94,14 @@ namespace GitNoob.Gui.Forms
             // Test if the Check for update was selected from the system menu
             if ((m.Msg == NativeMethods.WM_SYSCOMMAND) && ((int)m.WParam == SYSMENU_CHECKFORUPDATE_ID))
             {
-                System.Diagnostics.Process.Start(_GitNoobUpdaterExe);
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    System.Diagnostics.Process.Start(_GitNoobUpdaterExe, "debugger");
+                }
+                else
+                {
+                    System.Diagnostics.Process.Start(_GitNoobUpdaterExe);
+                }
                 return;
             }
 

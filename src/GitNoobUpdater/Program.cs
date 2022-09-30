@@ -103,6 +103,14 @@ namespace GitNoobUpdater
                 return;
             }
 
+            if (args.Length == 1 &&
+                args[0].ToLowerInvariant() == "debugger")
+            {
+                // "debugger"
+
+                Debugger.Launch();
+            }
+
             Process me = Process.GetCurrentProcess();
             programPath = Path.GetFullPath(Path.GetDirectoryName(me.Modules[0].FileName));
             GitNoobPath = programPath;
