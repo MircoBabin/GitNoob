@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace GitNoobUpdater
 {
@@ -10,6 +7,7 @@ namespace GitNoobUpdater
         public string FullVersion { get; private set; }
         public int Major { get; private set; }
         public int Minor { get; private set; }
+
         public GitNoobVersion(string Version)
         {
             FullVersion = Version;

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -9,181 +8,184 @@ namespace GitNoobUpdater
 {
     public partial class UpdateForm : Form
     {
-        private const string urlForShowLatest = "https://github.com/MircoBabin/GitNoob/releases/latest";
-        private const string urlForGetLatestDownloadUrl = "https://github.com/MircoBabin/GitNoob/releases/latest/download/release.download.zip.url-location";
+        private Utils Utils;
+        private DownloadUrl download;
+        private volatile bool cancelUpdate;
+        private UpdateStatus updateStatus;
 
-        private string latestDownloadUrl;
-        private GitNoobVersion latestVersion;
-        private GitNoobVersion currentVersion;
+        private enum UpdateStatus { 
+            Initializing, 
+            Downloading, 
+            WaitingFoGitNoobToStop, 
+            DeletingCurrentGitNoob,
+            UnpackingNewGitNoob,
+            Done,
 
+            Error,
+            Canceled,
+        };
 
-        public UpdateForm()
+        public UpdateForm(Utils Utils, DownloadUrl download)
         {
-            /*
-             * todo: Work In Progress
-             * GitNoobUpdater is not working yet
-             * 
-             */
+            this.Utils = Utils;
+            this.download = download;
 
             InitializeComponent();
 
-            btnUpdate.Visible = false;
-            btnNoNewVersionAvailable.Visible = false;
-            btnManualCheck.Visible = false;
+            cancelUpdate = false;
+            btnAction.Click += BtnAction_Click;
+            this.FormClosing += UpdateForm_FormClosing;
+            updateSetForm(UpdateStatus.Initializing, "Initializing...", "Cancel");
 
-            btnUpdate.Click += BtnUpdate_Click;
-            btnNoNewVersionAvailable.Click += BtnNoNewVersionAvailable_Click;
-            btnManualCheck.Click += BtnManualCheck_Click;
-
-            new Thread(BuildForm).Start();
-        }
-
-        private void BtnUpdate_Click(object sender, System.EventArgs e)
-        {
-            btnUpdate.Visible = false;
             new Thread(update).Start();
         }
 
-        private void BtnNoNewVersionAvailable_Click(object sender, System.EventArgs e)
+        private void UpdateForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Exit();
+            e.Cancel = true;
         }
 
-        private void BtnManualCheck_Click(object sender, System.EventArgs e)
+        private void BtnAction_Click(object sender, EventArgs e)
         {
-            var info = new ProcessStartInfo
+            cancelUpdate = true;
+
+            switch(updateStatus)
             {
-                FileName = urlForShowLatest,
-
-                UseShellExecute = true,
-            };
-
-            Process.Start(info);
-            Exit();
-        }
-
-        private void Exit()
-        {
-            Application.Exit();
-        }
-
-        private void BuildForm()
-        {
-            currentVersion = GitNoobQuery.Version();
-            this.Invoke((MethodInvoker)delegate
-            {
-                lblCurrentVersionValue.Text = currentVersion.ToString();
-            });
-
-            latestDownloadUrl = string.Empty;
-            latestVersion = null;
-            try
-            {
-                getLatestDownloadUrl();
+                case UpdateStatus.Canceled:
+                case UpdateStatus.Error:
+                case UpdateStatus.Done:
+                    Program.Exit();
+                    break;
             }
-            catch { }
-
-            this.Invoke((MethodInvoker)delegate
-            {
-                if (latestVersion != null)
-                {
-                    lblLatestVersionValue.Text = latestVersion.ToString();
-
-                    if (latestVersion.isGreaterThan(currentVersion))
-                    {
-                        btnUpdate.Visible = true;
-                    }
-                    else
-                    {
-                        btnNoNewVersionAvailable.Visible = true;
-                    }
-                }
-                else
-                {
-                    lblLatestVersionValue.Text = "Error retrieving";
-                    btnManualCheck.Visible = true;
-                }
-            });
         }
 
         private void update()
         {
+            if (updateIsCanceled()) return;
+
+            updateSetForm(UpdateStatus.Downloading, "Downloading...", "Cancel");
+
+            string zipFilename;
             try
             {
-                downloadLatest();
+                zipFilename = Utils.downloadVersion(download);
             }
-            catch { }
-        }
-
-        private HttpWebResponse httpGet(string url)
-        {
-            var systemproxy = WebRequest.GetSystemWebProxy();
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls |
-                SecurityProtocolType.Ssl3 |
-                (SecurityProtocolType)768 /* TLS 1.1 */ |
-                (SecurityProtocolType)3072 /* TLS 1.2 */;
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "GET";
-            request.Proxy = systemproxy;
-            request.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-            request.AllowAutoRedirect = true;
-
-            return (HttpWebResponse)request.GetResponse();
-        }
-
-        private void getLatestDownloadUrl()
-        {
-            string url;
-            using (var response = httpGet(urlForGetLatestDownloadUrl))
+            catch (Exception ex)
             {
-                using (Stream stream = response.GetResponseStream())
+                updateError("Downloading failed: " + ex.Message);
+                return;
+            }
+
+            updateSetForm(UpdateStatus.WaitingFoGitNoobToStop, "Waiting for GitNoob to stop...", "Cancel");
+            try
+            {
+                while (true)
                 {
-                    using (StreamReader reader = new StreamReader(stream))
+                    if (updateIsCanceled()) return;
+
+                    if (!Utils.isGitNoobRunning()) break;
+
+                    updateSetForm(UpdateStatus.WaitingFoGitNoobToStop, "Please close GitNoob.", "Cancel");
+                    Thread.Sleep(1000);
+                }
+            }
+            catch (Exception ex)
+            {
+                updateError("Waiting for GitNoob to stop failed: " + ex.Message);
+                return;
+            }
+
+            updateSetForm(UpdateStatus.DeletingCurrentGitNoob, "Removing current GitNoob...", null);
+            List<string> currentFiles;
+            try
+            {
+                currentFiles = Utils.InstallationFilenames();
+            }
+            catch (Exception ex)
+            {
+                updateError("Retrieving current installation filenames failed: " + ex.Message);
+                return;
+            }
+
+            if (currentFiles != null)
+            {
+                foreach (var filename in currentFiles)
+                {
+                    try
                     {
-                        url = reader.ReadToEnd();
-                        // https://github.com/MircoBabin/GitNoob/releases/download/1.15/GitNoob-1.15.zip
+                        Utils.DeleteFileRetried(filename);
+                    }
+                    catch (Exception ex)
+                    {
+                        updateError("Removing current GitNoob failed: " + ex.Message);
+                        return;
                     }
                 }
             }
 
-            var p = url.LastIndexOf('/');
-            if (p < 0) throw new Exception("Latest download url is invalid: " + url);
-            var filename = url.Substring(p + 1);
-            const string prefix = "GitNoob-";
-            const string suffix = ".zip";
-            if (!filename.StartsWith(prefix)) throw new Exception("Latest download url is invalid: " + url);
-            if (!filename.EndsWith(suffix)) throw new Exception("Latest download url is invalid: " + url);
-
-            latestVersion = new GitNoobVersion(filename.Substring(prefix.Length, filename.Length - prefix.Length - suffix.Length));
-            latestDownloadUrl = url;
-        }
-
-        private void downloadLatest()
-        {
-            Process me = Process.GetCurrentProcess();
-            string executableFileName = me.Modules[0].FileName;
-            string programPath = Path.GetFullPath(Path.GetDirectoryName(executableFileName));
-
-            string filename = Path.Combine(programPath, "GitNoob.zip");
-            if (File.Exists(filename))
+            updateSetForm(UpdateStatus.UnpackingNewGitNoob, "Installing new GitNoob...", null);
+            try
             {
-                File.Delete(filename);
-                if (File.Exists(filename))
+                // NuGet package: DotNetZip 1.16.0
+                // https://www.nuget.org/packages/DotNetZip/
+
+
+                using (var zip = new Ionic.Zip.ZipFile(zipFilename))
                 {
-                    throw new Exception("Could not delete: " + filename);
+                    zip.ExtractAll(Utils.GitNoobPath, Ionic.Zip.ExtractExistingFileAction.OverwriteSilently);
                 }
             }
-
-            using (Stream output = File.OpenWrite(filename))
+            catch (Exception ex)
             {
-                using (var response = httpGet(latestDownloadUrl))
+                updateError("Installing new GitNoob failed: " + ex.Message);
+                return;
+            }
+
+            updateSetForm(UpdateStatus.Done, "Installation of version " + download.version.FullVersion + " finished", "Exit");
+        }
+
+        private bool updateIsCanceled()
+        {
+            if (!cancelUpdate) return false;
+
+            updateStatus = UpdateStatus.Canceled;
+
+            Program.Exit();
+            return true;
+        }
+
+        private void updateError(string text)
+        {
+            updateSetForm(UpdateStatus.Error, text, "Error");
+        }
+
+        private void updateSetForm(UpdateStatus status, string progress, string buttonText)
+        {
+            var execute = (MethodInvoker)delegate
+            {
+                updateStatus = status;
+
+                lblProgress.Text = progress;
+
+                if (!string.IsNullOrWhiteSpace(buttonText))
                 {
-                    using (Stream input = response.GetResponseStream())
-                    {
-                        input.CopyTo(output);
-                    }
+                    btnAction.Text = buttonText;
+                    btnAction.Visible = true;
                 }
+                else
+                {
+                    btnAction.Text = string.Empty;
+                    btnAction.Visible = false;
+                }
+            };
+
+            if (this.InvokeRequired)
+            {
+                this.Invoke(execute);
+            }
+            else
+            {
+                execute();
             }
         }
     }
