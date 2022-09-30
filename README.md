@@ -7,7 +7,7 @@
 
 **Warning: GitNoob is a very opinionated tool.**
 
-GitNoob is a development tool for the Windows platform. It's purpose is never have to touch the git commandline again. To forget all quirks of git and focus on programming.
+GitNoob is a development tool for the Windows platform. The purpose is never have to touch the git commandline again. To forget all quirks of git and focus on programming.
 
 GitNoob solves the following problems:
 
