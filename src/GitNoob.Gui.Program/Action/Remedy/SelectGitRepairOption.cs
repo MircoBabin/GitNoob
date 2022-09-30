@@ -16,10 +16,6 @@ namespace GitNoob.Gui.Program.Action.Remedy
                     new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
                     }),
-                    new VisualizerMessageButton("Show history of all branches / tags / remotes", (input) => {
-                        StepsExecutor.StartGitkAll();
-                        Done();
-                    }),
                     new VisualizerMessageButton("Unpack last commit on current branch.", (input) => {
                         var step = new Step.AskUnpackLastCommitOnCurrentBranch();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
@@ -38,6 +34,19 @@ namespace GitNoob.Gui.Program.Action.Remedy
                     }),
 
                     /*
+                    new VisualizerMessageButton("Download fresh clone, delete all local branches / tags / commits", (input) => {
+                        //Todo
+
+                        // ?? Maybe rightclick contextmenu of toilet ???
+                        //Like toilet, first ask to backup
+                        //Keep .env specific Project files
+                        //Remove directory
+                        //Clone
+                        //Restore .env specific files
+
+                        Done();
+                    }),
+
                     new VisualizerMessageButton("Stage all changes and start Git Gui to commit.", (input) => {
                         //Todo
                         Done();
