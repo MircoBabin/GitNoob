@@ -7,6 +7,9 @@
 * Add: "Show history of all branches / tags / remotes" on current branch history button via right mouseclick.
 * Fix: set committer name & email.
 * Fix: touch commit timestamps.
+* Remove: git repair option "Show history of all branches / tags / remotes", it can be found via context menu on current branch history.
+* Add: system menu option "Check for GitNoob updates".
+* Add: GitNoobUpdater.exe for automated updating.
 
 ## Version 1.15
 * Fix: start explorer multiple times.
