@@ -20,6 +20,18 @@ namespace GitNoob
             public static extern bool SetForegroundWindow(IntPtr hWnd);
         }
 
+        public static List<string> installationFilenames = new List<string>()
+        {
+                "GitNoob.Config.dll",
+                "GitNoob.exe",
+                "GitNoob.exe.config",
+                "GitNoob.Git.dll",
+                "GitNoob.Gui.Forms.dll",
+                "GitNoob.Gui.Forms.dll.config",
+                "GitNoob.Gui.Program.dll",
+                "GitNoob.ProjectTypes.dll",
+        };
+
         private static void OutputVersion(string outputFilename)
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version;
@@ -29,20 +41,8 @@ namespace GitNoob
 
         private static void OutputInstallationFilenames(string outputFilename)
         {
-            List<string> filenames = new List<string>()
-            {
-                "GitNoob.Config.dll",
-                "GitNoob.exe",
-                "GitNoob.exe.config",
-                "GitNoob.Git.dll",
-                "GitNoob.Gui.Forms.dll",
-                "GitNoob.Gui.Forms.dll.config",
-                "GitNoob.Gui.Program.dll",
-                "GitNoob.ProjectTypes.dll",
-            };
-
             StringBuilder output = new StringBuilder();
-            foreach(var filename in filenames)
+            foreach(var filename in installationFilenames)
             {
                 output.AppendLine(filename);
             }
@@ -118,6 +118,7 @@ namespace GitNoob
 
             Process me = Process.GetCurrentProcess();
             string executableFileName = me.Modules[0].FileName;
+            string programPath = Path.GetFullPath(Path.GetDirectoryName(executableFileName));
 
             {
                 var blocked = ZoneIdentifier.IsFileBlocked.CheckFile(executableFileName);
@@ -164,8 +165,6 @@ namespace GitNoob
             {
                 if (firstInstance)
                 {
-                    string programPath = Path.GetFullPath(Path.GetDirectoryName(executableFileName));
-
                     Config.Loader.ProjectTypeLoader.LoadProjectTypesAssembly(Path.Combine(programPath, "GitNoob.ProjectTypes.dll"));
 
                     List<Config.IConfig> configs = new List<Config.IConfig>();
@@ -215,7 +214,7 @@ namespace GitNoob
 
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-                    Application.Run(new Gui.Forms.ChooseProjectForm(configs, licenseText));
+                    Application.Run(new Gui.Forms.ChooseProjectForm(programPath, configs, licenseText));
                 }
                 else
                 {
