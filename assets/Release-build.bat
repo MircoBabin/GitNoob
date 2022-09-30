@@ -50,9 +50,15 @@ echo.
 
 del /q "Release\*" >nul 2>&1
 
+set filenames=
+rem GitNoob.exe filenames
 del Release_filenames.txt >nul 2>&1
 "%~dp0..\bin\Release\GitNoob.exe" "--installationFilenames=Release_filenames.txt"
-set filenames=
+for /f "tokens=* delims=" %%a in (Release_filenames.txt) do call :append_filename "%%a"
+del Release_filenames.txt >nul 2>&1
+rem GitNoobUpdater.exe filenames
+del Release_filenames.txt >nul 2>&1
+"%~dp0..\bin\Release\GitNoobUpdater.exe" "--installationFilenames=Release_filenames.txt"
 for /f "tokens=* delims=" %%a in (Release_filenames.txt) do call :append_filename "%%a"
 del Release_filenames.txt >nul 2>&1
 
