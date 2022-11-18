@@ -46,6 +46,7 @@
     <Compile Include="Command\Branch\SetTrackingRemoteBranch.cs" />
     <Compile Include="Command\Branch\MergeContinue.cs" />
     <Compile Include="Command\Branch\ResetCurrentBranchToPreviousCommit.cs" />
+    <Compile Include="Command\Config\ClearCommitter.cs" />
     <Compile Include="Command\Config\SetCommitter.cs" />
     <Compile Include="Command\Remote\ChangeUrl.cs" />
     <Compile Include="Command\Remote\ListRemotes.cs" />

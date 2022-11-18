@@ -204,7 +204,7 @@ namespace GitNoob.Config.Loader
             }
         }
 
-        public Project LoadProject(string inifilename)
+        private Project LoadProject(string inifilename)
         {
             GitnoobIniFileReader ini = CreateReader(inifilename);
 

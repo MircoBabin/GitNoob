@@ -73,6 +73,11 @@ namespace GitNoob.Gui.Forms
                 _refresh.Dispose();
                 _refresh = null;
             }
+
+            if (Config.ProjectWorkingDirectory.Git.ClearCommitNameAndEmailOnExit.Value)
+            {
+                Config.Git.ClearCommitter();
+            }
         }
 
         Program.Action.ExecuteChangeBranch ActionChangeBranch = null;
@@ -125,7 +130,10 @@ namespace GitNoob.Gui.Forms
                     ShowCurrentBranch("[detached HEAD]", false);
                 else
                     ShowCurrentBranch(status.CurrentBranch, false);
+
                 lblCommitnameValue.Text = status.CommitFullName;
+                if (Config.ProjectWorkingDirectory.Git.ClearCommitNameAndEmailOnExit.Value)
+                    lblCommitnameValue.Text += " [clear on exit]";
 
                 StringBuilder txt = new StringBuilder();
                 if (status.DirectoryExists)

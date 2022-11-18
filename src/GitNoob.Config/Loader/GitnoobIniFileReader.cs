@@ -113,16 +113,22 @@ namespace GitNoob.Config.Loader
             return value;
         }
 
-        public string ReadString(string Section, string Key)
+        public string ReadString(IniFileParser parser, string Section, string Key)
         {
-            string value = _parser.ReadValue(Section, Key).Trim();
+            string value = parser.ReadValue(Section, Key).Trim();
 
             return replaceValueVariables(value);
+
         }
 
-        public void ReadPath(string Section, string Key, ConfigPath intoValue, string baseDirectory = null)
+        public string ReadString(string Section, string Key)
         {
-            string value = _parser.ReadValue(Section, Key);
+            return ReadString(_parser, Section, Key);
+        }
+
+        public void ReadPath(IniFileParser parser, string Section, string Key, ConfigPath intoValue, string baseDirectory = null)
+        {
+            string value = ReadString(parser, Section, Key);
             if (String.IsNullOrWhiteSpace(value)) return;
 
             if (value.Contains("%gitRoot%"))
@@ -131,13 +137,18 @@ namespace GitNoob.Config.Loader
                 return;
             }
 
-            if (baseDirectory == null) baseDirectory = Path.GetDirectoryName(_parser.IniFilename);
+            if (baseDirectory == null) baseDirectory = Path.GetDirectoryName(parser.IniFilename);
             intoValue.CopyFrom(new ConfigPath(GetFullPath(value, baseDirectory)));
         }
 
-        public void ReadFilename(string Section, string Key, ConfigFilename intoValue)
+        public void ReadPath(string Section, string Key, ConfigPath intoValue, string baseDirectory = null)
         {
-            string value = _parser.ReadValue(Section, Key);
+            ReadPath(_parser, Section, Key, intoValue, baseDirectory);
+        }
+
+        public void ReadFilename(IniFileParser parser, string Section, string Key, ConfigFilename intoValue)
+        {
+            string value = ReadString(parser, Section, Key);
             if (String.IsNullOrWhiteSpace(value)) return;
 
             if (value.Contains("%gitRoot%"))
@@ -146,18 +157,29 @@ namespace GitNoob.Config.Loader
                 return;
             }
 
-            intoValue.CopyFrom(new ConfigFilename(GetFullPath(value, Path.GetDirectoryName(_parser.IniFilename))));
+            intoValue.CopyFrom(new ConfigFilename(GetFullPath(value, Path.GetDirectoryName(parser.IniFilename))));
         }
 
-        public void ReadBoolean(string Section, string Key, ConfigBoolean intoValue)
+        public void ReadFilename(string Section, string Key, ConfigFilename intoValue)
         {
-            string value = _parser.ReadValue(Section, Key);
+            ReadFilename(_parser, Section, Key, intoValue);
+        }
+
+        public void ReadBoolean(IniFileParser parser, string Section, string Key, ConfigBoolean intoValue)
+        {
+            string value = ReadString(parser, Section, Key);
             if (String.IsNullOrWhiteSpace(value)) return;
 
             value = value.ToLowerInvariant();
             if (value == "true") intoValue.CopyFrom(new ConfigBoolean(true));
             else if (value == "false") intoValue.CopyFrom(new ConfigBoolean(false));
         }
+
+        public void ReadBoolean(string Section, string Key, ConfigBoolean intoValue)
+        {
+            ReadBoolean(_parser, Section, Key, intoValue);
+        }
+
         #endregion
 
         #region Read sections
@@ -180,13 +202,39 @@ namespace GitNoob.Config.Loader
             value = ReadString(Section, "mainbranch");
             if (!String.IsNullOrWhiteSpace(value)) git.MainBranch = value;
 
-            value = ReadString(Section, "commitname");
-            if (!String.IsNullOrWhiteSpace(value)) git.CommitName = value;
-            if (String.IsNullOrWhiteSpace(git.CommitName)) git.CommitName = _globalGitCommitName;
+            {
+                value = ReadString(Section, "commitname");
+                if (!String.IsNullOrWhiteSpace(value)) git.CommitName = value;
+                if (String.IsNullOrWhiteSpace(git.CommitName)) git.CommitName = _globalGitCommitName;
 
-            value = ReadString(Section, "commitemail");
-            if (!String.IsNullOrWhiteSpace(value)) git.CommitEmail = value;
-            if (String.IsNullOrWhiteSpace(git.CommitEmail)) git.CommitEmail = _globalGitCommitEmail;
+                value = ReadString(Section, "commitemail");
+                if (!String.IsNullOrWhiteSpace(value)) git.CommitEmail = value;
+                if (String.IsNullOrWhiteSpace(git.CommitEmail)) git.CommitEmail = _globalGitCommitEmail;
+
+                ReadBoolean(Section, "commitname_settings_clearonexit", git.ClearCommitNameAndEmailOnExit);
+            }
+
+            {
+                ConfigFilename other = new ConfigFilename(null);
+                ReadFilename(Section, "commitname_settings_via_filename", other);
+                string otherFilename = other.ToString();
+
+                if (!String.IsNullOrWhiteSpace(otherFilename) && File.Exists(otherFilename))
+                {
+                    IniFileParser _otherParser = new IniFileParser(otherFilename);
+                    string otherSection = "gitnoob";
+
+                    string commitname = ReadString(_otherParser, otherSection, "commitname");
+                    string commitemail = ReadString(_otherParser, otherSection, "commitemail");
+                    if (!String.IsNullOrWhiteSpace(commitname) && !String.IsNullOrWhiteSpace(commitemail))
+                    {
+                        git.CommitName = commitname;
+                        git.CommitEmail = commitemail;
+
+                        ReadBoolean(_otherParser, otherSection, "commitname_settings_clearonexit", git.ClearCommitNameAndEmailOnExit);
+                    }
+                }
+            }
 
             return git;
         }
