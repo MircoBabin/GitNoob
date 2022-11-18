@@ -1,5 +1,14 @@
 # GitNoob changelog
 
+## Version 1.17
+* Fix: after get latest try to ensure main branch exists.
+* Fix: cloning should checkout the specified main branch.
+* Fix: show an errormessage if configuration file setting "loadRootConfigurationFrom" specifies an invalid file.
+* Fix: show an errormessage if there isn't any project defined in the configuration files.
+* Fix: starting history.
+* Add: configuration setting commitname-settings-via-filename
+* Add: configuration setting commitname-settings-clear-on-exit
+
 ## Version 1.16
 * Project migrated to Visual Studio 2019 Community Edition.
 * Fix: show correct icon on Windows/11.
