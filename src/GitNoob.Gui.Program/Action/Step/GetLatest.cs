@@ -71,6 +71,9 @@ namespace GitNoob.Gui.Program.Action.Step
                 return false;
             }
 
+            //Try to ensure main branch existance
+            StepsExecutor.Config.Git.EnsureMainBranchExistance();
+
             //Success, check status for rebase current branch onto main
             if (!_rebaseCurrentBranchOntoMainBranchAfterDownload)
             {
