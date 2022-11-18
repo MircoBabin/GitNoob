@@ -6,7 +6,7 @@ using System.Text;
 
 namespace GitNoob.Config.Loader
 {
-    internal class IniFile
+    internal class IniFileParser
     {
         public string IniFilename { get; private set; }
 
@@ -30,7 +30,7 @@ namespace GitNoob.Config.Loader
 
         }
 
-        public IniFile(string IniFilename)
+        public IniFileParser(string IniFilename)
         {
             var f = new FileInfo(IniFilename);
             this.IniFilename = f.FullName;

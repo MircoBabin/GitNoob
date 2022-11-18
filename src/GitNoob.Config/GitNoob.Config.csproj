@@ -49,7 +49,7 @@
     <Compile Include="IExecutor.cs" />
     <Compile Include="IConfig.cs" />
     <Compile Include="IProjectType.cs" />
-    <Compile Include="Loader\IniFile.cs" />
+    <Compile Include="Loader\IniFileParser.cs" />
     <Compile Include="Loader\RootIniFileLoader.cs" />
     <Compile Include="Loader\ProjectTypeLoader.cs" />
     <Compile Include="Project.cs" />

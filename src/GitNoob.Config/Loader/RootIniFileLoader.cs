@@ -88,14 +88,14 @@ namespace GitNoob.Config.Loader
             return value;
         }
 
-        private string ReadValue(IniFile ini, string Section, string Key)
+        private string ReadValue(IniFileParser ini, string Section, string Key)
         {
             string value = ini.ReadValue(Section, Key).Trim();
 
             return replaceValueVariables(value);
         }
 
-        private void ReadPath(IniFile ini, string Section, string Key, ConfigPath intoValue, string baseDirectory = null)
+        private void ReadPath(IniFileParser ini, string Section, string Key, ConfigPath intoValue, string baseDirectory = null)
         {
             string value = ReadValue(ini, Section, Key);
             if (String.IsNullOrWhiteSpace(value)) return;
@@ -110,7 +110,7 @@ namespace GitNoob.Config.Loader
             intoValue.CopyFrom(new ConfigPath(GetFullPath(value, baseDirectory)));
         }
 
-        private void ReadFilename(IniFile ini, string Section, string Key, ConfigFilename intoValue)
+        private void ReadFilename(IniFileParser ini, string Section, string Key, ConfigFilename intoValue)
         {
             string value = ReadValue(ini, Section, Key);
             if (String.IsNullOrWhiteSpace(value)) return;
@@ -124,7 +124,7 @@ namespace GitNoob.Config.Loader
             intoValue.CopyFrom(new ConfigFilename(GetFullPath(value, Path.GetDirectoryName(ini.IniFilename))));
         }
 
-        private void ReadBoolean(IniFile ini, string Section, string Key, ConfigBoolean intoValue)
+        private void ReadBoolean(IniFileParser ini, string Section, string Key, ConfigBoolean intoValue)
         {
             string value = ReadValue(ini, Section, Key);
             if (String.IsNullOrWhiteSpace(value)) return;
@@ -136,7 +136,7 @@ namespace GitNoob.Config.Loader
 
         private void LoadGitnoobIni()
         { 
-            Dictionary<string, System.Action<IniFile, string, string>> sectionDefinitions = new Dictionary<string, System.Action<IniFile, string, string>>()
+            Dictionary<string, System.Action<IniFileParser, string, string>> sectionDefinitions = new Dictionary<string, System.Action<IniFileParser, string, string>>()
             {
                 {  "apache-", (ini, sectionname, name) =>
                     {
@@ -173,7 +173,7 @@ namespace GitNoob.Config.Loader
             };
 
             {
-                IniFile ini = new IniFile(_rootConfigurationIniFilename);
+                IniFileParser ini = new IniFileParser(_rootConfigurationIniFilename);
                 ConfigPath path = new ConfigPath(null);
 
                 {
@@ -185,7 +185,7 @@ namespace GitNoob.Config.Loader
                             throw new Exception("File " + _rootConfigurationIniFilename + " is invalid. loadRootConfigurationFrom setting does not point to an existing file: " + loadConfigurationFrom);
 
                         _rootConfigurationIniFilename = loadConfigurationFrom;
-                        ini = new IniFile(_rootConfigurationIniFilename);
+                        ini = new IniFileParser(_rootConfigurationIniFilename);
                     }
                 }
 
@@ -218,7 +218,7 @@ namespace GitNoob.Config.Loader
                     foreach (var item in sectionDefinitions)
                     {
                         string sectionStart = item.Key;
-                        System.Action<IniFile, string, string> action = item.Value;
+                        System.Action<IniFileParser, string, string> action = item.Value;
 
                         if (sectionname.StartsWith(sectionStart) && sectionname.Length > sectionStart.Length)
                         {
@@ -254,7 +254,7 @@ namespace GitNoob.Config.Loader
             }
         }
 
-        private WorkingGit LoadGit(IniFile ini, string Section, string gitName)
+        private WorkingGit LoadGit(IniFileParser ini, string Section, string gitName)
         {
             WorkingGit git = new WorkingGit();
             string value;
@@ -284,7 +284,7 @@ namespace GitNoob.Config.Loader
             return git;
         }
 
-        private Apache LoadApache(IniFile ini, string Section, string apacheName)
+        private Apache LoadApache(IniFileParser ini, string Section, string apacheName)
         {
             Apache apache = new Apache();
             string value;
@@ -310,7 +310,7 @@ namespace GitNoob.Config.Loader
             return apache;
         }
 
-        private Php LoadPhp(IniFile ini, string Section, string phpName)
+        private Php LoadPhp(IniFileParser ini, string Section, string phpName)
         {
             Php php = new Php();
             string value;
@@ -331,7 +331,7 @@ namespace GitNoob.Config.Loader
             return php;
         }
 
-        private Ngrok LoadNgrok(IniFile ini, string Section, string ngrokName)
+        private Ngrok LoadNgrok(IniFileParser ini, string Section, string ngrokName)
         {
             Ngrok ngrok = new Ngrok();
             string value;
@@ -369,7 +369,7 @@ namespace GitNoob.Config.Loader
             return ngrok;
         }
 
-        private SmtpServer LoadSmtpServer(IniFile ini, string Section, string smtpServerName)
+        private SmtpServer LoadSmtpServer(IniFileParser ini, string Section, string smtpServerName)
         {
             SmtpServer smtpserver = new SmtpServer();
             string value;
@@ -389,7 +389,7 @@ namespace GitNoob.Config.Loader
             return smtpserver;
         }
 
-        private Webpage LoadWebpage(IniFile ini, string Section, string webpageName)
+        private Webpage LoadWebpage(IniFileParser ini, string Section, string webpageName)
         {
             Webpage webpage = new Webpage();
             string value;
@@ -412,7 +412,7 @@ namespace GitNoob.Config.Loader
 
         private Project LoadProject(string inifilename)
         {
-            IniFile ini = new IniFile(inifilename);
+            IniFileParser ini = new IniFileParser(inifilename);
 
             var project = new Project();
 
@@ -489,7 +489,7 @@ namespace GitNoob.Config.Loader
             return project;
         }
 
-        private WorkingDirectory LoadWorkingDirectory(Project project, IniFile ini, string Section, 
+        private WorkingDirectory LoadWorkingDirectory(Project project, IniFileParser ini, string Section, 
             string gitName, string webpageName, string apacheName, string phpName, string ngrokName, string smtpServerName)
         {
             WorkingDirectory WorkingDirectory = new WorkingDirectory();
