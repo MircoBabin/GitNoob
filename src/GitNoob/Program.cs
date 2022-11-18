@@ -170,7 +170,7 @@ namespace GitNoob
                     List<Config.IConfig> configs = new List<Config.IConfig>();
                     try
                     {
-                        configs.Add(new Config.Loader.IniFileLoader(rootConfigurationFilename, programPath));
+                        configs.Add(new Config.Loader.RootIniFileLoader(rootConfigurationFilename, programPath));
 
                         var ProjectsCount = 0;
                         foreach (var config in configs)

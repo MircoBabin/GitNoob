@@ -50,7 +50,7 @@
     <Compile Include="IConfig.cs" />
     <Compile Include="IProjectType.cs" />
     <Compile Include="Loader\IniFile.cs" />
-    <Compile Include="Loader\IniFileLoader.cs" />
+    <Compile Include="Loader\RootIniFileLoader.cs" />
     <Compile Include="Loader\ProjectTypeLoader.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Php.cs" />

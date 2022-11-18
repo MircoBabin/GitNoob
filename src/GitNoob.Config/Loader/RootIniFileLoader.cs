@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GitNoob.Config.Loader
 {
-    public class IniFileLoader : IConfig
+    public class RootIniFileLoader : IConfig
     {
         private string _rootConfigurationIniFilename;
 
@@ -29,7 +29,7 @@ namespace GitNoob.Config.Loader
 
         private Dictionary<string, Project> _projects;
 
-        public IniFileLoader(string RootConfigurationIniFilename, string GitNoobProgramPath)
+        public RootIniFileLoader(string RootConfigurationIniFilename, string GitNoobProgramPath)
         {
             _rootConfigurationIniFilename = Path.GetFullPath(RootConfigurationIniFilename);
 
