@@ -211,12 +211,12 @@ namespace GitNoob.Config.Loader
                 if (!String.IsNullOrWhiteSpace(value)) git.CommitEmail = value;
                 if (String.IsNullOrWhiteSpace(git.CommitEmail)) git.CommitEmail = _globalGitCommitEmail;
 
-                ReadBoolean(Section, "commitname_settings_clearonexit", git.ClearCommitNameAndEmailOnExit);
+                ReadBoolean(Section, "commitname-settings-clear-on-exit", git.ClearCommitNameAndEmailOnExit);
             }
 
             {
                 ConfigFilename other = new ConfigFilename(null);
-                ReadFilename(Section, "commitname_settings_via_filename", other);
+                ReadFilename(Section, "commitname-settings-via-filename", other);
                 string otherFilename = other.ToString();
 
                 if (!String.IsNullOrWhiteSpace(otherFilename) && File.Exists(otherFilename))
@@ -231,7 +231,7 @@ namespace GitNoob.Config.Loader
                         git.CommitName = commitname;
                         git.CommitEmail = commitemail;
 
-                        ReadBoolean(_otherParser, otherSection, "commitname_settings_clearonexit", git.ClearCommitNameAndEmailOnExit);
+                        ReadBoolean(_otherParser, otherSection, "commitname-settings-clear-on-exit", git.ClearCommitNameAndEmailOnExit);
                     }
                 }
             }
