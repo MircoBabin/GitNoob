@@ -652,7 +652,7 @@ namespace GitNoob.Git
 
         private GetLatestResult GetLatestViaClone()
         {
-            var clonecmd = new Command.Repository.Clone(this);
+            var clonecmd = new Command.Repository.Clone(this, MainBranch);
             clonecmd.WaitFor();
 
             ClearCache();
@@ -1517,54 +1517,64 @@ namespace GitNoob.Git
 
         public EnsureMainBranchExistanceResult EnsureMainBranchExistance()
         {
-            //checkout a (non existing) main branch will create it automatically tracking the remote branch
+            var list = new Command.Branch.ListBranches(this, true);
+            list.WaitFor();
 
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
-            var changes = new Command.WorkingTree.HasChanges(this);
-            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-            var merging = new Command.WorkingTree.IsMergeActive(this);
-            currentbranch.WaitFor();
-            changes.WaitFor();
-            rebasing.WaitFor();
-            merging.WaitFor();
+            GitBranch remote = null;
+            foreach (var branch in list.result)
+            {
+                switch (branch.Type)
+                {
+                    case GitBranch.BranchType.LocalTrackingRemoteBranch:
+                        if (branch.ShortName == MainBranch)
+                        {
+                            return new EnsureMainBranchExistanceResult()
+                            {
+                                Exists = true,
+                            };
+                        }
+                        break;
 
-            if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false || rebasing.result != false || merging.result != false || currentbranch.DetachedHead != false)
+                    case GitBranch.BranchType.UntrackedRemoteBranch:
+                        if (remote == null)
+                        {
+                            var parts = branch.FullName.Split('/');
+                            if (parts[parts.Length - 1] == MainBranch)
+                            {
+                                remote = branch;
+                            }
+                        }
+                        break;
+                }
+            }
+
+            if (remote == null)
             {
                 return new EnsureMainBranchExistanceResult()
                 {
-                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
-                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
+                    ErrorRemoteBranchNotFound = true,
                 };
             }
 
-            var checkout = new Command.Branch.ChangeBranchTo(this, MainBranch);
-            checkout.WaitFor();
+            var create = new Command.Branch.CreateBranch(this, MainBranch, remote.FullName, false);
+            create.WaitFor();
 
-            var branch = new Command.Branch.GetCurrentBranch(this);
-            var remotebranch = new Command.Branch.GetRemoteBranch(this, MainBranch);
-            branch.WaitFor();
-            remotebranch.WaitFor();
+            list = new Command.Branch.ListBranches(this, false, MainBranch);
+            list.WaitFor();
 
-            //restore current branch
-            checkout = new Command.Branch.ChangeBranchTo(this, currentbranch.shortname);
-            checkout.WaitFor();
-
-            if (branch.shortname != MainBranch)
+            if (list.result.Count != 1)
             {
                 return new EnsureMainBranchExistanceResult()
                 {
-                    ErrorNotAutomaticallyCreated = true,
+                    ErrorCreatingMainBranch = true,
                 };
             }
 
-            if (String.IsNullOrEmpty(remotebranch.result))
+            if (list.result[0].Type != GitBranch.BranchType.LocalTrackingRemoteBranch)
             {
                 return new EnsureMainBranchExistanceResult()
                 {
-                    ErrorNotTrackingRemoteBranch = true,
+                    ErrorCreatingMainBranch = true,
                 };
             }
 
@@ -1572,7 +1582,6 @@ namespace GitNoob.Git
             {
                 Exists = true,
             };
-
         }
 
         public ResetMainBranchToRemoteResult ResetMainBranchToRemote(string currentBranch)

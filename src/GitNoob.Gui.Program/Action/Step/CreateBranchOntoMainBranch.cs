@@ -17,24 +17,6 @@
                 var message = new VisualizerMessageWithLinks("Ensuring main branch existance failed.");
 
                 var result = StepsExecutor.Config.Git.EnsureMainBranchExistance();
-                if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
-                {
-                    FailureRemedy = new Remedy.MessageRebasingOrMerging(this, message, result.ErrorRebaseInProgress, result.ErrorMergeInProgress);
-                    return false;
-                }
-
-                if (result.ErrorDetachedHead)
-                {
-                    FailureRemedy = new Remedy.MessageDetachedHead(this, message);
-                    return false;
-                }
-
-                if (result.ErrorWorkingTreeChanges || result.ErrorStagedUncommittedFiles)
-                {
-                    FailureRemedy = new Remedy.MessageChanges(this, message, result.ErrorWorkingTreeChanges, result.ErrorStagedUncommittedFiles);
-                    return false;
-                }
-
                 if (!result.Exists)
                 {
                     FailureRemedy = new Remedy.MessageUnknownResult(this, message, result);
