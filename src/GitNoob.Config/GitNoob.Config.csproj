@@ -43,6 +43,8 @@
     <Compile Include="ConfigFilename.cs" />
     <Compile Include="IProjectType_Capabilities.cs" />
     <Compile Include="IProjectType_ActionResult.cs" />
+    <Compile Include="Loader\GitnoobIniFileReader.cs" />
+    <Compile Include="Loader\KeyValue.cs" />
     <Compile Include="SmtpServer.cs" />
     <Compile Include="Ngrok.cs" />
     <Compile Include="Apache.cs" />
