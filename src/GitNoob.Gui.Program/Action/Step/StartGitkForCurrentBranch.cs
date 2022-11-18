@@ -20,7 +20,7 @@ namespace GitNoob.Gui.Program.Action.Step
             var batFile = new BatFile("run-gitk-current-branch", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow, "GitNoob - Git History",
                 StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory,
                 StepsExecutor.Config.PhpIni);
-            batFile.AppendLine("start \"Gitk\" \"" + _executable + "\" \"" + currentBranch + "\" \"" + MainBranch + "\"");
+            batFile.AppendLine("start \"Gitk\" \"" + _executable + "\" \"" + currentBranch + "\" \"" + MainBranch + "\" --");
             batFile.AppendLine("exit /b 0");
 
             batFile.Start();

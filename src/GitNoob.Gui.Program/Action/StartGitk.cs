@@ -63,9 +63,9 @@ namespace GitNoob.Gui.Program.Action
                     batFile.Append(" \"" + branch + "\"");
                 }
             }
+            batFile.Append(" -- ");
             if (filenames != null)
             {
-                batFile.Append(" -- ");
                 foreach(var filename in filenames)
                 {
                     batFile.Append(" \"" + filename + "\"");
