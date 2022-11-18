@@ -171,6 +171,18 @@ namespace GitNoob
                     try
                     {
                         configs.Add(new Config.Loader.IniFileLoader(rootConfigurationFilename, programPath));
+
+                        var ProjectsCount = 0;
+                        foreach (var config in configs)
+                        {
+                            foreach (var project in config.GetProjects())
+                            {
+                                ProjectsCount++;
+                            }
+                        }
+
+                        if (ProjectsCount == 0)
+                            throw new Exception("There are no projects configured in the root configuration file " + rootConfigurationFilename + ". ");
                     }
                     catch (Exception ex)
                     {

@@ -181,11 +181,11 @@ namespace GitNoob.Config.Loader
                     if (!String.IsNullOrWhiteSpace(loadConfigurationFrom))
                     {
                         loadConfigurationFrom = Path.GetFullPath(loadConfigurationFrom);
-                        if (File.Exists(loadConfigurationFrom))
-                        {
-                            _rootConfigurationIniFilename = loadConfigurationFrom;
-                            ini = new IniFile(_rootConfigurationIniFilename);
-                        }
+                        if (!File.Exists(loadConfigurationFrom))
+                            throw new Exception("File " + _rootConfigurationIniFilename + " is invalid. loadRootConfigurationFrom setting does not point to an existing file: " + loadConfigurationFrom);
+
+                        _rootConfigurationIniFilename = loadConfigurationFrom;
+                        ini = new IniFile(_rootConfigurationIniFilename);
                     }
                 }
 
