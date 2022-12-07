@@ -1,5 +1,8 @@
 # GitNoob changelog
 
+## Version 1.18
+* Fix: Laravel - composer dump-autoload issues with packages.php - see also https://github.com/laravel/framework/issues/45209
+
 ## Version 1.17
 * Fix: after get latest try to ensure main branch exists.
 * Fix: cloning should checkout the specified main branch.
