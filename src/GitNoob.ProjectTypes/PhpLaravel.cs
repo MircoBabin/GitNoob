@@ -58,15 +58,36 @@ namespace GitNoob.ProjectTypes
                 Environment.NewLine +
                 ":composer_installed" + Environment.NewLine +
                 "    echo." + Environment.NewLine +
-                "    echo [Delete package cache: bootstrap\\cache\\packages.php]" + Environment.NewLine +
-                "    del /q bootstrap\\cache\\packages.php >nul 2>&1" + Environment.NewLine +
-                "    echo." + Environment.NewLine +
+                "    echo [Delete .tmp files from the cache: bootstrap\\cache\\*.tmp]" + Environment.NewLine +
+                "    attrib -r bootstrap\\cache\\*.tmp >nul 2>&1" + Environment.NewLine +
+                "    del /q bootstrap\\cache\\*.tmp >nul 2>&1" + Environment.NewLine +
+                "    if not exist bootstrap\\cache\\*.tmp goto clear_packages" + Environment.NewLine +
                 Environment.NewLine +
+                "    echo Deleting bootstrap\\cache\\*.tmp failed." + Environment.NewLine +
+                "    exit /b 106" + Environment.NewLine +
+                Environment.NewLine +
+                ":clear_packages" + Environment.NewLine +
+                "    echo." + Environment.NewLine +
+                "    echo [Delete packages cache: bootstrap\\cache\\packages.php]" + Environment.NewLine +
+                "    attrib -r bootstrap\\cache\\packages.php >nul 2>&1" + Environment.NewLine +
+                "    del /q bootstrap\\cache\\packages.php >nul 2>&1" + Environment.NewLine +
+                "    if not exist bootstrap\\cache\\packages.php goto dump_autoload" + Environment.NewLine +
+                Environment.NewLine +
+                "    echo Deleting bootstrap\\cache\\packages.php failed." + Environment.NewLine +
+                "    exit /b 107" + Environment.NewLine +
+                Environment.NewLine +
+                ":dump_autoload" + Environment.NewLine +
+                "    echo." + Environment.NewLine +
                 "    echo [Composer dump-autoload]" + Environment.NewLine +
                 "    " + php_exe + " composer.phar dump-autoload --no-dev --no-ansi --no-interaction" + Environment.NewLine +
                 "    echo [errorlevel=%errorlevel%]" + Environment.NewLine +
                 "    if errorlevel 1 exit /b 101" + Environment.NewLine +
+                "    if exist bootstrap\\cache\\packages.php goto clear_cache" + Environment.NewLine +
                 Environment.NewLine +
+                "    echo Creating packages cache in bootstrap\\cache\\packages.php failed." + Environment.NewLine +
+                "    exit /b 108" + Environment.NewLine +
+                Environment.NewLine +
+                ":clear_cache" + Environment.NewLine +
                 "    echo." + Environment.NewLine +
                 "    echo [Artisan cache:clear]" + Environment.NewLine +
                 "    " + php_exe + " artisan cache:clear" + Environment.NewLine +
@@ -149,6 +170,18 @@ namespace GitNoob.ProjectTypes
 
                 case 105:
                     message.AppendLine("Error during artisan view:clear.");
+                    break;
+
+                case 106:
+                    message.AppendLine("Error during remove .tmp files from cache.");
+                    break;
+
+                case 107:
+                    message.AppendLine("Error during remove packages cache.");
+                    break;
+
+                case 108:
+                    message.AppendLine("Error during create packages cache.");
                     break;
 
                 case 200:
