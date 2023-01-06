@@ -48,12 +48,12 @@ namespace GitNoob.Git.Command
         {
             get
             {
-                lock(lockobj) { return _status; }
+                lock (lockobj) { return _status; }
             }
 
             private set
             {
-                lock(lockobj) { _status = value; }
+                lock (lockobj) { _status = value; }
             }
         }
 
@@ -165,7 +165,7 @@ namespace GitNoob.Git.Command
         {
             get
             {
-                lock(_inputQueue)
+                lock (_inputQueue)
                 {
                     return _inputString.ToString();
                 }
@@ -214,13 +214,12 @@ namespace GitNoob.Git.Command
         }
         public void CloseStandardInput()
         {
-            lock(_inputQueue)
+            lock (_inputQueue)
             {
                 if (_inputQueueClose == _closeState.None)
                     _inputQueueClose = _closeState.Close;
             }
         }
-
 
         public ConsoleExecutor(string executable, string commandline, string workingdirectory, string enterPasswordText, SecureString password,
                                IList<string> AppendToPath = null, IDictionary<string, string> EnvironmentVariables = null)
@@ -279,6 +278,7 @@ namespace GitNoob.Git.Command
             public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
             public const int SW_HIDE = 0;
+            public const int SW_SHOWNORMAL = 1;
             public const int SW_MINIMIZE = 6;
 
             public enum StdHandle : int
@@ -304,7 +304,7 @@ namespace GitNoob.Git.Command
             public static extern bool FreeConsole();
 
             [DllImport("kernel32.dll", SetLastError = true)]
-            public static extern bool GetConsoleScreenBufferInfo (IntPtr hConsoleOutput,
+            public static extern bool GetConsoleScreenBufferInfo(IntPtr hConsoleOutput,
                 out CONSOLE_SCREEN_BUFFER_INFO lpConsoleScreenBufferInfo);
 
 
@@ -346,11 +346,146 @@ namespace GitNoob.Git.Command
             public static extern short VkKeyScan(char ch);
 
             public const int VK_RETURN = 0x0D;
+            public const int WmKeyDown = 0x100;
             public const int WmKeyUp = 0x101;
 
             [DllImportAttribute("user32.dll", EntryPoint = "BlockInput")]
             [return: MarshalAsAttribute(UnmanagedType.Bool)]
             public static extern bool BlockInput([MarshalAsAttribute(UnmanagedType.Bool)] bool fBlockIt);
+
+
+
+
+
+
+            [StructLayout(LayoutKind.Sequential)]
+            public struct KeyboardInput
+            {
+                public ushort wVk;
+                public ushort wScan;
+                public uint dwFlags;
+                public uint time;
+                public IntPtr dwExtraInfo;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            public struct MouseInput
+            {
+                public int dx;
+                public int dy;
+                public uint mouseData;
+                public uint dwFlags;
+                public uint time;
+                public IntPtr dwExtraInfo;
+            }
+
+            [StructLayout(LayoutKind.Sequential)]
+            public struct HardwareInput
+            {
+                public uint uMsg;
+                public ushort wParamL;
+                public ushort wParamH;
+            }
+
+            [StructLayout(LayoutKind.Explicit)]
+            public struct InputUnion
+            {
+                [FieldOffset(0)] public MouseInput mi;
+                [FieldOffset(0)] public KeyboardInput ki;
+                [FieldOffset(0)] public HardwareInput hi;
+            }
+
+            public struct Input
+            {
+                public int type;
+                public InputUnion u;
+            }
+
+            [Flags]
+            public enum InputType
+            {
+                Mouse = 0,
+                Keyboard = 1,
+                Hardware = 2
+            }
+
+            [Flags]
+            public enum KeyEventF
+            {
+                KeyDown = 0x0000,
+                ExtendedKey = 0x0001,
+                KeyUp = 0x0002,
+                Unicode = 0x0004,
+                Scancode = 0x0008
+            }
+
+            [Flags]
+            public enum MouseEventF
+            {
+                Absolute = 0x8000,
+                HWheel = 0x01000,
+                Move = 0x0001,
+                MoveNoCoalesce = 0x2000,
+                LeftDown = 0x0002,
+                LeftUp = 0x0004,
+                RightDown = 0x0008,
+                RightUp = 0x0010,
+                MiddleDown = 0x0020,
+                MiddleUp = 0x0040,
+                VirtualDesk = 0x4000,
+                Wheel = 0x0800,
+                XDown = 0x0080,
+                XUp = 0x0100
+            }
+
+            [DllImport("user32.dll", SetLastError = true)]
+            public static extern uint SendInput(uint nInputs, Input[] pInputs, int cbSize);
+
+            [DllImport("user32.dll")]
+            public static extern IntPtr GetMessageExtraInfo();
+
+            [DllImport("user32.dll")]
+            public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+            public static void SendKeyboardInput(KeyboardInput[] kbInputs)
+            {
+                Input[] inputs = new Input[kbInputs.Length];
+
+                for (int i = 0; i < kbInputs.Length; i++)
+                {
+                    inputs[i] = new Input
+                    {
+                        type = (int)InputType.Keyboard,
+                        u = new InputUnion
+                        {
+                            ki = kbInputs[i]
+                        }
+                    };
+                }
+
+                SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
+            }
+
+            public static void PressVirtualKey(ushort vkCode)
+            {
+                var inputs = new KeyboardInput[]
+                {
+                    new KeyboardInput
+                    {
+                        wVk = vkCode,
+                        dwFlags = (uint)(KeyEventF.KeyDown),
+                        dwExtraInfo = GetMessageExtraInfo()
+                    },
+                    new KeyboardInput
+                    {
+                        wScan = vkCode,
+                        dwFlags = (uint)(KeyEventF.KeyUp),
+                        dwExtraInfo = GetMessageExtraInfo()
+                    }
+                };
+
+                SendKeyboardInput(inputs);
+            }
         }
 
         private static void ThreadStart(object param)
@@ -529,19 +664,42 @@ namespace GitNoob.Git.Command
 
                 if (consoleHandle == NativeMethods.INVALID_HANDLE_VALUE)
                 {
-                    error = "(" + lasterror + ") " + (new Win32Exception(lasterror)).Message;
+                    error = "STD_OUTPUT_HANDLE: (" + lasterror + ") " + (new Win32Exception(lasterror)).Message;
                 }
                 else if (consoleHandle == null)
                 {
-                    error = "got null handle";
+                    error = "STD_OUTPUT_HANDLE: got null handle";
                 }
                 else
                 {
-                    break;
+                    NativeMethods.CONSOLE_SCREEN_BUFFER_INFO csbi;
+                    if (NativeMethods.GetConsoleScreenBufferInfo(consoleHandle, out csbi)) break;
+                    lasterror = Marshal.GetLastWin32Error();
+
+                    error = "STD_OUTPUT_HANDLE: GetConsoleScreenBufferInfo failed on handle (" + lasterror + ") " + (new Win32Exception(lasterror)).Message;
+                }
+
+                consoleHandle = NativeMethods.GetConsoleWindow();
+                lasterror = Marshal.GetLastWin32Error();
+                error += Environment.NewLine;
+
+                if (consoleHandle == NativeMethods.INVALID_HANDLE_VALUE)
+                {
+                    error += "GetConsoleWindow: (" + lasterror + ") " + (new Win32Exception(lasterror)).Message;
+                }
+                else if (consoleHandle == null)
+                {
+                    error += "GetConsoleWindow: got null handle";
+                }
+                else
+                {
+                    NativeMethods.CONSOLE_SCREEN_BUFFER_INFO csbi;
+                    if (NativeMethods.GetConsoleScreenBufferInfo(consoleHandle, out csbi)) break;
+                    error += "GetConsoleWindow: GetConsoleScreenBufferInfo failed on handle (" + lasterror + ") " + (new Win32Exception(lasterror)).Message;
                 }
 
                 if (watch.ElapsedMilliseconds > 30000)
-                    throw new Exception("Enter password: error getting stdout console handle: 30 seconds: " + error);
+                    throw new Exception("(When running under VS2019 IDE in debug mode this is known to fail. Start the program via the Windows Explorer.) Enter password: error getting console handle: 30 seconds: " + error);
                 Thread.Sleep(10);
             }
 
@@ -585,13 +743,13 @@ namespace GitNoob.Git.Command
                             {
                                 throw new Exception("Enter password: process is gone");
                             }
-                            switch(lasterror)
+                            switch (lasterror)
                             {
                                 case 5: throw new Exception("Enter password: process is gone, error attaching console, already attached to a console (FreeConsole Failed): (" + lasterror + ") " + (new Win32Exception(lasterror)).Message);
                                 case 87: throw new Exception("Enter password: process is gone, error attaching console, the specified process does not exist: (" + lasterror + ") " + (new Win32Exception(lasterror)).Message);
 
-                                //case 6: ERROR_INVALID_HANDLE --> console is not yet created
-                                //case 31: ERROR_GEN_FAILURE --> Windows Server 2008, console is not yet created
+                                    //case 6: ERROR_INVALID_HANDLE --> console is not yet created
+                                    //case 31: ERROR_GEN_FAILURE --> Windows Server 2008, console is not yet created
                             }
 
                             if (watch.ElapsedMilliseconds > 30000)
@@ -601,21 +759,20 @@ namespace GitNoob.Git.Command
 
                         IntPtr consoleHandle = GetConsoleWindowHandle(watch);
 
-                        //Hide the console window, because when CreateNoWindow = true keystrokes can't be send.
-                        NativeMethods.ShowWindow(_process.MainWindowHandle, NativeMethods.SW_HIDE);
-                        Thread.Sleep(100);
-
                         //Read console line at cursor position until Enter password: is found
                         NativeMethods.CONSOLE_SCREEN_BUFFER_INFO csbi;
                         NativeMethods.COORD position;
                         StringBuilder linebuilder = new StringBuilder();
                         while (true)
                         {
+                            if (watch.ElapsedMilliseconds > 30000)
+                                throw new Exception("Enter password: error reading console: 30 seconds");
+
                             if (!NativeMethods.GetConsoleScreenBufferInfo(consoleHandle, out csbi))
                             {
                                 int lasterror = Marshal.GetLastWin32Error();
-                                switch(lasterror)
-                                { 
+                                switch (lasterror)
+                                {
                                     case 6: /* ERROR_INVALID_HANDLE */
                                         consoleHandle = GetConsoleWindowHandle(watch);
                                         continue;
@@ -648,10 +805,44 @@ namespace GitNoob.Git.Command
                             string line = linebuilder.ToString();
                             if (line.ToLowerInvariant().Contains(_enterPasswordText.ToLowerInvariant())) break;
 
-                            if (watch.ElapsedMilliseconds > 30000)
-                                throw new Exception("Enter password: error reading console: 30 seconds");
                             Thread.Sleep(500);
                         }
+
+                        //Enter password: is now shown, send password (not via stdin)
+
+                        /*
+                        (BlockInput) When input is blocked, real physical input from the mouse or keyboard will not affect the input queue's synchronous key state
+                        (reported by GetKeyState and GetKeyboardState), nor will it affect the asynchronous key state (reported by GetAsyncKeyState).
+
+                        However, the thread that is blocking input can affect both of these key states by calling SendInput. No other thread can do this.
+                        */
+                        NativeMethods.ShowWindow(_process.MainWindowHandle, NativeMethods.SW_SHOWNORMAL);
+                        NativeMethods.SetForegroundWindow(_process.MainWindowHandle);
+                        for (int i = 0; i < _password.Length; i++)
+                        {
+                            /*
+                            You can't simulate keyboard input with PostMessage - Raymond Chen - The Old New Thing - May 30th, 2005
+
+                            Some people attempt to simulate keyboard input to an application by posting keyboard input messages,
+                            but this is not reliable for many reasons.
+                            First of all, keyboard input is a more complicated matter than those who imprinted on the English keyboard realize.
+                            Languages with accent marks have dead keys, Far East languages have a variety of Input Method Editors,
+                            and I have no idea how complex script languages handle input. There’s more to typing a character than just pressing
+                            a key.
+                            Second, even if you manage to post the input messages into the target window’s queue, that doesn’t update the keyboard
+                            shift states. When the code behind the window calls the GetKeyState function or the GetAsyncKeyState function,
+                            it’s going to see the “real” shift state and not the fake state that your posted messages have generated.
+
+                            The SendInput function was designed for injecting input into Windows. If you use that function, then at least
+                            the shift states will be reported correctly. (I can’t help you with the complex input problem, though.)
+                            */
+
+                            var vkcode = NativeMethods.VkKeyScan(SecureString_GetCharAt(_password, i));
+                            NativeMethods.PressVirtualKey((ushort)vkcode);
+
+                            Thread.Sleep(50);
+                        }
+                        NativeMethods.PressVirtualKey(NativeMethods.VK_RETURN);
                     }
                     finally
                     {
@@ -663,16 +854,6 @@ namespace GitNoob.Git.Command
                     NativeMethods.BlockInput(false);
                 }
             }
-
-            //Enter password: is now shown, send password (not via stdin)
-            for (int i=0; i<_password.Length; i++)
-            {
-                int scancode = NativeMethods.VkKeyScan(SecureString_GetCharAt(_password, i));
-                NativeMethods.PostMessage(_process.MainWindowHandle, NativeMethods.WmKeyUp, (IntPtr)scancode, IntPtr.Zero);
-
-                Thread.Sleep(50);
-            }
-            NativeMethods.PostMessage(_process.MainWindowHandle, NativeMethods.WmKeyUp, (IntPtr)NativeMethods.VK_RETURN, IntPtr.Zero);
 
             //Done, just in case another hide
             NativeMethods.ShowWindow(_process.MainWindowHandle, NativeMethods.SW_HIDE);
@@ -703,7 +884,6 @@ namespace GitNoob.Git.Command
                 }
             }
         }
-
 
         public string WaitFor()
         {
