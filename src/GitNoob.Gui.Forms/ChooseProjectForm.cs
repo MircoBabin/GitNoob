@@ -129,12 +129,33 @@ namespace GitNoob.Gui.Forms
             int right = 0;
             int maxwd = 0;
 
+            bool first = true;
+
             int top = margin;
             foreach (var config in _configs)
             {
                 foreach (var project in config.GetProjects())
                 {
                     int prjLeft = margin;
+
+                    Label prjTopLine = null;
+                    if (first)
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        prjTopLine = new Label
+                        {
+                            Location = new Point(prjLeft, top),
+                            Text = string.Empty,
+                            AutoSize = false,
+                            BorderStyle = BorderStyle.Fixed3D,
+                            Height = 2,
+                        };
+                        this.Controls.Add(prjTopLine);
+                        top += 5;
+                    }
 
                     var prjText = new Label
                     {
@@ -187,6 +208,18 @@ namespace GitNoob.Gui.Forms
                         right = Math.Max(right, wdButton.Location.X + wdButton.Width);
 
                         top += workingdirectoryheight + margin;
+                    }
+                }
+            }
+
+            foreach(var control in this.Controls)
+            {
+                if (control is Label)
+                {
+                    Label label = control as Label;
+                    if (label.Height == 2 && label.AutoSize == false)
+                    {
+                        label.Width = right;
                     }
                 }
             }
