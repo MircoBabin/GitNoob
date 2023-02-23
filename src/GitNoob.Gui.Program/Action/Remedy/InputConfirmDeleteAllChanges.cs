@@ -17,6 +17,8 @@ namespace GitNoob.Gui.Program.Action.Remedy
         {
             VisualizerMessageText.Append("Delete all working tree changes and staged uncommitted files.");
             VisualizerMessageText.Append(Environment.NewLine);
+            VisualizerMessageText.Append("Keep all commits.");
+            VisualizerMessageText.Append(Environment.NewLine);
             VisualizerMessageText.Append(Environment.NewLine);
             VisualizerMessageText.Append("Caution: this action is not undoable, all changed files will be reverted! All changes will be lost!");
             VisualizerMessageText.Append(Environment.NewLine);
