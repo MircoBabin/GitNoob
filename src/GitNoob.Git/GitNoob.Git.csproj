@@ -50,6 +50,7 @@
     <Compile Include="Command\Config\SetCommitter.cs" />
     <Compile Include="Command\Remote\ChangeUrl.cs" />
     <Compile Include="Command\Remote\ListRemotes.cs" />
+    <Compile Include="Command\Repository\PruneAggressive.cs" />
     <Compile Include="Command\Repository\CommitsAreTheSame.cs" />
     <Compile Include="Command\Repository\RemoteReachable.cs" />
     <Compile Include="Command\WorkingTree\IsRevertActive.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="GitRemote.cs" />
     <Compile Include="GitCommit.cs" />
     <Compile Include="GitUtils.cs" />
+    <Compile Include="Result\PruneResult.cs" />
     <Compile Include="Result\DeletedBranchesResult.cs" />
     <Compile Include="Result\DeleteCurrentBranchResult.cs" />
     <Compile Include="Result\HasGitNoobTemporaryCommitResult.cs" />

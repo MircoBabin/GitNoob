@@ -52,8 +52,11 @@
     <Compile Include="Action\ExecuteGitRepair.cs" />
     <Compile Include="Action\Remedy\MessageConfirmTouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Action\Remedy\MessageBranchAlreadyExists.cs" />
+    <Compile Include="Action\Remedy\MessageConfirmPruneAggressive.cs" />
     <Compile Include="Action\StartGitk.cs" />
+    <Compile Include="Action\Step\AskPruneAggressive.cs" />
     <Compile Include="Action\Step\AskTouchTimestampsOnCurrentBranch.cs" />
+    <Compile Include="Action\Step\PruneAggressive.cs" />
     <Compile Include="Action\Step\UndeleteBranch.cs" />
     <Compile Include="Action\Step\TouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Action\VisualizerMessageButton.cs" />

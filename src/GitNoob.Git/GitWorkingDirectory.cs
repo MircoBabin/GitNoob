@@ -207,6 +207,42 @@ namespace GitNoob.Git
             };
         }
 
+        public PruneResult PruneAggressive()
+        {
+            var currentbranch = new Command.Branch.GetCurrentBranch(this);
+            var changes = new Command.WorkingTree.HasChanges(this);
+            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
+            var merging = new Command.WorkingTree.IsMergeActive(this);
+            currentbranch.WaitFor();
+            changes.WaitFor();
+            rebasing.WaitFor();
+            merging.WaitFor();
+
+            if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false ||
+                rebasing.result != false || merging.result != false ||
+                currentbranch.DetachedHead != false)
+            {
+                return new PruneResult()
+                {
+                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
+                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
+                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
+                    ErrorRebaseInProgress = (rebasing.result != false),
+                    ErrorMergeInProgress = (merging.result != false),
+                };
+            }
+
+            {
+                var command = new Command.Repository.PruneAggressive(this);
+                command.WaitFor();
+            }
+
+            return new PruneResult()
+            {
+                Pruned = true,
+            };
+        }
+
         public RemotesResult RetrieveRemotes()
         {
             var result = new RemotesResult();

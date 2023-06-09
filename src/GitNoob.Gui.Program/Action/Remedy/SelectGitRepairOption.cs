@@ -33,6 +33,12 @@ namespace GitNoob.Gui.Program.Action.Remedy
                         Done();
                     }),
 
+                    new VisualizerMessageButton("Empty the git recycle bin.", (input) => {
+                        var step = new Step.AskPruneAggressive();
+                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
+                        Done();
+                    }),
+
                     /*
                     new VisualizerMessageButton("Download fresh clone, delete all local branches / tags / commits", (input) => {
                         //Todo
