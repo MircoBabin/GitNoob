@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GitNoob.GitResult;
+using System;
 
 namespace GitNoob.Git.Command.Branch
 {
@@ -8,7 +9,7 @@ namespace GitNoob.Git.Command.Branch
 
         public string fullname { get; private set; }
         private string _shortname;
-        public Result.GitBranch branch { get; private set; }
+        public GitBranch branch { get; private set; }
 
         public string shortname
         {

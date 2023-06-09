@@ -4,10 +4,10 @@ namespace GitNoob.Gui.Program.Step
 {
     public class UndeleteBranch : Step
     {
-        private Git.Result.GitDeletedBranch _deletedBranch;
+        private GitResult.GitDeletedBranch _deletedBranch;
         private string _branchName;
 
-        public UndeleteBranch(Git.Result.GitDeletedBranch DeletedBranch, string BranchName) : base()
+        public UndeleteBranch(GitResult.GitDeletedBranch DeletedBranch, string BranchName) : base()
         {
             _deletedBranch = DeletedBranch;
             _branchName = BranchName;

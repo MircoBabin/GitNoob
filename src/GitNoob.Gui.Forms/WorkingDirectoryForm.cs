@@ -120,7 +120,7 @@ namespace GitNoob.Gui.Forms
             });
         }
 
-        private void OnStatusRefreshed(Git.Result.StatusResult status)
+        private void OnStatusRefreshed(GitResult.StatusResult status)
         {
             if (!this.Visible) return;
             this.Invoke((MethodInvoker)delegate
@@ -185,7 +185,7 @@ namespace GitNoob.Gui.Forms
 
         private Object _firstRefresh_LockObj = new Object();
         private volatile bool _firstRefresh = true;
-        private void AfterRefresh(Git.Result.StatusResult status)
+        private void AfterRefresh(GitResult.StatusResult status)
         {
             lock (_firstRefresh_LockObj)
             {

@@ -1,4 +1,5 @@
 ﻿using GitNoob.Git.Command.Branch;
+using GitNoob.GitResult;
 using System;
 
 namespace GitNoob.Git.Command.Repository
@@ -20,7 +21,7 @@ namespace GitNoob.Git.Command.Repository
 
             foreach(var branch in branches.result)
             {
-                if (branch.Type == Result.GitBranch.BranchType.LocalTrackingRemoteBranch)
+                if (branch.Type == GitBranch.BranchType.LocalTrackingRemoteBranch)
                 {
                     var ff = new FastForwardBranchToRemote(gitworkingdirectory, branch);
                     ff.WaitFor();

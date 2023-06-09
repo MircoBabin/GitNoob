@@ -8,10 +8,10 @@ namespace GitNoob.Gui.Program.Remedy
     public class InputChooseDeletedBranch : Remedy
     {
         public InputChooseDeletedBranch(Step.Step Step, VisualizerMessageWithLinks Message,
-            IEnumerable<Git.Result.GitDeletedBranch> branches, 
+            IEnumerable<GitResult.GitDeletedBranch> branches, 
             string CancelText,
             string MainBranch,
-            System.Action<Git.Result.GitDeletedBranch> OnSelectedBranchAction) :
+            System.Action<GitResult.GitDeletedBranch> OnSelectedBranchAction) :
             base(Step, ref Message)
         {
             VisualizerMessageButtons = new List<VisualizerMessageButton>();

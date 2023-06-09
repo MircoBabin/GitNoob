@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using GitNoob.GitResult;
+using System.Collections.Generic;
 
 namespace GitNoob.Git.Command.Branch
 {
     public class ListCommits : Command
     {
         //Commits are in reversed order. Newest first, oldest last
-        public List<Result.GitCommit> result { get; private set; }
+        public List<GitCommit> result { get; private set; }
 
         public ListCommits(GitWorkingDirectory gitworkingdirectory, string afterCommitId, string uptoCommitId) : base(gitworkingdirectory)
         {
@@ -16,7 +17,7 @@ namespace GitNoob.Git.Command.Branch
 
         protected override void RunGitDone()
         {
-            result = new List<Result.GitCommit>();
+            result = new List<GitCommit>();
 
             var executor = GetGitExecutor("list");
             foreach (var line in executor.Output.Trim().Split('\u001e'))
@@ -27,7 +28,7 @@ namespace GitNoob.Git.Command.Branch
                     string commitid = parts[0].Trim();
                     string commitmessage = parts[1].Trim();
 
-                    result.Add(new Result.GitCommit(commitid, commitmessage));
+                    result.Add(new GitCommit(commitid, commitmessage));
                 }
             }
         }

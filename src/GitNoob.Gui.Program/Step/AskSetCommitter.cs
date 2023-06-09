@@ -4,8 +4,8 @@ namespace GitNoob.Gui.Program.Step
 {
     public class AskSetCommitter : Step
     {
-        private Git.Result.StatusResult status;
-        public AskSetCommitter(Git.Result.StatusResult status) : base()
+        private GitResult.StatusResult status;
+        public AskSetCommitter(GitResult.StatusResult status) : base()
         {
             this.status = status;
         }

@@ -7,7 +7,7 @@ namespace GitNoob.Gui.Forms
     public class WorkingDirectoryRefreshStatus : IDisposable
     {
         private Visualizer.IVisualizerProgram _config;
-        System.Action<Git.Result.StatusResult> _onStatusRefreshed;
+        System.Action<GitResult.StatusResult> _onStatusRefreshed;
         System.Action<Exception> _onStatusRefreshedError;
 
         private Semaphore _refreshAbort = new Semaphore(0, int.MaxValue);
@@ -18,7 +18,7 @@ namespace GitNoob.Gui.Forms
         private FileSystemWatcher _watcher;
 
         public WorkingDirectoryRefreshStatus(Visualizer.IVisualizerProgram Config, 
-            System.Action<Git.Result.StatusResult> OnStatusRefreshed,
+            System.Action<GitResult.StatusResult> OnStatusRefreshed,
             System.Action<Exception> OnStatusRefreshedError) 
         {
             _config = Config;
@@ -119,7 +119,7 @@ namespace GitNoob.Gui.Forms
                 {
                     try
                     {
-                        Git.Result.StatusResult status = _config.visualizerRetrieveStatus();
+                        GitResult.StatusResult status = _config.visualizerRetrieveStatus();
 
                         try
                         {

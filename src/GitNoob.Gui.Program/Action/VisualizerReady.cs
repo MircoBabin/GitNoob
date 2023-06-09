@@ -27,7 +27,7 @@ namespace GitNoob.Gui.Program.Action
         private List<StepsExecutor.IExecutableByStepsExecutor> _steps = null;
         private int _stepsNo = 0;
 
-        public void execute(Git.Result.StatusResult status)
+        public void execute(GitResult.StatusResult status)
         {
             if (config.Visualizer.isFrontendLocked()) return;
 

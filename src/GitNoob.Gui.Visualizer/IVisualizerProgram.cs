@@ -4,9 +4,9 @@
     {
         void visualizerSet(IVisualizer visualizer);
         void visualizerExit();
-        void visualizerReady(Git.Result.StatusResult status);
+        void visualizerReady(GitResult.StatusResult status);
 
-        Git.Result.StatusResult visualizerRetrieveStatus();
+        GitResult.StatusResult visualizerRetrieveStatus();
 
         string visualizerProjectName();
         string visualizerProjectWorkingDirectoryIconFilename();

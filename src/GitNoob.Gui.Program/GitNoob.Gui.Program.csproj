@@ -59,6 +59,7 @@
     <Compile Include="Step\AskPruneAggressive.cs" />
     <Compile Include="Step\AskTouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Step\PruneAggressive.cs" />
+    <Compile Include="Step\StageAllChanges.cs" />
     <Compile Include="Step\UndeleteBranch.cs" />
     <Compile Include="Step\TouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Remedy\InputChooseDeletedBranch.cs" />
@@ -174,9 +175,9 @@
       <Project>{1d7b577e-bde4-4372-8e2d-d761f14ef782}</Project>
       <Name>GitNoob.Config</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GitNoob.Git.Result\GitNoob.Git.Result.csproj">
+    <ProjectReference Include="..\GitNoob.GitResult\GitNoob.GitResult.csproj">
       <Project>{4c3e3292-2c57-4932-aa3d-50558d9dd785}</Project>
-      <Name>GitNoob.Git.Result</Name>
+      <Name>GitNoob.GitResult</Name>
     </ProjectReference>
     <ProjectReference Include="..\GitNoob.Git\GitNoob.Git.csproj">
       <Project>{613d99ab-9536-4e24-ad59-d52a3777a5f8}</Project>

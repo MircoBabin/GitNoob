@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using GitNoob.GitResult;
+using System.Collections.Generic;
 
 namespace GitNoob.Git.Command.Remote
 {
     public class ListRemotes : Command
     {
-        public Dictionary<string, Result.GitRemote> result { get; private set; }
+        public Dictionary<string, GitRemote> result { get; private set; }
 
         public ListRemotes(GitWorkingDirectory gitworkingdirectory) : base(gitworkingdirectory)
         {
@@ -17,7 +18,7 @@ namespace GitNoob.Git.Command.Remote
         {
             var list = GetGitExecutor("list");
 
-            result = new Dictionary<string, Result.GitRemote>();
+            result = new Dictionary<string, GitRemote>();
             foreach (var line in list.Output.Trim().Split('\n'))
             {
                 var name = line.Trim();
@@ -28,7 +29,7 @@ namespace GitNoob.Git.Command.Remote
 
                     var url = listurl.Output.Trim();
 
-                    result.Add(name, new Result.GitRemote(name, url));
+                    result.Add(name, new GitRemote(name, url));
                 }
             }
         }

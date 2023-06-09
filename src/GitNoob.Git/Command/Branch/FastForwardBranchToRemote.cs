@@ -1,10 +1,12 @@
-﻿namespace GitNoob.Git.Command.Branch
+﻿using GitNoob.GitResult;
+
+namespace GitNoob.Git.Command.Branch
 {
     public class FastForwardBranchToRemote : Command
     {
         public bool? result { get; private set; }
 
-        public FastForwardBranchToRemote(GitWorkingDirectory gitworkingdirectory, Result.GitBranch branch) : base(gitworkingdirectory)
+        public FastForwardBranchToRemote(GitWorkingDirectory gitworkingdirectory, GitBranch branch) : base(gitworkingdirectory)
         {
             result = null;
 

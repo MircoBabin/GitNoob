@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.Gui.Visualizer", "G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.Utils", "GitNoob.Utils\GitNoob.Utils.csproj", "{576ABBF4-C55F-439E-BE63-33B60CEB4B43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.Git.Result", "GitNoob.Git.Result\GitNoob.Git.Result.csproj", "{4C3E3292-2C57-4932-AA3D-50558D9DD785}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.GitResult", "GitNoob.GitResult\GitNoob.GitResult.csproj", "{4C3E3292-2C57-4932-AA3D-50558D9DD785}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

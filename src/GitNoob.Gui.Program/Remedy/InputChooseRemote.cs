@@ -6,7 +6,7 @@ namespace GitNoob.Gui.Program.Remedy
     public class InputChooseRemote : Remedy
     {
         public InputChooseRemote(Step.Step Step, VisualizerMessageWithLinks Message,
-            IEnumerable<Git.Result.GitRemote> remotes, string CancelText, System.Action<string> OnSelectedRemoteAction,
+            IEnumerable<GitResult.GitRemote> remotes, string CancelText, System.Action<string> OnSelectedRemoteAction,
             string newRemoteText, System.Action OnCreateRemoteAction) :
             base(Step, ref Message)
         {

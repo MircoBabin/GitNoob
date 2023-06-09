@@ -29,7 +29,7 @@ namespace GitNoob
 
                 "GitNoob.Git.dll",
 
-                "GitNoob.Git.Result.dll",
+                "GitNoob.GitResult.dll",
 
                 "GitNoob.Gui.Forms.dll",
                 "GitNoob.Gui.Forms.dll.config",

@@ -110,13 +110,13 @@ namespace GitNoob.Gui.Program
             }
         }
 
-        public void visualizerReady(Git.Result.StatusResult status)
+        public void visualizerReady(GitResult.StatusResult status)
         {
             var ready = new Action.VisualizerReady(this);
             ready.execute(status);
         }
 
-        public Git.Result.StatusResult visualizerRetrieveStatus()
+        public GitResult.StatusResult visualizerRetrieveStatus()
         {
             return Git.RetrieveStatus();
         }

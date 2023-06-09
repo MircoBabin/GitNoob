@@ -97,9 +97,9 @@
       <Project>{1d7b577e-bde4-4372-8e2d-d761f14ef782}</Project>
       <Name>GitNoob.Config</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GitNoob.Git.Result\GitNoob.Git.Result.csproj">
+    <ProjectReference Include="..\GitNoob.GitResult\GitNoob.GitResult.csproj">
       <Project>{4c3e3292-2c57-4932-aa3d-50558d9dd785}</Project>
-      <Name>GitNoob.Git.Result</Name>
+      <Name>GitNoob.GitResult</Name>
     </ProjectReference>
     <ProjectReference Include="..\GitNoob.Gui.Visualizer\GitNoob.Gui.Visualizer.csproj">
       <Project>{eec3d427-054b-4ac1-b8c3-a4c5c7d3c17f}</Project>
