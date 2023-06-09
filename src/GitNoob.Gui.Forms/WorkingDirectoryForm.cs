@@ -84,7 +84,7 @@ namespace GitNoob.Gui.Forms
 
         private void OnChangeBranch()
         {
-            Config.visualizerChangeBranch();
+            Config.visualizerChangeBranch().execute();
         }
 
         private void lblCurrentbranchValue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
