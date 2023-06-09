@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace GitNoob.Config
+﻿namespace GitNoob.Config
 {
     public class IProjectType_Capabilities
     {

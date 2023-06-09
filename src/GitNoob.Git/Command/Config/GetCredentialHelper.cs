@@ -35,7 +35,7 @@ namespace GitNoob.Git.Command.Config
 
             if (!File.Exists(result)) return false;
 
-            using (var executor = new ConsoleExecutor(result, "get", _gitworkingdirectory.WorkingPath, null, null))
+            using (var executor = new GitNoob.Utils.ConsoleExecutor(result, "get", _gitworkingdirectory.WorkingPath, null, null))
             {
                 executor.WriteToStandardInput("\u001a"); //ctrl-z
                 executor.CloseStandardInput();

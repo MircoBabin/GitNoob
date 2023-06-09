@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace GitNoob.Git.Command.Remote
+﻿namespace GitNoob.Git.Command.Remote
 {
     public class ChangeUrl : Command
     {

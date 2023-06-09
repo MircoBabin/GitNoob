@@ -8,7 +8,7 @@ namespace GitNoob.Git.Command
         protected string _workingDirectory;
         protected string _parms;
         protected Dictionary<string, string> _environmentVariables;
-        protected ConsoleExecutor _executor = null;
+        protected GitNoob.Utils.ConsoleExecutor _executor = null;
 
         public ExecutorGit(string gitExecutable, string workingDirectory, string parms, Dictionary<string,string> environmentVariables)
         {
@@ -22,7 +22,7 @@ namespace GitNoob.Git.Command
 
         private void Execute()
         {
-            _executor = new ConsoleExecutor(_gitExecutable, _parms, _workingDirectory, null, null, null, _environmentVariables);
+            _executor = new GitNoob.Utils.ConsoleExecutor(_gitExecutable, _parms, _workingDirectory, null, null, null, _environmentVariables);
             _executor.CloseStandardInput();
         }
 

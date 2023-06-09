@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33529.622
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{92FBC621-BD9B-4434-A71F-39114F02E047}"
 	ProjectSection(SolutionItems) = preProject
@@ -21,6 +21,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.ProjectTypes", "GitNoob.ProjectTypes\GitNoob.ProjectTypes.csproj", "{6616FB99-930A-4AC8-97CA-F57BBBDF0A59}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoobUpdater", "GitNoobUpdater\GitNoobUpdater.csproj", "{25F62139-AB69-44DE-AA76-EA8F70D0D602}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.Gui.Visualizer", "GitNoob.Gui.Visualizer\GitNoob.Gui.Visualizer.csproj", "{EEC3D427-054B-4AC1-B8C3-A4C5C7D3C17F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.Utils", "GitNoob.Utils\GitNoob.Utils.csproj", "{576ABBF4-C55F-439E-BE63-33B60CEB4B43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitNoob.Git.Result", "GitNoob.Git.Result\GitNoob.Git.Result.csproj", "{4C3E3292-2C57-4932-AA3D-50558D9DD785}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,8 +62,23 @@ Global
 		{25F62139-AB69-44DE-AA76-EA8F70D0D602}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25F62139-AB69-44DE-AA76-EA8F70D0D602}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25F62139-AB69-44DE-AA76-EA8F70D0D602}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEC3D427-054B-4AC1-B8C3-A4C5C7D3C17F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEC3D427-054B-4AC1-B8C3-A4C5C7D3C17F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEC3D427-054B-4AC1-B8C3-A4C5C7D3C17F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEC3D427-054B-4AC1-B8C3-A4C5C7D3C17F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{576ABBF4-C55F-439E-BE63-33B60CEB4B43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{576ABBF4-C55F-439E-BE63-33B60CEB4B43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{576ABBF4-C55F-439E-BE63-33B60CEB4B43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{576ABBF4-C55F-439E-BE63-33B60CEB4B43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C3E3292-2C57-4932-AA3D-50558D9DD785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C3E3292-2C57-4932-AA3D-50558D9DD785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C3E3292-2C57-4932-AA3D-50558D9DD785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C3E3292-2C57-4932-AA3D-50558D9DD785}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A5C5C6B-56C8-4F4D-AC11-5E8B39EEDD92}
 	EndGlobalSection
 EndGlobal

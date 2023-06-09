@@ -1,12 +1,20 @@
-﻿namespace GitNoob.Gui.Program.Action
-{
-    public class Action
-    {
-        protected StepsExecutor.StepConfig stepConfig;
+﻿using GitNoob.Gui.Visualizer;
+using System.Drawing;
 
-        public Action(StepsExecutor.StepConfig Config)
+namespace GitNoob.Gui.Program.Action
+{
+    public abstract class Action : IViusalizerAction
+    {
+        protected ProgramWorkingDirectory config;
+
+        public Action(ProgramWorkingDirectory Config)
         {
-            stepConfig = Config;
+            config = Config;
         }
+
+        public abstract bool isStartable();
+        public abstract Icon icon();
+        public abstract void execute();
+
     }
 }

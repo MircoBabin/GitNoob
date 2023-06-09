@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GitNoob.Git.Command.Config
+﻿namespace GitNoob.Git.Command.Config
 {
     public class SetCommitter : Command
     {

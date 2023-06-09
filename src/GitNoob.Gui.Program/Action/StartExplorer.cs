@@ -1,10 +1,11 @@
-﻿using System.Drawing;
+﻿using GitNoob.Utils;
+using System.Drawing;
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class StartExplorer : Action, IAction
+    public class StartExplorer : Action
     {
-        public StartExplorer(StepsExecutor.StepConfig Config) : base(Config) { }
+        public StartExplorer(ProgramWorkingDirectory Config) : base(Config) { }
 
         private static string _cacheExecutable = null;
         private static string GetExecutable()
@@ -13,7 +14,7 @@ namespace GitNoob.Gui.Program.Action
             {
                 try
                 {
-                    _cacheExecutable = Utils.FileUtils.FindExePath("%windir%\\explorer.exe");
+                    _cacheExecutable = FileUtils.FindExePath("%windir%\\explorer.exe");
                 }
                 catch
                 {
@@ -24,17 +25,22 @@ namespace GitNoob.Gui.Program.Action
             return _cacheExecutable;
         }
 
-        public Icon icon()
+        public override bool isStartable()
+        {
+            return true;
+        }
+
+        public override Icon icon()
         {
             var explorer = GetExecutable();
             return Utils.ImageUtils.LoadIconForFile(explorer);
         }
 
-        public void execute()
+        public override void execute()
         {
-            var path = stepConfig.Config.ProjectWorkingDirectory.Path.ToString();
+            var path = config.ProjectWorkingDirectory.Path.ToString();
 
-            Utils.BatFile.StartWindowsExplorer(path, stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
+            Utils.BatFile.StartWindowsExplorer(path, config.Project, config.ProjectWorkingDirectory, config.PhpIni);
         }
     }
 }

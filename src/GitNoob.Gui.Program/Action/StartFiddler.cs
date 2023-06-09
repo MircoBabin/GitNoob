@@ -4,9 +4,9 @@ using System.IO;
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class StartFiddler : Action, IAction
+    public class StartFiddler : Action
     {
-        public StartFiddler(StepsExecutor.StepConfig Config) : base(Config) { }
+        public StartFiddler(ProgramWorkingDirectory Config) : base(Config) { }
 
         private static string _cacheExecutable = null;
         private static string GetExecutable()
@@ -26,7 +26,7 @@ namespace GitNoob.Gui.Program.Action
             return _cacheExecutable;
         }
 
-        public bool isStartable()
+        public override bool isStartable()
         {
             var fiddler = GetExecutable();
             if (string.IsNullOrEmpty(fiddler)) return false;
@@ -36,19 +36,19 @@ namespace GitNoob.Gui.Program.Action
             return true;
         }
 
-        public Icon icon()
+        public override Icon icon()
         {
             var fiddler = GetExecutable();
             return Utils.ImageUtils.LoadIconForFile(fiddler);
         }
 
-        public void execute()
+        public override void execute()
         {
             var executable = GetExecutable();
             if (string.IsNullOrEmpty(executable)) return;
 
             Utils.BatFile.StartExecutable(executable, null, 
-                stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
+                config.Project, config.ProjectWorkingDirectory, config.PhpIni);
         }
     }
 }

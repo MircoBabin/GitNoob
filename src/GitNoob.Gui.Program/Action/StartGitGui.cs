@@ -1,11 +1,11 @@
-﻿using GitNoob.Gui.Program.Utils;
+﻿using GitNoob.Utils;
 using System.Drawing;
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class StartGitGui : Action, IAction
+    public class StartGitGui : Action
     {
-        public StartGitGui(StepsExecutor.StepConfig Config) : base(Config) { }
+        public StartGitGui(ProgramWorkingDirectory Config) : base(Config) { }
 
         private static string _cacheExecutable = null;
         public static string GetExecutable()
@@ -14,7 +14,7 @@ namespace GitNoob.Gui.Program.Action
             {
                 try
                 {
-                    _cacheExecutable = Utils.FileUtils.FindExePath("git-gui.exe");
+                    _cacheExecutable = FileUtils.FindExePath("git-gui.exe");
                 }
                 catch
                 {
@@ -25,12 +25,17 @@ namespace GitNoob.Gui.Program.Action
             return _cacheExecutable;
         }
 
-        public Icon icon()
+        public override bool isStartable()
         {
-            return Utils.Resources.getIcon("git gui");
+            return true;
         }
 
-        public void execute()
+        public override Icon icon()
+        {
+            return Resources.getIcon("git gui");
+        }
+
+        public override void execute()
         {
             //direct execution, because also started as clickable link or button inside a Remedy
             //don't use StepsExecutor
@@ -39,8 +44,8 @@ namespace GitNoob.Gui.Program.Action
             if (string.IsNullOrEmpty(executable)) return;
 
             var batFile = new BatFile("run-gitgui", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow, "GitNoob - Git Gui",
-                stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory,
-                stepConfig.Config.PhpIni);
+                config.Project, config.ProjectWorkingDirectory,
+                config.PhpIni);
             batFile.AppendLine("start \"Git-Gui\" \"" + executable + "\"");
             batFile.AppendLine("exit /b 0");
 

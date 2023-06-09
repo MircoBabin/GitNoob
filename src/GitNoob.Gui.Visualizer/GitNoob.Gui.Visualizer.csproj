@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\Common.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EEC3D427-054B-4AC1-B8C3-A4C5C7D3C17F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GitNoob.Gui.Visualizer</RootNamespace>
+    <AssemblyName>GitNoob.Gui.Visualizer</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="IViusalizerAction.cs" />
+    <Compile Include="IVisualizerBootstrapper.cs" />
+    <Compile Include="IVisualizerProgram.cs" />
+    <Compile Include="IVisualizer.cs" />
+    <Compile Include="IVisualizerMessage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VisualizerInput.cs" />
+    <Compile Include="VisualizerMessageButton.cs" />
+    <Compile Include="VisualizerMessageSubButton.cs" />
+    <Compile Include="VisualizerMessageWithLinks.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GitNoob.Config\GitNoob.Config.csproj">
+      <Project>{1d7b577e-bde4-4372-8e2d-d761f14ef782}</Project>
+      <Name>GitNoob.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GitNoob.Git.Result\GitNoob.Git.Result.csproj">
+      <Project>{4c3e3292-2c57-4932-aa3d-50558d9dd785}</Project>
+      <Name>GitNoob.Git.Result</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

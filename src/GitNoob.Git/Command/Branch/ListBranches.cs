@@ -5,7 +5,7 @@ namespace GitNoob.Git.Command.Branch
 {
     public class ListBranches : Command
     {
-        public List<GitBranch> result { get; private set; }
+        public List<Result.GitBranch> result { get; private set; }
 
         private bool listRemoteBranches;
 
@@ -42,7 +42,7 @@ namespace GitNoob.Git.Command.Branch
         {
             var executor = GetGitExecutor("list");
 
-            result = new List<GitBranch>();
+            result = new List<Result.GitBranch>();
             foreach (var line in executor.Output.Trim().Split('\n'))
             {
                 var parts = line.Trim().Split('\u001f');
@@ -55,15 +55,15 @@ namespace GitNoob.Git.Command.Branch
 
                     if (String.IsNullOrWhiteSpace(remote))
                     {
-                        result.Add(new GitBranch(fullname, shortname, GitBranch.BranchType.Local));
+                        result.Add(new Result.GitBranch(fullname, shortname, Result.GitBranch.BranchType.Local));
                     }
                     else
                     {
-                        result.Add(new GitBranch(fullname, shortname, GitBranch.BranchType.LocalTrackingRemoteBranch, remote, remoteshort));
+                        result.Add(new Result.GitBranch(fullname, shortname, Result.GitBranch.BranchType.LocalTrackingRemoteBranch, remote, remoteshort));
                     }
                 }
             }
-            result.Sort(delegate (GitBranch x, GitBranch y)
+            result.Sort(delegate (Result.GitBranch x, Result.GitBranch y)
             {
                 return x.ShortName.ToLowerInvariant().CompareTo(y.ShortName.ToLowerInvariant());
             });
@@ -71,7 +71,7 @@ namespace GitNoob.Git.Command.Branch
 
             if (this.listRemoteBranches)
             {
-                var remotes = new List<GitBranch>();
+                var remotes = new List<Result.GitBranch>();
                 executor = GetGitExecutor("remote");
                 foreach (var line in executor.Output.Trim().Split('\n'))
                 {
@@ -96,12 +96,12 @@ namespace GitNoob.Git.Command.Branch
                             }
                             if (!found)
                             {
-                                remotes.Add(new GitBranch(fullname, shortname, GitBranch.BranchType.UntrackedRemoteBranch));
+                                remotes.Add(new Result.GitBranch(fullname, shortname, Result.GitBranch.BranchType.UntrackedRemoteBranch));
                             }
                         }
                     }
                 }
-                remotes.Sort(delegate (GitBranch x, GitBranch y)
+                remotes.Sort(delegate (Result.GitBranch x, Result.GitBranch y)
                 {
                     return x.ShortName.ToLowerInvariant().CompareTo(y.ShortName.ToLowerInvariant());
                 });

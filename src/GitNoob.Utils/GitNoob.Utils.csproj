@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\Common.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{576ABBF4-C55F-439E-BE63-33B60CEB4B43}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GitNoob.Utils</RootNamespace>
+    <AssemblyName>GitNoob.Utils</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="BatFile.cs" />
+    <Compile Include="ConfigFileTemplate\ApacheConf.cs" />
+    <Compile Include="ConfigFileTemplate\PhpIni.cs" />
+    <Compile Include="ConsoleExecutor.cs" />
+    <Compile Include="FileUtils.cs" />
+    <Compile Include="GitUtils.cs" />
+    <Compile Include="IconExtractor\IconExtractor.cs" />
+    <Compile Include="IconExtractor\IconUtil.cs" />
+    <Compile Include="IconExtractor\NativeMethods.cs" />
+    <Compile Include="ImageUtils.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources.cs" />
+    <Compile Include="ZoneIdentifier\IsFileBlocked.cs" />
+    <Compile Include="ZoneIdentifier\IZoneIdentifier.cs" />
+    <Compile Include="ZoneIdentifier\PersistentZoneIdentifier.cs" />
+    <Compile Include="ZoneIdentifier\STGM.cs" />
+    <Compile Include="ZoneIdentifier\UrlZone.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GitNoob.Config\GitNoob.Config.csproj">
+      <Project>{1d7b577e-bde4-4372-8e2d-d761f14ef782}</Project>
+      <Name>GitNoob.Config</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

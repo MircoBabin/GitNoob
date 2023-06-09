@@ -1,4 +1,5 @@
 ﻿using GitNoob.Gui.Forms.Properties;
+using GitNoob.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace GitNoob.Gui.Forms
 {
     public partial class ChooseProjectForm : GitNoobBaseForm
     {
+        private Visualizer.IVisualizerBootstrapper _bootstrapper;
         private List<Config.IConfig> _configs;
         private ConcurrentDictionary<Config.WorkingDirectory, WorkingDirectoryForm> _forms;
 
@@ -24,9 +26,10 @@ namespace GitNoob.Gui.Forms
             }
         }
 
-        public ChooseProjectForm(List<Config.IConfig> configs, string programPath, string licenseText) : 
+        public ChooseProjectForm(Visualizer.IVisualizerBootstrapper Bootstrapper, List<Config.IConfig> configs, string programPath, string licenseText) : 
             base(programPath, licenseText)
         {
+            _bootstrapper = Bootstrapper;
             _configs = configs;
             _forms = new ConcurrentDictionary<Config.WorkingDirectory, WorkingDirectoryForm>();
 
@@ -187,7 +190,7 @@ namespace GitNoob.Gui.Forms
                         {
                             Location = new Point(wdLeft, top),
                             Size = new Size(4 * workingdirectoryheight, workingdirectoryheight),
-                            Image = Program.Utils.ImageUtils.LoadImageAsBitmap(workingdirectory.ImageFilename.ToString(), 4 * workingdirectoryheight, workingdirectoryheight, color),
+                            Image = ImageUtils.LoadImageAsBitmap(workingdirectory.ImageFilename.ToString(), 4 * workingdirectoryheight, workingdirectoryheight, color),
                         };
                         wdPicture.Cursor = Cursors.Hand;
                         wdPicture.Tag = prjwd;
@@ -261,11 +264,13 @@ namespace GitNoob.Gui.Forms
             {
                 try
                 {
-                    form = new WorkingDirectoryForm(new Program.ProgramWorkingDirectory(projectwd.Project, projectwd.WorkingDirectory), WorkingDirectoryForm_ChooseProject, _programPath, _licenseText);
+                    form = new WorkingDirectoryForm(_bootstrapper.CreateIVisualizerProgram(projectwd.Project, projectwd.WorkingDirectory), 
+                        projectwd.WorkingDirectory,
+                        WorkingDirectoryForm_ChooseProject, _programPath, _licenseText);
                 }
                 catch (Exception ex)
                 {
-                    Clipboard.SetText(Program.Utils.ExceptionUtils.GetFullExceptionText(ex));
+                    Clipboard.SetText(ex.ToString());
                     MessageBox.Show(ex.Message + Environment.NewLine + Environment.NewLine + "Error details are copied to the Windows clipboard.", "GitNoob - open working directory error");
                     return;
                 }
@@ -295,10 +300,10 @@ namespace GitNoob.Gui.Forms
         {
             WorkingDirectoryForm form = (WorkingDirectoryForm)sender;
 
-            if (_forms.ContainsKey(form.Config.ProjectWorkingDirectory))
+            if (_forms.ContainsKey(form.WorkingDirectory))
             {
                 WorkingDirectoryForm value;
-                _forms.TryRemove(form.Config.ProjectWorkingDirectory, out value);
+                _forms.TryRemove(form.WorkingDirectory, out value);
             }
 
             form = null;

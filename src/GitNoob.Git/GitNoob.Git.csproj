@@ -55,23 +55,6 @@
     <Compile Include="Command\Repository\RemoteReachable.cs" />
     <Compile Include="Command\WorkingTree\IsRevertActive.cs" />
     <Compile Include="Command\WorkingTree\IsCherryPickActive.cs" />
-    <Compile Include="GitDeletedBranch.cs" />
-    <Compile Include="GitRemote.cs" />
-    <Compile Include="GitCommit.cs" />
-    <Compile Include="GitUtils.cs" />
-    <Compile Include="Result\PruneResult.cs" />
-    <Compile Include="Result\DeletedBranchesResult.cs" />
-    <Compile Include="Result\DeleteCurrentBranchResult.cs" />
-    <Compile Include="Result\HasGitNoobTemporaryCommitResult.cs" />
-    <Compile Include="Result\RenameBranch.cs" />
-    <Compile Include="Result\RemotesResult.cs" />
-    <Compile Include="Result\BranchesResult.cs" />
-    <Compile Include="Result\BuildCacheAndCommitOnMainBranchResult.cs" />
-    <Compile Include="Result\TouchCommitAndAuthorTimestampsOfCurrentBranchResult.cs" />
-    <Compile Include="Result\SetRemoteForBranchResult.cs" />
-    <Compile Include="Result\UnpackLastTemporaryCommitOnCurrentBranchResult.cs" />
-    <Compile Include="Result\CreateNewBranchResult.cs" />
-    <Compile Include="Result\ChangeCurrentBranchResult.cs" />
     <Compile Include="Command\Branch\ChangeBranchTo.cs" />
     <Compile Include="Command\Branch\CommitAllChanges.cs" />
     <Compile Include="Command\Branch\CreateBranchFromCurrentBranch.cs" />
@@ -90,7 +73,6 @@
     <Compile Include="Command\Branch\RenameBranch.cs" />
     <Compile Include="Command\Branch\ResetCurrentBranchToRemote.cs" />
     <Compile Include="Command\Config\GetCredentialHelper.cs" />
-    <Compile Include="Command\ConsoleExecutor.cs" />
     <Compile Include="Command\GetVersionOfGit.cs" />
     <Compile Include="Command\Repository\Clone.cs" />
     <Compile Include="Command\Branch\CommonAncestorOfTwoBranches.cs" />
@@ -118,30 +100,24 @@
     <Compile Include="Command\Stash\RestoreStashedWorkingTreeChanges.cs" />
     <Compile Include="Command\Stash\StashWorkingTreeChanges.cs" />
     <Compile Include="Command\Repository\UpdateRepositoryFromRemotes.cs" />
-    <Compile Include="Result\ChangeCommitterResult.cs" />
-    <Compile Include="Result\CommitAllChangesOnCurrentBranchResult.cs" />
-    <Compile Include="Result\EnsureMainBranchExistanceResult.cs" />
-    <Compile Include="Result\GetLatestResult.cs" />
-    <Compile Include="GitBranch.cs" />
     <Compile Include="GitCredentialsViaKeePassCommander.cs" />
     <Compile Include="GitLock.cs" />
-    <Compile Include="Result\GitLockResult.cs" />
-    <Compile Include="GitTag.cs" />
+    <Compile Include="GitLockResult.cs" />
     <Compile Include="GitWorkingDirectory.cs" />
-    <Compile Include="Result\DeleteWorkingTreeChangesAndStagedUncommittedFilesResult.cs" />
-    <Compile Include="Result\MergeResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Result\MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult.cs" />
-    <Compile Include="Result\MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranchResult.cs" />
-    <Compile Include="Result\PushResult.cs" />
-    <Compile Include="Result\RebaseResult.cs" />
-    <Compile Include="Result\ResetMainBranchToRemoteResult.cs" />
-    <Compile Include="Result\StatusResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitNoob.Config\GitNoob.Config.csproj">
       <Project>{1d7b577e-bde4-4372-8e2d-d761f14ef782}</Project>
       <Name>GitNoob.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GitNoob.Git.Result\GitNoob.Git.Result.csproj">
+      <Project>{4c3e3292-2c57-4932-aa3d-50558d9dd785}</Project>
+      <Name>GitNoob.Git.Result</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GitNoob.Utils\GitNoob.Utils.csproj">
+      <Project>{576abbf4-c55f-439e-be63-33b60ceb4b43}</Project>
+      <Name>GitNoob.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

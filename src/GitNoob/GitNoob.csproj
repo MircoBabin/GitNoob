@@ -50,11 +50,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZoneIdentifier\IsFileBlocked.cs" />
-    <Compile Include="ZoneIdentifier\IZoneIdentifier.cs" />
-    <Compile Include="ZoneIdentifier\PersistentZoneIdentifier.cs" />
-    <Compile Include="ZoneIdentifier\STGM.cs" />
-    <Compile Include="ZoneIdentifier\UrlZone.cs" />
+    <Compile Include="Bootstrapper.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -97,6 +93,14 @@
     <ProjectReference Include="..\GitNoob.Gui.Forms\GitNoob.Gui.Forms.csproj">
       <Project>{480d06fc-41de-43e5-bc52-73ca7151972a}</Project>
       <Name>GitNoob.Gui.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GitNoob.Gui.Visualizer\GitNoob.Gui.Visualizer.csproj">
+      <Project>{eec3d427-054b-4ac1-b8c3-a4c5c7d3c17f}</Project>
+      <Name>GitNoob.Gui.Visualizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GitNoob.Utils\GitNoob.Utils.csproj">
+      <Project>{576abbf4-c55f-439e-be63-33b60ceb4b43}</Project>
+      <Name>GitNoob.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

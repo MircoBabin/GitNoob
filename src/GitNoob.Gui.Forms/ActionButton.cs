@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GitNoob.Utils;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -6,10 +7,10 @@ namespace GitNoob.Gui.Forms
 {
     public class ActionButton : Button
     {
-        private Gui.Program.Action.IAction _action;
+        private Visualizer.IViusalizerAction _action;
         private ContextMenu _context;
 
-        public ActionButton(ToolTip toolTips, string text, ContextMenu context, Gui.Program.Action.IAction action, ref Point location) : base()
+        public ActionButton(ToolTip toolTips, string text, ContextMenu context, Visualizer.IViusalizerAction action, ref Point location) : base()
         {
             const int margin = 8;
 
@@ -22,7 +23,7 @@ namespace GitNoob.Gui.Forms
             {
                 try
                 {
-                    this.Image = Program.Utils.ImageUtils.IconToBitmapOfSize(_action.icon(), 48, 48, Color.Transparent);
+                    this.Image = ImageUtils.IconToBitmapOfSize(_action.icon(), 48, 48, Color.Transparent);
                 }
                 catch { }
 

@@ -1,4 +1,5 @@
 ﻿using GitNoob.Git.Result;
+using GitNoob.Utils;
 using System;
 
 namespace GitNoob.Git

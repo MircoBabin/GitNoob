@@ -5,7 +5,7 @@ namespace GitNoob.Git.Command.Tag
 {
     public class ListTags : Command
     {
-        public Dictionary<string, GitTag> result { get; private set; }
+        public Dictionary<string, Result.GitTag> result { get; private set; }
 
         public ListTags(GitWorkingDirectory gitworkingdirectory) : base(gitworkingdirectory)
         {
@@ -18,7 +18,7 @@ namespace GitNoob.Git.Command.Tag
         {
             var executor = GetGitExecutor("list");
 
-            result = new Dictionary<string, GitTag>();
+            result = new Dictionary<string, Result.GitTag>();
             foreach (var line in executor.Output.Trim().Split('\u001e'))
             {
                 var parts = line.Trim().Split('\u001f');
@@ -34,11 +34,11 @@ namespace GitNoob.Git.Command.Tag
 
                     if (type == "commit")
                     {
-                        result.Add(fullname, new GitTag(fullname, shortname, GitTag.TagType.LightWeight, commit, message));
+                        result.Add(fullname, new Result.GitTag(fullname, shortname, Result.GitTag.TagType.LightWeight, commit, message));
                     }
                     else if (type == "tag")
                     {
-                        result.Add(fullname, new GitTag(fullname, shortname, GitTag.TagType.Annotated, commit, message));
+                        result.Add(fullname, new Result.GitTag(fullname, shortname, Result.GitTag.TagType.Annotated, commit, message));
                     }
                 }
             }

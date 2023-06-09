@@ -97,13 +97,17 @@
       <Project>{1d7b577e-bde4-4372-8e2d-d761f14ef782}</Project>
       <Name>GitNoob.Config</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GitNoob.Git\GitNoob.Git.csproj">
-      <Project>{613d99ab-9536-4e24-ad59-d52a3777a5f8}</Project>
-      <Name>GitNoob.Git</Name>
+    <ProjectReference Include="..\GitNoob.Git.Result\GitNoob.Git.Result.csproj">
+      <Project>{4c3e3292-2c57-4932-aa3d-50558d9dd785}</Project>
+      <Name>GitNoob.Git.Result</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GitNoob.Gui.Program\GitNoob.Gui.Program.csproj">
-      <Project>{d339b8b8-c757-4a26-b97c-5830bafe1f00}</Project>
-      <Name>GitNoob.Gui.Program</Name>
+    <ProjectReference Include="..\GitNoob.Gui.Visualizer\GitNoob.Gui.Visualizer.csproj">
+      <Project>{eec3d427-054b-4ac1-b8c3-a4c5c7d3c17f}</Project>
+      <Name>GitNoob.Gui.Visualizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GitNoob.Utils\GitNoob.Utils.csproj">
+      <Project>{576abbf4-c55f-439e-be63-33b60ceb4b43}</Project>
+      <Name>GitNoob.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

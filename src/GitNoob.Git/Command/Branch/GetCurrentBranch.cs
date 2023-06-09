@@ -8,7 +8,7 @@ namespace GitNoob.Git.Command.Branch
 
         public string fullname { get; private set; }
         private string _shortname;
-        public GitBranch branch { get; private set; }
+        public Result.GitBranch branch { get; private set; }
 
         public string shortname
         {

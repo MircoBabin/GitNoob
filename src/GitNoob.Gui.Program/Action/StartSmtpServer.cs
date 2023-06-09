@@ -3,21 +3,21 @@ using System.IO;
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class StartSmtpServer : Action, IAction
+    public class StartSmtpServer : Action
     {
-        public StartSmtpServer(StepsExecutor.StepConfig Config) : base(Config) { }
+        public StartSmtpServer(ProgramWorkingDirectory Config) : base(Config) { }
 
         private string GetExecutable()
         {
-            if (stepConfig.Config.ProjectWorkingDirectory.SmtpServer.Executable.isEmpty())
+            if (config.ProjectWorkingDirectory.SmtpServer.Executable.isEmpty())
             {
                 return null;
             }
 
-            return Path.GetFullPath(stepConfig.Config.ProjectWorkingDirectory.SmtpServer.Executable.ToString());
+            return Path.GetFullPath(config.ProjectWorkingDirectory.SmtpServer.Executable.ToString());
         }
 
-        public bool isStartable()
+        public override bool isStartable()
         {
             var smtpserver = GetExecutable();
             if (smtpserver == null) return false;
@@ -27,17 +27,17 @@ namespace GitNoob.Gui.Program.Action
             return true;
         }
 
-        public Icon icon()
+        public override Icon icon()
         {
             return Utils.ImageUtils.LoadIconForFile(GetExecutable());
         }
 
-        public void execute()
+        public override void execute()
         {
             if (!isStartable()) return;
 
             Utils.BatFile.StartExecutable(GetExecutable(), null,
-                stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
+                config.Project, config.ProjectWorkingDirectory, config.PhpIni);
         }
     }
 }

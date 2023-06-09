@@ -1,21 +1,13 @@
-﻿using GitNoob.Gui.Program.Utils;
+﻿using GitNoob.Utils;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class StartGitk : Action, IAction
+    public class StartGitk : Action
     {
-        private List<string> branches;
-        private string focusOnCommitId;
-        private List<string> filenames;
-
-        public StartGitk(StepsExecutor.StepConfig Config, List<string> branches, string focusOnCommitId, List<string> filenames = null) : base(Config) 
-        {
-            this.branches = branches;
-            this.focusOnCommitId = focusOnCommitId;
-            this.filenames = filenames;
-        }
+        public StartGitk(ProgramWorkingDirectory Config) : base(Config) { }
 
         private static string _cacheExecutable = null;
         public static string GetExecutable()
@@ -35,12 +27,22 @@ namespace GitNoob.Gui.Program.Action
             return _cacheExecutable;
         }
 
-        public Icon icon()
+        public override bool isStartable()
+        {
+            return true;
+        }
+
+        public override Icon icon()
         {
             return Utils.Resources.getIcon("gitk");
         }
 
-        public void execute()
+        public override void execute()
+        {
+            throw new Exception("StartGitk.execute() is not implemented. Use executeGitk().");
+        }
+
+        public void executeGitk(List<string> branches, string focusOnCommitId = null, List<string> filenames = null)
         {
             //direct execution, because also started as clickable link or button inside a Remedy
             //don't use StepsExecutor
@@ -49,29 +51,41 @@ namespace GitNoob.Gui.Program.Action
             if (string.IsNullOrEmpty(executable)) return;
 
             var batFile = new BatFile("run-gitkall", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow, "GitNoob - Git History",
-                stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory,
-                stepConfig.Config.PhpIni);
-            batFile.Append("start \"Git-Gitk-Branches\" \"" + executable + "\"");
-            if (!string.IsNullOrWhiteSpace(focusOnCommitId))
+                config.Project, config.ProjectWorkingDirectory,
+                config.PhpIni);
+
             {
-                batFile.Append(" \"--select-commit=" + focusOnCommitId + "\"");
-            }
-            if (branches != null)
-            {
-                foreach(var branch in branches)
+                batFile.Append("start \"Git-Gitk-Branches\" \"" + executable + "\"");
+
+                if (!string.IsNullOrWhiteSpace(focusOnCommitId))
                 {
-                    batFile.Append(" \"" + branch + "\"");
+                    batFile.Append(" \"--select-commit=" + focusOnCommitId + "\"");
                 }
-            }
-            batFile.Append(" -- ");
-            if (filenames != null)
-            {
-                foreach(var filename in filenames)
+
+                if (branches != null)
                 {
-                    batFile.Append(" \"" + filename + "\"");
+                    foreach (var branch in branches)
+                    {
+                        batFile.Append(" \"" + branch + "\"");
+                    }
                 }
+                else
+                {
+                    batFile.Append(" --all");
+                }
+
+                batFile.Append(" -- ");
+
+                if (filenames != null)
+                {
+                    foreach (var filename in filenames)
+                    {
+                        batFile.Append(" \"" + filename + "\"");
+                    }
+                }
+
+                batFile.AppendLine(string.Empty);
             }
-            batFile.AppendLine(string.Empty);
 
             batFile.AppendLine("exit /b 0");
 

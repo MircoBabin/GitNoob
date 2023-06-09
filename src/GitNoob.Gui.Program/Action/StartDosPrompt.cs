@@ -1,12 +1,11 @@
-﻿using GitNoob.Gui.Program.Utils;
-using System;
+﻿using GitNoob.Utils;
 using System.Drawing;
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class StartDosPrompt : Action, IAction
+    public abstract class StartDosPrompt : Action
     {
-        public StartDosPrompt(StepsExecutor.StepConfig Config) : base(Config) { }
+        public StartDosPrompt(ProgramWorkingDirectory Config) : base(Config) { }
 
         private static string _cacheExectable = null;
         private static string GetExecutable()
@@ -26,28 +25,23 @@ namespace GitNoob.Gui.Program.Action
             return _cacheExectable;
         }
 
-        public Icon icon()
+        public override bool isStartable()
+        {
+            return true;
+        }
+
+        public override Icon icon()
         {
             var cmd = GetExecutable();
             return ImageUtils.LoadIconForFile(cmd);
         }
 
-        public void execute()
-        {
-            doExecute(false);
-        }
-
-        public void executeAsAdministrator()
-        {
-            doExecute(true);
-        }
-
-        private void doExecute(bool asAdministrator)
+        protected void executeDosPrompt(bool asAdministrator)
         {
             var executable = GetExecutable();
             if (string.IsNullOrEmpty(executable)) return;
 
-            BatFile.StartDosPrompt(asAdministrator, stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
+            BatFile.StartDosPrompt(asAdministrator, config.Project, config.ProjectWorkingDirectory, config.PhpIni);
         }
     }
 }

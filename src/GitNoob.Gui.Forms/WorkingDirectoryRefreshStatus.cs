@@ -6,7 +6,7 @@ namespace GitNoob.Gui.Forms
 {
     public class WorkingDirectoryRefreshStatus : IDisposable
     {
-        private Program.ProgramWorkingDirectory _config;
+        private Visualizer.IVisualizerProgram _config;
         System.Action<Git.Result.StatusResult> _onStatusRefreshed;
         System.Action<Exception> _onStatusRefreshedError;
 
@@ -17,7 +17,7 @@ namespace GitNoob.Gui.Forms
 
         private FileSystemWatcher _watcher;
 
-        public WorkingDirectoryRefreshStatus(Program.ProgramWorkingDirectory Config, 
+        public WorkingDirectoryRefreshStatus(Visualizer.IVisualizerProgram Config, 
             System.Action<Git.Result.StatusResult> OnStatusRefreshed,
             System.Action<Exception> OnStatusRefreshedError) 
         {
@@ -26,7 +26,7 @@ namespace GitNoob.Gui.Forms
             _onStatusRefreshedError = OnStatusRefreshedError;
 
             _refreshThread = new Thread(RefreshThreadMain);
-            _refreshThread.Name = "RefreshThread - " + Config.Project.Name + " - " + Config.ProjectWorkingDirectory.Name;
+            _refreshThread.Name = "RefreshThread - " + _config.visualizerProjectName() + " - " + _config.visualizerProjectWorkingDirectoryName();
             _refreshThread.Start();
 
             _watcher = null;
@@ -37,12 +37,15 @@ namespace GitNoob.Gui.Forms
         {
             if (_isDisposed) return;
             if (_watcher != null) return;
-            if (!Directory.Exists(_config.ProjectWorkingDirectory.Path.ToString())) return;
+
+            var path = _config.visualizerProjectWorkingDirectoryPath();
+
+            if (!Directory.Exists(path)) return;
 
             try
             {
                 _watcher = new FileSystemWatcher();
-                _watcher.Path = _config.ProjectWorkingDirectory.Path.ToString();
+                _watcher.Path = path;
                 _watcher.IncludeSubdirectories = true;
                 _watcher.EnableRaisingEvents = true;
                 _watcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.CreationTime | NotifyFilters.LastWrite | NotifyFilters.Size;
@@ -116,7 +119,7 @@ namespace GitNoob.Gui.Forms
                 {
                     try
                     {
-                        Git.Result.StatusResult status = _config.Git.RetrieveStatus();
+                        Git.Result.StatusResult status = _config.visualizerRetrieveStatus();
 
                         try
                         {

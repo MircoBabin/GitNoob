@@ -1,26 +1,31 @@
 ﻿using GitNoob.Gui.Forms.Properties;
+using GitNoob.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
 namespace GitNoob.Gui.Forms
 {
-    public partial class WorkingDirectoryForm : GitNoobBaseForm, Program.Action.IVisualizer
+    public partial class WorkingDirectoryForm : GitNoobBaseForm, Visualizer.IVisualizer
     {
-        public Program.ProgramWorkingDirectory Config { get; }
+        public Visualizer.IVisualizerProgram Config { get; }
+        public Config.WorkingDirectory WorkingDirectory { get; }
 
         private WorkingDirectoryRefreshStatus _refresh;
         private System.Action _chooseProject;
 
         private int _originalHeight;
 
-        public WorkingDirectoryForm(Program.ProgramWorkingDirectory config, System.Action chooseProject, string programPath, string licenseText) :
+        public WorkingDirectoryForm(Visualizer.IVisualizerProgram config, Config.WorkingDirectory workingDirectory,
+            System.Action chooseProject, string programPath, string licenseText) :
             base(programPath, licenseText)
         {
+            WorkingDirectory = workingDirectory;
             Config = config;
+
+            Config.visualizerSet(this);
             _chooseProject = chooseProject;
 
             InitializeComponent();
@@ -74,18 +79,12 @@ namespace GitNoob.Gui.Forms
                 _refresh = null;
             }
 
-            if (Config.ProjectWorkingDirectory.Git.ClearCommitNameAndEmailOnExit.Value)
-            {
-                Config.Git.ClearCommitter();
-            }
+            Config.visualizerExit();
         }
 
-        Program.Action.ExecuteChangeBranch ActionChangeBranch = null;
         private void OnChangeBranch()
         {
-            if (ActionChangeBranch == null) return;
-
-            ActionChangeBranch.execute();
+            Config.visualizerChangeBranch();
         }
 
         private void lblCurrentbranchValue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -132,7 +131,7 @@ namespace GitNoob.Gui.Forms
                     ShowCurrentBranch(status.CurrentBranch, false);
 
                 lblCommitnameValue.Text = status.CommitFullName;
-                if (Config.ProjectWorkingDirectory.Git.ClearCommitNameAndEmailOnExit.Value)
+                if (status.ClearCommitNameAndEmailOnExit)
                     lblCommitnameValue.Text += " [clear on exit]";
 
                 StringBuilder txt = new StringBuilder();
@@ -186,7 +185,6 @@ namespace GitNoob.Gui.Forms
 
         private Object _firstRefresh_LockObj = new Object();
         private volatile bool _firstRefresh = true;
-        Program.Action.ExecuteAfterStatus ActionAfterStatus = null;
         private void AfterRefresh(Git.Result.StatusResult status)
         {
             lock (_firstRefresh_LockObj)
@@ -199,7 +197,7 @@ namespace GitNoob.Gui.Forms
 
                     if (status != null)
                     {
-                        ActionAfterStatus.execute(status);
+                        Config.visualizerReady(status);
                     }
                 }
             }
@@ -268,41 +266,34 @@ namespace GitNoob.Gui.Forms
 
         private void BuildForm()
         {
-            _positionSettingsName = BitConverter.ToString(Encoding.UTF8.GetBytes(Config.Project.Name + " - " + Config.ProjectWorkingDirectory.Name)).Replace("-", String.Empty);
+            _positionSettingsName = BitConverter.ToString(Encoding.UTF8.GetBytes(Config.visualizerProjectName() + " - " + Config.visualizerProjectWorkingDirectoryName())).Replace("-", String.Empty);
 
             string filename;
 
-            filename = Config.ProjectWorkingDirectory.IconFilename.ToString();
-            if (File.Exists(filename))
+            filename = Config.visualizerProjectWorkingDirectoryIconFilename();
+            if (!String.IsNullOrEmpty(filename))
             {
                 this.Icon = new Icon(filename);
             }
-            else
-            {
-                filename = Config.Project.IconFilename.ToString();
-                if (File.Exists(filename))
-                {
-                    this.Icon = new Icon(filename);
-                }
-            }
 
-            this.Text = Config.Project.Name + " - " + Config.ProjectWorkingDirectory.Name;
+
+            this.Text = Config.visualizerProjectName() + " - " + Config.visualizerProjectWorkingDirectoryName();
 
             Color color = Color.White;
             try
             {
-                color = System.Drawing.ColorTranslator.FromHtml(Config.ProjectWorkingDirectory.ImageBackgroundColor);
+                color = System.Drawing.ColorTranslator.FromHtml(Config.visualizerProjectWorkingDirectoryImageBackgroundHtmlColor());
             }
             catch { }
-            Picture.Image = Program.Utils.ImageUtils.LoadImageAsBitmap(Config.ProjectWorkingDirectory.ImageFilename.ToString(), Picture.ClientSize.Width, Picture.ClientSize.Height, color);
+            Picture.Image = ImageUtils.LoadImageAsBitmap(Config.visualizerProjectWorkingDirectoryImageFilename(), Picture.ClientSize.Width, Picture.ClientSize.Height, color);
             if (_chooseProject != null)
             {
                 Picture.Cursor = Cursors.Hand;
                 Picture.MouseClick += Picture_MouseClick;
             }
 
-            lblMainbranchValue.Text = Config.ProjectWorkingDirectory.Git.MainBranch;
-            lblWorkingdirectoryValue.Text = Config.ProjectWorkingDirectory.Path.ToString();
+            lblMainbranchValue.Text = Config.visualizerProjectWorkingDirectoryMainBranch();
+            lblWorkingdirectoryValue.Text = Config.visualizerProjectWorkingDirectoryPath();
             lblCurrentbranchValue.Text = String.Empty;
             lblCommitnameValue.Text = String.Empty;
 
@@ -318,7 +309,7 @@ namespace GitNoob.Gui.Forms
             panelError.Size = panelStatus.Size;
             panelError.AutoScroll = true;
             errorPicture.ClientSize = new Size(48, 48);
-            errorPicture.Image = Program.Utils.ImageUtils.IconToBitmapOfSize(Program.Utils.Resources.getIcon("error"), 48, 48, Color.Transparent);
+            errorPicture.Image = ImageUtils.IconToBitmapOfSize(Resources.getIcon("error"), 48, 48, Color.Transparent);
 
             labelBusy.Visible = false;
             labelBusy.MaximumSize = new Size(panelStatus.Width, 0);
@@ -326,171 +317,192 @@ namespace GitNoob.Gui.Forms
 
             Point location = new Point(lblStatusValue.Location.X, lblStatusValue.Location.Y + 26);
 
-            Program.Action.StepsExecutor.StepConfig StepConfig = new Program.Action.StepsExecutor.StepConfig(Config, this, 
-                new Program.Utils.BatFile(
-                    "iexecutor",
-                    Program.Utils.BatFile.RunAsType.runAsInvoker, Program.Utils.BatFile.WindowType.hideWindow,
-                    "ProjectType - Executor",
-                    Config.Project, Config.ProjectWorkingDirectory,
-                    Config.PhpIni));
-            ActionChangeBranch = new Program.Action.ExecuteChangeBranch(StepConfig);
-            ActionAfterStatus = new Program.Action.ExecuteAfterStatus(StepConfig);
-
             Point empty = new Point(0,0);
             { 
                 new ActionButton(null, "", null, null, ref empty);
             }
 
-            var browser = new Program.Action.ExecuteStartBrowser(StepConfig);
-            if (browser.isStartable())
+            Visualizer.IViusalizerAction action;
+            action = Config.visualizerStartBrowser();
+            if (action.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Browser", null, browser, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Browser", null, action, ref location));
             }
 
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explorer", null, new Program.Action.StartExplorer(StepConfig), ref location));
-
-            var workspace = new Program.Action.ExecuteWorkspace(StepConfig);
-            if (workspace.isStartable())
+            action = Config.visualizerStartExplorer();
+            if (action.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Editor", null, workspace, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explorer", null, action, ref location));
             }
 
-            var DosPrompt = new Program.Action.StartDosPrompt(StepConfig);
-            var DosPromptContext = new ContextMenu();
+            action = Config.visualizerStartWorkspace();
+            if (action.isStartable())
             {
-                var item = new MenuItem()
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Editor", null, action, ref location));
+            }
+
+            action = Config.visualizerStartDosPromptAsUser();
+            if (action.isStartable())
+            {
+                var DosPromptContext = new ContextMenu();
                 {
-                    Text = "Run as administrator",
-                };
+                    var item = new MenuItem()
+                    {
+                        Text = "Run as administrator",
+                    };
 
-                item.Click += (object sender, EventArgs e) =>
-                {
-                    DosPrompt.executeAsAdministrator();
-                };
+                    item.Click += (object sender, EventArgs e) =>
+                    {
+                        Config.visualizerStartDosPromptAsAdministrator().execute();
+                    };
 
-                DosPromptContext.MenuItems.Add(item);
+                    DosPromptContext.MenuItems.Add(item);
+                }
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "DOS prompt", DosPromptContext, action, ref location));
             }
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "DOS prompt", DosPromptContext, DosPrompt, ref location));
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Git Gui", null, new Program.Action.StartGitGui(StepConfig), ref location));
 
+            action = Config.visualizerStartGitGui();
+            if (action.isStartable())
+            {
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Git Gui", null, action, ref location));
+            }
+
+            //
+            // Position git actions under MainBranch
+            //
             if (lblMainbranch.Location.X > location.X) location.X = lblMainbranch.Location.X;
-            var HistoryContext = new ContextMenu();
+
+            action = Config.visualizerStartGitkForCurrentBranch();
+            if (action.isStartable())
             {
-                var item = new MenuItem()
+                var HistoryContext = new ContextMenu();
                 {
-                    Text = "Show history of one file",
-                };
+                    var item = new MenuItem()
+                    {
+                        Text = "Show history of one file",
+                    };
 
-                item.Click += (object sender, EventArgs e) =>
-                {
-                    ViewHistoryOfFile(StepConfig);
-                };
+                    item.Click += (object sender, EventArgs e) =>
+                    {
+                        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                        {
+                            openFileDialog.Title = "Show history of one file";
+                            openFileDialog.InitialDirectory = Config.visualizerProjectWorkingDirectoryPath();
+                            openFileDialog.Filter = "All files (*.*)|*.*";
 
-                HistoryContext.MenuItems.Add(item);
+                            if (openFileDialog.ShowDialog() == DialogResult.OK)
+                            {
+                                Config.visualizerStartGitkForOneFile(openFileDialog.FileName);
+                            }
+                        }
+                    };
 
-                item = new MenuItem()
-                {
-                    Text = "Show history of all branches / tags / remotes",
-                };
+                    HistoryContext.MenuItems.Add(item);
 
-                item.Click += (object sender, EventArgs e) =>
-                {
-                    ViewHistoryOfAll(StepConfig);
-                };
+                    item = new MenuItem()
+                    {
+                        Text = "Show history of all branches / tags / remotes",
+                    };
 
-                HistoryContext.MenuItems.Add(item);
+                    item.Click += (object sender, EventArgs e) =>
+                    {
+                        Config.visualizerStartGitkAll().execute();
+                    };
 
+                    HistoryContext.MenuItems.Add(item);
+
+                }
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Current branch history", HistoryContext, action, ref location));
             }
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Current branch history", HistoryContext, new Program.Action.ExecuteGitkForCurrentBranch(StepConfig), ref location));
 
             location.X += empty.X;
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Get latest", null, new Program.Action.ExecuteGetLatest(StepConfig), ref location));
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Merge", null, new Program.Action.ExecuteMerge(StepConfig), ref location));
+
+            action = Config.visualizerGetLatest();
+            if (action.isStartable())
+            {
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Get latest", null, action, ref location));
+            }
+
+            action = Config.visualizerMerge();
+            if (action.isStartable())
+            {
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Merge", null, action, ref location));
+            }
 
             location.X += empty.X;
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Delete all changes", null, new Program.Action.ExecuteDeleteAllChanges(StepConfig), ref location));
-            this.panelStatus.Controls.Add(new ActionButton(toolTips, "Repair options", null, new Program.Action.ExecuteGitRepair(StepConfig), ref location));
 
-            //Second row
+            action = Config.visualizerDeleteAllChanges();
+            if (action.isStartable())
+            {
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Delete all changes", null, action, ref location));
+            }
+
+            action = Config.visualizerGitRepairOptions();
+            if (action.isStartable())
+            {
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Repair options", null, action, ref location));
+            }
+
+            //
+            // Second row
+            //
             location.X = lblStatusValue.Location.X;
             location.Y += 70;
             int count = 0;
 
-            var exploreLogFiles = new Program.Action.StartExploreLogfiles(StepConfig);
-            if (exploreLogFiles.isStartable())
+            action = Config.visualizerStartExploreLogFiles();
+            if (action.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explore logfiles", null, exploreLogFiles, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Explore logfiles", null, action, ref location));
                 count++;
             }
-            var openConfigFiles = new Program.Action.ExecuteOpenConfigfiles(StepConfig);
-            if (openConfigFiles.isStartable())
+
+            action = Config.visualizerOpenConfigFiles();
+            if (action.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Open configfiles", null, openConfigFiles, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Open configfiles", null, action, ref location));
                 count++;
             }
 
             if (count>0) location.X += empty.X;
             count = 0;
 
-            var clearCache = new Program.Action.ExecuteClearCache(StepConfig);
-            if (clearCache.isStartable())
+            action = Config.visualizerClearCache();
+            if (action.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Clear cache", null, clearCache, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Clear cache", null, action, ref location));
                 count++;
             }
 
-            var deleteLogFiles = new Program.Action.ExecuteDeleteLogfiles(StepConfig);
-            if (deleteLogFiles.isStartable())
+            action = Config.visualizerDeleteLogFiles();
+            if (action.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Delete logfiles", null, deleteLogFiles, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Delete logfiles", null, action, ref location));
                 count++;
             }
 
-            //third row
+            //
+            // Third row
+            //
             location.X = lblStatusValue.Location.X;
             location.Y += 70;
 
-            var smtpserver = new Program.Action.StartSmtpServer(StepConfig);
-            if (smtpserver.isStartable())
+            action = Config.visualizerStartSmtpServer();
+            if (action.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Smtp Server", null, smtpserver, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Smtp Server", null, action, ref location));
             }
 
-            var fiddler = new Program.Action.StartFiddler(StepConfig);
-            if (browser.isStartable() && fiddler.isStartable())
+            action = Config.visualizerStartFiddler();
+            if (action.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Fiddler", null, fiddler, ref location));
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Fiddler", null, action, ref location));
             }
 
-            var ngrok = new Program.Action.ExecuteStartNgrok(StepConfig);
-            if (browser.isStartable() && ngrok.isStartable())
+            action = Config.visualizerStartNgrok();
+            if (action.isStartable())
             {
-                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Ngrok", null, ngrok, ref location));
-            }
-        }
-
-        private void ViewHistoryOfAll(Program.Action.StepsExecutor.StepConfig StepConfig)
-        {
-            var gitk = new Program.Action.StartGitkAll(StepConfig);
-            gitk.execute();
-        }
-
-        private void ViewHistoryOfFile(Program.Action.StepsExecutor.StepConfig StepConfig)
-        {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Title = "Show history of one file";
-                openFileDialog.InitialDirectory = StepConfig.Config.ProjectWorkingDirectory.Path.ToString();
-                openFileDialog.Filter = "All files (*.*)|*.*";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    var gitk = new Program.Action.StartGitk(StepConfig,
-                        new List<string>() { "HEAD", StepConfig.Config.ProjectWorkingDirectory.Git.MainBranch },
-                        null,
-                        new List<string>() { openFileDialog.FileName });
-                    gitk.execute();
-                }
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Ngrok", null, action, ref location));
             }
         }
 
@@ -608,7 +620,7 @@ namespace GitNoob.Gui.Forms
             LinkLabelUtils.ExecuteLinkClicked(e);
         }
 
-        private void showErrorPanel(Program.Action.IVisualizerMessage message)
+        private void showErrorPanel(Visualizer.IVisualizerMessage message)
         {
             if (null == message.VisualizerMessageButtons || message.VisualizerMessageButtons.Count == 0)
             {
@@ -639,14 +651,14 @@ namespace GitNoob.Gui.Forms
             TextBox input;
             switch (message.VisualizerMessageType)
             {
-                case Program.Action.IVisualizerMessageType.options:
+                case Visualizer.IVisualizerMessageType.options:
                     errorInput.Visible = false;
 
                     location = new Point(errorText.Left, errorText.Top + errorText.Height + 30);
                     input = null;
                     break;
 
-                case Program.Action.IVisualizerMessageType.input:
+                case Visualizer.IVisualizerMessageType.input:
                     location = new Point(errorText.Left, errorText.Top + errorText.Height + 5);
                     errorInput.Location = location;
                     errorInput.Width = errorText.MaximumSize.Width;
@@ -693,13 +705,13 @@ namespace GitNoob.Gui.Forms
             panelError.Visible = true;
             panelError.AutoScroll = true;
 
-            if (message.VisualizerMessageType == Program.Action.IVisualizerMessageType.input)
+            if (message.VisualizerMessageType == Visualizer.IVisualizerMessageType.input)
             {
                 errorInput.Focus();
             }
         }
 
-        public void message(Program.Action.IVisualizerMessage message)
+        public void message(Visualizer.IVisualizerMessage message)
         {
             if (!this.Visible) return;
 

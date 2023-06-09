@@ -1,4 +1,5 @@
 ﻿using GitNoob.Git.Result;
+using GitNoob.Utils;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -114,6 +115,7 @@ namespace GitNoob.Git
                 return new StatusResult
                 {
                     DirectoryExists = true,
+                    ClearCommitNameAndEmailOnExit = ConfigWorkingDirectory.Git.ClearCommitNameAndEmailOnExit.Value,
                 };
             }
 
@@ -146,6 +148,7 @@ namespace GitNoob.Git
             {
                 DirectoryExists = true,
                 IsGitRootDirectory = true,
+                ClearCommitNameAndEmailOnExit = ConfigWorkingDirectory.Git.ClearCommitNameAndEmailOnExit.Value,
                 DetachedHead_NotOnBranch = (currentbranch.DetachedHead == true),
                 CurrentBranch = currentbranch.shortname,
                 CurrentBranchLastCommitId = currentlastcommit.commitid,
@@ -1062,6 +1065,24 @@ namespace GitNoob.Git
             };
         }
 
+        private GitBranch CreateTemporaryBranchAndCheckout(string branchFromBranchNameOrCommitId)
+        {
+            string tempbranchname = "gitnoob-tempbranch-" + GitUtils.GenerateRandomSha1();
+
+            var create = new Command.Branch.CreateBranch(this, tempbranchname, branchFromBranchNameOrCommitId, true);
+            create.WaitFor();
+
+            var tempbranch = new Command.Branch.GetCurrentBranch(this);
+            tempbranch.WaitFor();
+            if (tempbranch.shortname != tempbranchname)
+            {
+                return null;
+            }
+
+            return tempbranch.branch;
+        }
+
+
         public TouchCommitAndAuthorTimestampsOfCurrentBranchResult TouchCommitAndAuthorTimestampsOfCurrentBranch(DateTime toTime)
         {
             var currentbranch = new Command.Branch.GetCurrentBranch(this);
@@ -1114,7 +1135,7 @@ namespace GitNoob.Git
             commits.result.Reverse(); //Reverse so that commits are: oldest first, newest last
 
             //create a new temporary branch
-            var tempbranch = GitUtils.CreateTemporaryBranchAndCheckout(this, baseCommit.commitid);
+            var tempbranch = CreateTemporaryBranchAndCheckout(baseCommit.commitid);
             if (tempbranch == null)
             {
                 return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()

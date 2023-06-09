@@ -5,9 +5,9 @@ namespace GitNoob.Git.Command.WorkingTree
     public class IsRebaseActive : Command
     {
         public bool? result { get; private set; }
-        public GitBranch currentBranch { get; private set; }
+        public Result.GitBranch currentBranch { get; private set; }
         public string ontoCommitid { get; private set; }
-        public GitBranch ontoBranch { get; private set; }
+        public Result.GitBranch ontoBranch { get; private set; }
 
         public IsRebaseActive(GitWorkingDirectory gitworkingdirectory) : base(gitworkingdirectory)
         {
@@ -31,7 +31,7 @@ namespace GitNoob.Git.Command.WorkingTree
                 if (File.Exists(filename))
                 {
                     string fullname = File.ReadAllText(filename, System.Text.Encoding.UTF8).Trim();
-                    currentBranch = new GitBranch(fullname, GitBranch.FullnameToShortname(fullname), GitBranch.BranchType.Local);
+                    currentBranch = new Result.GitBranch(fullname, Result.GitBranch.FullnameToShortname(fullname), Result.GitBranch.BranchType.Local);
 
                     filename = Path.Combine(path1.result, "onto");
                     ontoCommitid = File.ReadAllText(filename, System.Text.Encoding.UTF8).Trim();
@@ -42,7 +42,7 @@ namespace GitNoob.Git.Command.WorkingTree
                         string ontoBranch = gitOntoBranchName.Output.Trim();
                         if (!string.IsNullOrWhiteSpace(ontoBranch))
                         {
-                            this.ontoBranch = new GitBranch(ontoBranch, GitBranch.FullnameToShortname(ontoBranch), GitBranch.BranchType.Local);
+                            this.ontoBranch = new Result.GitBranch(ontoBranch, Result.GitBranch.FullnameToShortname(ontoBranch), Result.GitBranch.BranchType.Local);
                         }
                     }
                 }

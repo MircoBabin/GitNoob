@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GitNoob.Utils;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -7,7 +8,7 @@ namespace GitNoob.Gui.Forms
 {
     class ErrorButton : Button
     {
-        private System.Action<Program.Action.VisualizerInput> _action = null;
+        private System.Action<Visualizer.VisualizerInput> _action = null;
         private TextBox _input = null;
         private ControlCollection _parent = null;
 
@@ -44,11 +45,11 @@ namespace GitNoob.Gui.Forms
             ClickExecuteAction(_action);
         }
 
-        private void ClickExecuteAction(System.Action<Program.Action.VisualizerInput> action)
+        private void ClickExecuteAction(System.Action<Visualizer.VisualizerInput> action)
         {
             if (action == null) return;
 
-            Program.Action.VisualizerInput input = new Program.Action.VisualizerInput();
+            Visualizer.VisualizerInput input = new Visualizer.VisualizerInput();
             if (_input != null)
             {
                 input.inputValue = _input.Text;
@@ -110,7 +111,7 @@ namespace GitNoob.Gui.Forms
             catch { }
         }
 
-        public void ShowErrorButton(ToolTip toolTips, TextBox Input, Program.Action.VisualizerMessageButton button, ref Point Location, Size size)
+        public void ShowErrorButton(ToolTip toolTips, TextBox Input, Visualizer.VisualizerMessageButton button, ref Point Location, Size size)
         {
             HideErrorButton();
 
@@ -130,7 +131,7 @@ namespace GitNoob.Gui.Forms
 
                 try
                 {
-                    subbutton.Image = Program.Utils.ImageUtils.IconToBitmapOfSize(sub.icon, 32, 32, Color.Transparent);
+                    subbutton.Image = ImageUtils.IconToBitmapOfSize(sub.icon, 32, 32, Color.Transparent);
                 }
                 catch { }
 

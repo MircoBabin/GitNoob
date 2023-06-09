@@ -1,24 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using GitNoob.Utils;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
 namespace GitNoob.Gui.Program.Action
 {
-    public class StartExploreLogfiles : Action, IAction
+    public class StartExploreLogfiles : Action
     {
-        public StartExploreLogfiles(StepsExecutor.StepConfig Config) : base(Config) { }
+        public StartExploreLogfiles(ProgramWorkingDirectory Config) : base(Config) { }
 
-        public static IEnumerable<string> GetPaths(StepsExecutor.StepConfig stepConfig)
+        public static IEnumerable<string> GetPaths(ProgramWorkingDirectory config)
         {
-            if (stepConfig.Config.ProjectWorkingDirectory.ProjectType == null) return null;
+            if (config.ProjectWorkingDirectory.ProjectType == null) return null;
 
-            var paths = stepConfig.Config.ProjectWorkingDirectory.ProjectType.GetLogfilesPaths();
+            var paths = config.ProjectWorkingDirectory.ProjectType.GetLogfilesPaths();
             if (paths == null) return null;
 
             var result = new List<string>();
             foreach (var path in paths)
             {
-                result.Add(Path.Combine(stepConfig.Config.ProjectWorkingDirectory.Path.ToString(), path));
+                result.Add(Path.Combine(config.ProjectWorkingDirectory.Path.ToString(), path));
             }
 
             if (result.Count == 0) return null;
@@ -26,24 +27,24 @@ namespace GitNoob.Gui.Program.Action
             return result;
         }
 
-        public bool isStartable()
+        public override bool isStartable()
         {
-            return (GetPaths(stepConfig) != null);
+            return (GetPaths(config) != null);
         }
 
-        public Icon icon()
+        public override Icon icon()
         {
-            return Utils.Resources.getIcon("open logfiles");
+            return Resources.getIcon("open logfiles");
         }
 
-        public void execute()
+        public override void execute()
         {
             if (!isStartable()) return;
 
-            var paths = GetPaths(stepConfig);
+            var paths = GetPaths(config);
             foreach (var path in paths)
             {
-                Utils.BatFile.StartWindowsExplorer(path, stepConfig.Config.Project, stepConfig.Config.ProjectWorkingDirectory, stepConfig.Config.PhpIni);
+                Utils.BatFile.StartWindowsExplorer(path, config.Project, config.ProjectWorkingDirectory, config.PhpIni);
             }
         }
     }
