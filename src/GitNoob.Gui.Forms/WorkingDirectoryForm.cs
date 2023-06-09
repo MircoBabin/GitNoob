@@ -290,6 +290,7 @@ namespace GitNoob.Gui.Forms
             {
                 Picture.Cursor = Cursors.Hand;
                 Picture.MouseClick += Picture_MouseClick;
+                toolTips.SetToolTip(Picture, "Click to open another project.");
             }
 
             lblMainbranchValue.Text = Config.visualizerProjectWorkingDirectoryMainBranch();
