@@ -1727,6 +1727,41 @@ namespace GitNoob.Git
             };
         }
 
+        public StageAllChangesOnCurrentBranchResult StageAllChangesOnCurrentBranch()
+        {
+            {
+                var currentbranch = new Command.Branch.GetCurrentBranch(this);
+                var rebasing = new Command.WorkingTree.IsRebaseActive(this);
+                var merging = new Command.WorkingTree.IsMergeActive(this);
+                currentbranch.WaitFor();
+                rebasing.WaitFor();
+                merging.WaitFor();
+
+                if (currentbranch.DetachedHead != false ||
+                    rebasing.result != false ||
+                    merging.result != false)
+                {
+                    return new StageAllChangesOnCurrentBranchResult()
+                    {
+                        ErrorDetachedHead = (currentbranch.DetachedHead != false),
+                        ErrorRebaseInProgress = (rebasing.result != false),
+                        ErrorMergeInProgress = (merging.result != false),
+                    };
+                }
+            }
+
+            {
+                var commit = new Command.Branch.CommitAllChanges(this, null);
+                commit.WaitFor();
+            }
+
+            return new StageAllChangesOnCurrentBranchResult()
+            {
+                Staged = true,
+            };
+
+        }
+
         public const string TemporaryCommitMessage = "[GitNoob][Temporary Commit]";
 
         public CommitAllChangesOnCurrentBranchResult CommitAllChangesOnCurrentBranch(string commitMessage)

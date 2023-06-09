@@ -33,11 +33,20 @@ namespace GitNoob.Gui.Program.Remedy
                         Done();
                     }),
 
+                    new VisualizerMessageButton("Stage all changes and start Git Gui for committing.", (input) => {
+                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() {
+                            new Step.StageAllChanges(),
+                            new Step.StartGitGui(),
+                        });
+                        Done();
+                    }),
+
                     new VisualizerMessageButton("Empty the git recycle bin.", (input) => {
                         var step = new Step.AskPruneAggressive();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
                     }),
+
 
                     /*
                     new VisualizerMessageButton("Download fresh clone, delete all local branches / tags / commits", (input) => {
@@ -50,11 +59,6 @@ namespace GitNoob.Gui.Program.Remedy
                         //Clone
                         //Restore .env specific files
 
-                        Done();
-                    }),
-
-                    new VisualizerMessageButton("Stage all changes and start Git Gui to commit.", (input) => {
-                        //Todo
                         Done();
                     }),
 

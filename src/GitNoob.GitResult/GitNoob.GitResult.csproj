@@ -42,6 +42,7 @@
     <Compile Include="BuildCacheAndCommitOnMainBranchResult.cs" />
     <Compile Include="ChangeCommitterResult.cs" />
     <Compile Include="ChangeCurrentBranchResult.cs" />
+    <Compile Include="StageAllChangesOnCurrentBranchResult.cs" />
     <Compile Include="CommitAllChangesOnCurrentBranchResult.cs" />
     <Compile Include="CreateNewBranchResult.cs" />
     <Compile Include="DeleteCurrentBranchResult.cs" />

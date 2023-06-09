@@ -60,6 +60,7 @@
     <Compile Include="Step\AskTouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Step\PruneAggressive.cs" />
     <Compile Include="Step\StageAllChanges.cs" />
+    <Compile Include="Step\StartGitGui.cs" />
     <Compile Include="Step\UndeleteBranch.cs" />
     <Compile Include="Step\TouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Remedy\InputChooseDeletedBranch.cs" />

@@ -21,18 +21,21 @@
                 executor.WaitFor();
             }
 
+            if (!string.IsNullOrWhiteSpace(commitMessage))
             {
-                var executor = RunGit("commit", "commit --quiet --message \"" + commitMessage + "\"");
-                executor.WaitFor();
-            }
-
-            {
-                var executor = new GetLastCommitOfBranch(gitworkingdirectory, "HEAD");
-                executor.WaitFor();
-
-                if (executor.commitid != before_commitid)
                 {
-                    commitid = executor.commitid;
+                    var executor = RunGit("commit", "commit --quiet --message \"" + commitMessage + "\"");
+                    executor.WaitFor();
+                }
+
+                {
+                    var executor = new GetLastCommitOfBranch(gitworkingdirectory, "HEAD");
+                    executor.WaitFor();
+
+                    if (executor.commitid != before_commitid)
+                    {
+                        commitid = executor.commitid;
+                    }
                 }
             }
         }
