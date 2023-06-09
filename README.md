@@ -16,16 +16,16 @@ GitNoob solves the following problems:
 - Downloading the latest version from upstream. And integrating the upstream changes into the current branch.
 - Merging your current branch with upstream. Without those annoying merge commits which make the git history unreadable.
 - Logical locking the main branch when merging. If everyone in the team uses GitNoob, one can merge and may have to resolve conflicts only once. Because the others will not merge until this merge is finished.
-- Changing branch / creating a branch. Taking into account possible working tree changes.
+- Changing branch, creating / renaming a branch. Taking into account possible working tree changes.
 - Deleting a branch. With the safety first feature to also undelete the deleted branch.
 - Flushing all your current changes down the toilet. To be able to start over, continue with a clean slate.
 - When having committed to the wrong branch (e.g. the main branch) provide a remedy to move the commits to a new branch.
 - Prevent git disaster from happening when: in detached head state, inside rebase, inside merge, having working tree changes, having staged uncommitted files.
 - When using [Git Credentials via KeePassCommander](https://github.com/MircoBabin/GitCredentialsViaKeePassCommander) ensure KeePass is started.
-- Starting a dosprompt.
+- Starting a dosprompt. Also with the "as administrator" option.
 - Starting an explorer.
 - Starting [Git Gui](https://github.com/prati0100/git-gui/) for committing changes.
-- Starting git history for current branch.
+- Starting git history for current branch, all branches or one file.
 - Optional: Starting the IDE. With the ability to start with "run as administrator" privileges.
 - Optional: Starting the browser. And automatically start Apache if needed.
 - Optional: Starting a local smtp server like [PaperCut-SMTP](https://github.com/ChangemakerStudios/Papercut-SMTP).

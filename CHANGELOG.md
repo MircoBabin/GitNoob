@@ -1,5 +1,11 @@
 # GitNoob changelog
 
+## Version 1.19
+* Fix: several hints and explanations.
+* Add: dividers in choose project screen.
+* Add: empty git recycle bin to git repair options.
+* Add: stage all changes to git repair options.
+
 ## Version 1.18
 * Fix: Laravel - composer dump-autoload issues with packages.php - see also https://github.com/laravel/framework/issues/45209
 
