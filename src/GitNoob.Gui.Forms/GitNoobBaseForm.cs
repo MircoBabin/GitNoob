@@ -34,6 +34,13 @@ namespace GitNoob.Gui.Forms
         private int SYSMENU_ABOUT_ID = 0x1;
         private int SYSMENU_CHECKFORUPDATE_ID = 0x2;
 
+        public GitNoobBaseForm()
+        {
+            _programPath = string.Empty;
+            _licenseText = string.Empty;
+            _GitNoobUpdaterExe = null;
+        }
+
         public GitNoobBaseForm(string programPath, string licenseText)
         {
             _programPath = programPath;
