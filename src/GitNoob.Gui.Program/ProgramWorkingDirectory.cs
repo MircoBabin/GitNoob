@@ -168,6 +168,11 @@ namespace GitNoob.Gui.Program
             return ProjectWorkingDirectory.Path.ToString();
         }
 
+        public bool visualizerProjectWorkingDirectoryTouchTimestampsBeforeMerge()
+        {
+            return ProjectWorkingDirectory.Git.TouchTimestampOfCommitsBeforeMerge.Value;
+        }
+
         public Visualizer.IViusalizerAction visualizerChangeBranch()
         {
             return _changeBranch;

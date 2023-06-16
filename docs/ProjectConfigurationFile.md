@@ -39,6 +39,7 @@ In the project configuration the section GitNoob can contain the settings:
 | commitemail | Value | (Optional) what value should the committer email have. E.g. "mirco@..." |
 | commitname-settings-clear-on-exit | Boolean | (Optional) when closing the working directory form, reset the git user.name and user.email to nothing. e.g. commitname-settings-clear-on-exit=true |
 | commitname-settings-via-filename | Path | (Optional) path to [Committer.ini](CommitterConfigurationFile.md "Committer Configuration File") file. When specified and the file contains commitname and commitemail, this file takes precedence. |
+| touch-timestamp-of-commits-before-merge | Boolean | (Optional) set the timestamp to now for the commits to be merged. |
 | | | |
 | homepage | Value | (Optional) url to start for the homepage. e.g. "https://localhost:7777" or "https://localhost:%port%" |
 
@@ -93,6 +94,7 @@ This section defines a working directory.
 | commitemail | Value | (Optional) what value should the committer email have. E.g. "mirco@..." |
 | commitname-settings-clear-on-exit | Boolean | (Optional) when closing the working directory form, reset the git user.name and user.email to nothing. e.g. commitname-settings-clear-on-exit=true |
 | commitname-settings-via-filename | Path | (Optional) path to [Committer.ini](CommitterConfigurationFile.md "Committer Configuration File") file. When specified and the file contains commitname and commitemail, this file takes precedence. |
+| touch-timestamp-of-commits-before-merge | Boolean | (Optional) set the timestamp to now for the commits to be merged. |
 | | | |
 | port| Integer | (Optional) port on localhost to use for the webserver. e.g. "7777". |
 | webroot | Path | (Optional) path relative to **path of the working directory** containing the webroot. E.g. "public". |

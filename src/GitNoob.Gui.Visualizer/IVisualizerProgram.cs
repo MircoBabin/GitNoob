@@ -15,6 +15,7 @@
         string visualizerProjectWorkingDirectoryImageBackgroundHtmlColor();
         string visualizerProjectWorkingDirectoryMainBranch();
         string visualizerProjectWorkingDirectoryPath();
+        bool visualizerProjectWorkingDirectoryTouchTimestampsBeforeMerge();
 
         IViusalizerAction visualizerChangeBranch();
         IViusalizerAction visualizerStartBrowser();

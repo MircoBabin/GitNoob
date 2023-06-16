@@ -57,6 +57,7 @@
     <Compile Include="Remedy\MessageConfirmPruneAggressive.cs" />
     <Compile Include="Action\StartGitk.cs" />
     <Compile Include="Step\AskPruneAggressive.cs" />
+    <Compile Include="Step\TouchTimestampOfCommitsBeforeMerge.cs" />
     <Compile Include="Step\AskTouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Step\PruneAggressive.cs" />
     <Compile Include="Step\StageAllChanges.cs" />

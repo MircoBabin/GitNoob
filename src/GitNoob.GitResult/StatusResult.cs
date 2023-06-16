@@ -5,6 +5,7 @@
         public bool DirectoryExists { get; set; }
         public bool IsGitRootDirectory { get; set; }
         public bool ClearCommitNameAndEmailOnExit { get; set; }
+        public bool TouchTimestampOfCommitsBeforeMerge { get; set; }
         public bool DetachedHead_NotOnBranch { get; set; }
         public string CurrentBranch { get; set; }
         public string CurrentBranchLastCommitId { get; set; }
@@ -27,6 +28,7 @@
             DirectoryExists = false;
             IsGitRootDirectory = false;
             ClearCommitNameAndEmailOnExit = false;
+            TouchTimestampOfCommitsBeforeMerge = false;
             DetachedHead_NotOnBranch = false;
             CurrentBranch = string.Empty;
             CurrentBranchLastCommitId = string.Empty;

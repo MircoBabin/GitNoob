@@ -116,6 +116,7 @@ namespace GitNoob.Git
                 {
                     DirectoryExists = true,
                     ClearCommitNameAndEmailOnExit = ConfigWorkingDirectory.Git.ClearCommitNameAndEmailOnExit.Value,
+                    TouchTimestampOfCommitsBeforeMerge = ConfigWorkingDirectory.Git.TouchTimestampOfCommitsBeforeMerge.Value,
                 };
             }
 
@@ -149,6 +150,7 @@ namespace GitNoob.Git
                 DirectoryExists = true,
                 IsGitRootDirectory = true,
                 ClearCommitNameAndEmailOnExit = ConfigWorkingDirectory.Git.ClearCommitNameAndEmailOnExit.Value,
+                TouchTimestampOfCommitsBeforeMerge = ConfigWorkingDirectory.Git.TouchTimestampOfCommitsBeforeMerge.Value,
                 DetachedHead_NotOnBranch = (currentbranch.DetachedHead == true),
                 CurrentBranch = currentbranch.shortname,
                 CurrentBranchLastCommitId = currentlastcommit.commitid,

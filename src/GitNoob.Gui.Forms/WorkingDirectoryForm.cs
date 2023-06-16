@@ -294,6 +294,10 @@ namespace GitNoob.Gui.Forms
             }
 
             lblMainbranchValue.Text = Config.visualizerProjectWorkingDirectoryMainBranch();
+            if (Config.visualizerProjectWorkingDirectoryTouchTimestampsBeforeMerge())
+            {
+                lblMainbranchValue.Text = lblMainbranchValue.Text + " [touch timestamps before merge]";
+            }
             lblWorkingdirectoryValue.Text = Config.visualizerProjectWorkingDirectoryPath();
             lblCurrentbranchValue.Text = String.Empty;
             lblCommitnameValue.Text = String.Empty;

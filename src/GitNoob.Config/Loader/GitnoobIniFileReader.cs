@@ -212,6 +212,7 @@ namespace GitNoob.Config.Loader
                 if (String.IsNullOrWhiteSpace(git.CommitEmail)) git.CommitEmail = _globalGitCommitEmail;
 
                 ReadBoolean(Section, "commitname-settings-clear-on-exit", git.ClearCommitNameAndEmailOnExit);
+                ReadBoolean(Section, "touch-timestamp-of-commits-before-merge", git.TouchTimestampOfCommitsBeforeMerge);
             }
 
             {

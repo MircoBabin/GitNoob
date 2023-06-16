@@ -33,6 +33,7 @@ namespace GitNoob.Gui.Program.Action
                 new Step.GetLatest(false),
                 new Step.ExecutorStoreCurrentBranch(),
 
+                new Step.TouchTimestampOfCommitsBeforeMerge(),
                 new Step.RebaseCurrentBranchOntoMainBranch(),
                 new Step.MergeCurrentBranchIntoMainBranchFastForwardOnly(),
                 new Step.PushMainBranchToRemote(true),
