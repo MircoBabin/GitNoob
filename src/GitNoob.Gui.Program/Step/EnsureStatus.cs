@@ -105,6 +105,12 @@ namespace GitNoob.Gui.Program.Step
                 case WorkingTreeChanges.FalseAndCanTemporaryCommit:
                     if (result.HasWorkingTreeChanges != false)
                     {
+                        if (result.DetachedHead_NotOnBranch)
+                        {
+                            FailureRemedy = new Remedy.MessageDetachedHead(this, message);
+                            return false;
+                        }
+
                         FailureRemedy = new Remedy.MessageTemporaryCommitWorkingTreeChanges(this, message);
                         return false;
                     }
