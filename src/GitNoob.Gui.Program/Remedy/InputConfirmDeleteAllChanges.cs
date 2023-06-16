@@ -35,6 +35,19 @@ namespace GitNoob.Gui.Program.Remedy
                     new VisualizerMessageButton( "Cancel", (input) => {
                         Cancel();
                     }),
+                    new VisualizerMessageButton("Create a temporary commit to store all current changes." + Environment.NewLine +
+                      "Then create an new entry in the GitNoob deleted branches. So this action can be undeleted." + Environment.NewLine +
+                      "Then remove the temporary commit and with it all current changes from the current branch." + Environment.NewLine +
+                      "I'm sure and have typed in \"sure\"." + Environment.NewLine, (input) => {
+                        if (!isSure(input.inputValue)) return;
+
+                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() {
+                            new Step.TemporaryCommitChangesOnCurrentBranch(),
+                            new Step.CreateUndeletionTagOnCurrentBranch("Safety - delete all changes"),
+                            new Step.RemoveLastTemporaryCommitOnCurrentBranch(),
+                        });
+                        Done();
+                    }),
                     new VisualizerMessageButton("Backup current changes, fully copy directory \"" + StepsExecutor.Config.ProjectWorkingDirectory.Path + "\" to \"" + Path.GetFileName(CopyTo) + "\"." + Environment.NewLine + 
                       "Then delete all uncommitted changes." + Environment.NewLine +
                       "I'm sure and have typed in \"sure\"." + Environment.NewLine, (input) => {

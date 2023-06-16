@@ -42,6 +42,7 @@
     <Compile Include="BuildCacheAndCommitOnMainBranchResult.cs" />
     <Compile Include="ChangeCommitterResult.cs" />
     <Compile Include="ChangeCurrentBranchResult.cs" />
+    <Compile Include="CreateUndeletionTagResult.cs" />
     <Compile Include="StageAllChangesOnCurrentBranchResult.cs" />
     <Compile Include="CommitAllChangesOnCurrentBranchResult.cs" />
     <Compile Include="CreateNewBranchResult.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="SetRemoteForBranchResult.cs" />
     <Compile Include="StatusResult.cs" />
     <Compile Include="TouchCommitAndAuthorTimestampsOfCurrentBranchResult.cs" />
+    <Compile Include="RemoveLastTemporaryCommitOnCurrentBranchResult.cs" />
     <Compile Include="UnpackLastTemporaryCommitOnCurrentBranchResult.cs" />
   </ItemGroup>
   <ItemGroup>

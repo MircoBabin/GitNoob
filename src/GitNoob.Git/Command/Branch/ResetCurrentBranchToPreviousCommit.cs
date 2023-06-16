@@ -2,12 +2,20 @@
 {
     public class ResetCurrentBranchToPreviousCommit : Command
     {
-        public ResetCurrentBranchToPreviousCommit(GitWorkingDirectory gitworkingdirectory) : base(gitworkingdirectory)
+        public ResetCurrentBranchToPreviousCommit(GitWorkingDirectory gitworkingdirectory, bool putLastCommitChangesInWorkingDirectory) : base(gitworkingdirectory)
         {
-            var reset = RunGit("reset", "reset --soft \"HEAD^\"");
-            reset.WaitFor();
+            if (putLastCommitChangesInWorkingDirectory)
+            {
+                var reset = RunGit("reset", "reset --soft \"HEAD^\"");
+                reset.WaitFor();
 
-            var unstage = RunGit("unstage", "restore --staged .");
+                var unstage = RunGit("unstage", "restore --staged .");
+            }
+            else
+            {
+                var reset = RunGit("reset", "reset --hard \"HEAD^\"");
+                reset.WaitFor();
+            }
         }
 
         protected override void RunGitDone()

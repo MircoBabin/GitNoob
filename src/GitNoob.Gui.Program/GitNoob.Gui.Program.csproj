@@ -57,6 +57,7 @@
     <Compile Include="Remedy\MessageConfirmPruneAggressive.cs" />
     <Compile Include="Action\StartGitk.cs" />
     <Compile Include="Step\AskPruneAggressive.cs" />
+    <Compile Include="Step\CreateUndeletionTagOnCurrentBranch.cs" />
     <Compile Include="Step\TouchTimestampOfCommitsBeforeMerge.cs" />
     <Compile Include="Step\AskTouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Step\PruneAggressive.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Step\AskDeleteAllChanges.cs" />
     <Compile Include="Step\DeleteCurrentBranch.cs" />
     <Compile Include="Step\CheckGitNoobTemporaryCommitsOnCurrentBranch.cs" />
+    <Compile Include="Step\RemoveLastTemporaryCommitOnCurrentBranch.cs" />
     <Compile Include="Step\UnpackLastCommitOnCurrentBranch.cs" />
     <Compile Include="Step\RenameBranch.cs" />
     <Compile Include="Step\SetRemoteForBranch.cs" />
