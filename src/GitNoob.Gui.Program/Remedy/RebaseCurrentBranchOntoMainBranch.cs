@@ -21,7 +21,7 @@ namespace GitNoob.Gui.Program.Remedy
                         Cancel();
                     }),
                     new VisualizerMessageButton("Start rebase. The current branch \"" + CurrentBranch + "\" will be updated to incorporate the changes of the main branch \"" + MainBranch + "\".", (input) => {
-                        var step = new Step.RebaseCurrentBranchOntoMainBranch();
+                        var step = new Step.RebaseCurrentBranchOntoMainBranch("Safety - get latest - before rebasing onto mainbranch.");
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
 
                         Done();

@@ -12,6 +12,7 @@ namespace GitNoob.GitResult
 
         public bool Updated { get; set; }
         public string CurrentBranch { get; set; }
+        public bool DetachedHead_NotOnBranch { get; set; }
         public bool WorkingTreeChanges { get; set; }
         public bool StagedUncommittedFiles { get; set; }
         public bool UnpushedCommits { get; set; }
@@ -35,6 +36,7 @@ namespace GitNoob.GitResult
 
             Updated = false;
             CurrentBranch = String.Empty;
+            DetachedHead_NotOnBranch = false;
             WorkingTreeChanges = false;
             StagedUncommittedFiles = false;
             UnpushedCommits = false;

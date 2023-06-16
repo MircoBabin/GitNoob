@@ -803,21 +803,29 @@ namespace GitNoob.Git
 
             bool CurrentBranchIsBehindMainBranch;
             var commitname = new Command.Config.GetCurrentCommitter(this);
-            if (MainBranch == currentbranch.shortname)
+            if (currentbranch.DetachedHead == true)
             {
-                var fastForwardMainBranch = new Command.Branch.FastForwardCurrentBranchToRemote(this);
-                fastForwardMainBranch.WaitFor();
-
+                // Detached head can never be behind mainbranch.
                 CurrentBranchIsBehindMainBranch = false;
             }
             else
             {
-                var common = new Command.Branch.FindCommonCommitOfTwoBranches(this, MainBranch, currentbranch.shortname);
-                var maincommit = new Command.Branch.GetLastCommitOfBranch(this, MainBranch);
-                common.WaitFor();
-                maincommit.WaitFor();
+                if (MainBranch == currentbranch.shortname)
+                {
+                    var fastForwardMainBranch = new Command.Branch.FastForwardCurrentBranchToRemote(this);
+                    fastForwardMainBranch.WaitFor();
 
-                CurrentBranchIsBehindMainBranch = (common.commitid != maincommit.commitid);
+                    CurrentBranchIsBehindMainBranch = false;
+                }
+                else
+                {
+                    var common = new Command.Branch.FindCommonCommitOfTwoBranches(this, MainBranch, currentbranch.shortname);
+                    var maincommit = new Command.Branch.GetLastCommitOfBranch(this, MainBranch);
+                    common.WaitFor();
+                    maincommit.WaitFor();
+
+                    CurrentBranchIsBehindMainBranch = (common.commitid != maincommit.commitid);
+                }
             }
             commitname.WaitFor();
 
@@ -825,6 +833,7 @@ namespace GitNoob.Git
             {
                 Updated = true,
                 CurrentBranch = currentbranch.shortname,
+                DetachedHead_NotOnBranch = (currentbranch.DetachedHead == true),
                 WorkingTreeChanges = (changes.workingtreeChanges != false),
                 StagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
                 UnpushedCommits = (unpushedCommits.result == true),
@@ -1214,7 +1223,7 @@ namespace GitNoob.Git
             };
         }
 
-        public RebaseResult RebaseCurrentBranchOntoMainBranch()
+        public RebaseResult RebaseCurrentBranchOntoMainBranch(string createUndeleteTagMessage)
         {
             var currentbranch = new Command.Branch.GetCurrentBranch(this);
             var changes = new Command.WorkingTree.HasChanges(this);
@@ -1240,6 +1249,17 @@ namespace GitNoob.Git
                     ErrorRebaseInProgress = (rebasing.result != false),
                     ErrorMergeInProgress = (merging.result != false),
                 };
+            }
+
+            if (!string.IsNullOrWhiteSpace(createUndeleteTagMessage))
+            {
+                if (!CreateDeletedBranchUndoTag(currentbranch.shortname, MainBranch, createUndeleteTagMessage))
+                {
+                    return new RebaseResult()
+                    {
+                        ErrorCreatingSafetyTag = true,
+                    };
+                }
             }
 
             var rebase = new Command.Branch.RebaseCurrentBranch(this, MainBranch);

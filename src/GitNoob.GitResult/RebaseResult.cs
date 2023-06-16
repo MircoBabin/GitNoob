@@ -17,6 +17,7 @@ namespace GitNoob.GitResult
         public bool ErrorMergeInProgress { get; set; }
         public bool ErrorConflicts { get; set; }
 
+        public bool ErrorCreatingSafetyTag { get; set; }
         public bool ErrorNotRebasing { get; set; }
 
         public RebaseResult()
@@ -34,6 +35,7 @@ namespace GitNoob.GitResult
             ErrorMergeInProgress = false;
             ErrorConflicts = false;
 
+            ErrorCreatingSafetyTag = false;
             ErrorNotRebasing = false;
         }
     }

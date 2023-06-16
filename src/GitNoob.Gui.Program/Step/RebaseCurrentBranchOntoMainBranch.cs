@@ -4,13 +4,17 @@ namespace GitNoob.Gui.Program.Step
 {
     public class RebaseCurrentBranchOntoMainBranch : Step
     {
-        public RebaseCurrentBranchOntoMainBranch() : base() { }
+        private string _createUndeleteTagMessage;
+        public RebaseCurrentBranchOntoMainBranch(string createUndeleteTagMessage) : base()
+        {
+            _createUndeleteTagMessage = createUndeleteTagMessage;
+        }
 
         protected override bool run()
         {
             BusyMessage = "Busy - rebasing current branch onto main branch";
 
-            var result = StepsExecutor.Config.Git.RebaseCurrentBranchOntoMainBranch();
+            var result = StepsExecutor.Config.Git.RebaseCurrentBranchOntoMainBranch(_createUndeleteTagMessage);
 
             var message = new VisualizerMessageWithLinks("Rebasing current branch onto main branch failed.");
 

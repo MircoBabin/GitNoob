@@ -34,13 +34,13 @@ namespace GitNoob.Gui.Program.Action
                 new Step.ExecutorStoreCurrentBranch(),
 
                 new Step.TouchTimestampOfCommitsBeforeMerge(),
-                new Step.RebaseCurrentBranchOntoMainBranch(),
+                new Step.RebaseCurrentBranchOntoMainBranch("Safety - merge - before merging into mainbranch."),
                 new Step.MergeCurrentBranchIntoMainBranchFastForwardOnly(),
                 new Step.PushMainBranchToRemote(true),
 
                 new Step.RebuildCacheOnMainBranchAndPushToRemote(true),
                 new Step.CheckoutBranch(true, String.Empty),
-                new Step.RebaseCurrentBranchOntoMainBranch(),
+                new Step.RebaseCurrentBranchOntoMainBranch(null),
             });
             executor.execute();
         }

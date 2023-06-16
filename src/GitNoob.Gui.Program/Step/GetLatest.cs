@@ -84,14 +84,16 @@ namespace GitNoob.Gui.Program.Step
             //not really a failure, but a solution to present a message
             message = new VisualizerMessageWithLinks("Get latest has been successfull.");
 
-            if (result.CurrentBranchIsBehindMainBranch)
+            if (!result.DetachedHead_NotOnBranch && result.CurrentBranchIsBehindMainBranch)
             {
                 if (result.UnpushedCommits)
                 {
                     if (result.WorkingTreeChanges || result.StagedUncommittedFiles)
                     {
                         message.Append(Environment.NewLine);
-                        message.Append("The current branch \"" + result.CurrentBranch + "\" is not updated. The current branch does not contain the downloaded changes of the main branch \"" + MainBranch + "\".");
+                        message.Append("The current branch \"" + result.CurrentBranch + "\" is not updated, because there are uncommitted changes. The current branch does not contain the downloaded changes of the main branch \"" + MainBranch + "\"." + Environment.NewLine);
+                        message.Append(Environment.NewLine);
+                        message.Append("If you want to incorporate the latest main branch changes in the current branch, then commit the current changes as a \"work in progress\" (wip) and retry get latest.");
                         FailureRemedy = new Remedy.MessageChanges(this, message, result.WorkingTreeChanges, result.StagedUncommittedFiles);
                         return false;
                     }
@@ -102,7 +104,7 @@ namespace GitNoob.Gui.Program.Step
 
                 //current branch has no unpushed commits, no staged uncommitted files and no working tree changes.
                 //automatic rebase onto main branch.
-                var step = new RebaseCurrentBranchOntoMainBranch();
+                var step = new RebaseCurrentBranchOntoMainBranch(null);
                 StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                 return true;
             }
