@@ -220,5 +220,16 @@ namespace GitNoob.Gui.Program.StepsExecutor
             _config.Visualizer.notifyCurrentBranchChanged(name);
         }
 
+        public bool WorkspaceIsStartable()
+        {
+            var workspace = new Action.StartWorkspace(Config);
+            return workspace.isStartable();
+        }
+
+        public void StartWorkspace()
+        {
+            var workspace = new Action.StartWorkspace(Config);
+            workspace.execute();
+        }
     }
 }

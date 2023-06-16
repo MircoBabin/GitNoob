@@ -41,7 +41,18 @@ namespace GitNoob.Gui.Program.Remedy
 
                         Done();
                     }),
+                    new VisualizerMessageButton("Start Git Gui.", (input) => {
+                        StepsExecutor.StartGitGui();
+                    }),
                 };
+
+            if (StepsExecutor.WorkspaceIsStartable())
+            {
+                VisualizerMessageButtons.Add(new VisualizerMessageButton("Start workspace", (input) =>
+                {
+                    StepsExecutor.StartWorkspace();
+                }));
+            }
         }
     }
 }

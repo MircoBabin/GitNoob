@@ -147,7 +147,6 @@
     <Compile Include="Step\ExecutorStoreCurrentBranch.cs" />
     <Compile Include="Step\MergeCurrentBranchIntoMainBranchFastForwardOnly.cs" />
     <Compile Include="Step\StartGitkForCurrentBranch.cs" />
-    <Compile Include="Step\StartWorkspace.cs" />
     <Compile Include="Step\TemporaryCommitChangesOnCurrentBranch.cs" />
     <Compile Include="Step\MoveChangesOnMainBranchToNewBranch.cs" />
     <Compile Include="Step\MoveChangesOnCurrentBranchToNewBranch.cs" />

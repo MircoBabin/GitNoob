@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using GitNoob.Utils;
 using System.Drawing;
 using System.IO;
 
@@ -31,16 +31,21 @@ namespace GitNoob.Gui.Program.Action
 
         public override void execute()
         {
-            if (config.Visualizer.isFrontendLocked()) return;
+            //direct execution, because also started as clickable link or button inside a Remedy
+            //don't use StepsExecutor
+
+            if (!isStartable()) return;
 
             string filename = GetFile();
             bool asAdministrator = config.ProjectWorkingDirectory.Editor.WorkspaceRunAsAdministrator.Value;
 
-            var executor = new StepsExecutor.StepsExecutor(config, new List<StepsExecutor.IExecutableByStepsExecutor>()
-            {
-                new Step.StartWorkspace(filename, asAdministrator),
-            });
-            executor.execute();
+            var batFile = new BatFile("run-workspace", (asAdministrator ? BatFile.RunAsType.runAsAdministrator : BatFile.RunAsType.runAsInvoker), BatFile.WindowType.hideWindow, "GitNoob - Workspace",
+                config.Project, config.ProjectWorkingDirectory,
+                config.PhpIni);
+            batFile.AppendLine("start \"Workspace\" \"" + filename + "\"");
+            batFile.AppendLine("exit /b 0");
+
+            batFile.Start();
         }
     }
 }
