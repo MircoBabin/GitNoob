@@ -27,17 +27,23 @@ namespace GitNoob.Gui.Program.Remedy
                         Done();
                     }),
 
+                    new VisualizerMessageButton("Stage all changes and start Git Gui for committing.", (input) => {
+                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() {
+                            new Step.StageAllChanges(),
+                            new Step.StartGitGui(),
+                        });
+                        Done();
+                    }),
+
                     new VisualizerMessageButton("Undelete a deleted branch.", (input) => {
                         var step = new Step.AskUndeleteBranch();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
                     }),
 
-                    new VisualizerMessageButton("Stage all changes and start Git Gui for committing.", (input) => {
-                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() {
-                            new Step.StageAllChanges(),
-                            new Step.StartGitGui(),
-                        });
+                    new VisualizerMessageButton("Show git reference log.", (input) => {
+                        var step = new Step.AskReferenceLog();
+                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
                     }),
 
@@ -63,11 +69,6 @@ namespace GitNoob.Gui.Program.Remedy
                         //Clone
                         //Restore .env specific files
 
-                        Done();
-                    }),
-
-                    new VisualizerMessageButton("Show git reference log.", (input) => {
-                        //Todo, with undelete (create branch) option - like undelete a deleted branch.
                         Done();
                     }),
 

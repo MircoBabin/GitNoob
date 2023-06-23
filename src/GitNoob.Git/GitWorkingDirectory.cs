@@ -654,6 +654,29 @@ namespace GitNoob.Git
             return result;
         }
 
+        public GitReferenceLogResult RetrieveGitReferenceLog()
+        {
+            var result = new GitReferenceLogResult();
+
+            var command = new Command.Repository.ListReflog(this);
+            command.WaitFor();
+            if (command.result != null)
+            {
+                result.GitReferenceLog = command.result;
+            }
+
+            result.Sort();
+
+            return result;
+        }
+
+        public CreateNewBranchResult CreateBranchOnGitReferenceLog(GitReflog reflog, string branchname, bool checkoutNewBranch)
+        {
+            var result = CreateNewBranch(branchname, reflog.CommitId, checkoutNewBranch);
+
+            return result;
+        }
+
         public void DeleteTag(GitDeletedBranch deleted)
         {
             var result = new Command.Tag.DeleteLocalTag(this, deleted.Tag.ShortName);

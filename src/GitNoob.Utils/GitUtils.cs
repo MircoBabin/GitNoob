@@ -7,6 +7,23 @@ namespace GitNoob.Utils
 {
     public class GitUtils
     {
+        public static DateTime? DecodeIso8601String(string iso8601)
+        {
+            try
+            {
+                DateTime commitDate = DateTime.Parse(iso8601, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                switch (commitDate.Kind)
+                {
+                    case DateTimeKind.Local:
+                    case DateTimeKind.Utc:
+                        return commitDate.ToLocalTime();
+                }
+            }
+            catch { }
+
+            return null;
+        }
+
         public static string GenerateRandomSha1()
         {
             using (SHA1Managed sha1 = new SHA1Managed())

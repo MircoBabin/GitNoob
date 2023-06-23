@@ -50,6 +50,7 @@
     <Compile Include="Command\Config\SetCommitter.cs" />
     <Compile Include="Command\Remote\ChangeUrl.cs" />
     <Compile Include="Command\Remote\ListRemotes.cs" />
+    <Compile Include="Command\Repository\ListReflog.cs" />
     <Compile Include="Command\Repository\PruneAggressive.cs" />
     <Compile Include="Command\Repository\CommitsAreTheSame.cs" />
     <Compile Include="Command\Repository\RemoteReachable.cs" />
