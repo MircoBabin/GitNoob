@@ -1,5 +1,14 @@
 # GitNoob changelog
 
+## Version 1.20
+* Add: show git reference log.
+* Add: delete of undeletion tag.
+* Add: toilet option to put current changes in a deleted branch, so they can also be undeleted.
+* Add: start git gui and workspace upon rebase/merge conflicts.
+* Fix: before rebase create a undelete tag.
+* Fix: change branch in detached head mode.
+* Add: touch-timestamp-of-commits-before-merge setting
+
 ## Version 1.19
 * Fix: several hints and explanations.
 * Add: dividers in choose project screen.
