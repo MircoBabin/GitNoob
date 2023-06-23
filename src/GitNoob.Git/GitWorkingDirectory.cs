@@ -1,6 +1,7 @@
 ﻿using GitNoob.GitResult;
 using GitNoob.Utils;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -651,6 +652,21 @@ namespace GitNoob.Git
             deltag.WaitFor();
 
             return result;
+        }
+
+        public void DeleteTag(GitDeletedBranch deleted)
+        {
+            var result = new Command.Tag.DeleteLocalTag(this, deleted.Tag.ShortName);
+            result.WaitFor();
+        }
+
+        public void DeleteTag(IEnumerable<GitDeletedBranch> deletions)
+        {
+            foreach (var deleted in deletions)
+            {
+                var result = new Command.Tag.DeleteLocalTag(this, deleted.Tag.ShortName);
+                result.WaitFor();
+            }
         }
 
         public ChangeCurrentBranchResult ChangeCurrentBranchTo(string branchname)

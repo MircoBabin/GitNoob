@@ -52,8 +52,6 @@ namespace GitNoob.Gui.Program.Remedy
                     todo
                     - delete tag (local & remote)
                     - cherry pick
-                    - undelete branch - remove garbage bin icon
-                    - toilet option - create temp commit - create undelete tag - remove temp commit from current branch
                       
                     new VisualizerMessageButton("Download fresh clone, delete all local branches / tags / commits", (input) => {
                         //Todo

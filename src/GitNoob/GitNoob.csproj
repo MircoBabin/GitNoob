@@ -105,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Git Noob.ico" />
+    <None Include="Resources\edit-delete-symbolic.ico" />
     <None Include="Resources\wrench-951.ico" />
     <None Include="Resources\list-symbol-of-three-items-with-dots_icon-icons.com_72994-modified.ico" />
     <None Include="Resources\list-symbol-of-three-items-with-dots_icon-icons.com_72994.ico" />

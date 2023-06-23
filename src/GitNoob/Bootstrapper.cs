@@ -101,6 +101,8 @@ namespace GitNoob
             Resources.setIcon("open logfiles", Properties.Resources.log_file);
             Resources.setIcon("delete logfiles", Properties.Resources.log_file_delete);
             Resources.setIcon("open configfiles", Properties.Resources.nullset);
+
+            Resources.setIcon("delete cross", Properties.Resources.edit_delete_symbolic);
         }
 
         private void LoadLicenseText()

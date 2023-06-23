@@ -52,12 +52,15 @@
     <Compile Include="Action\VisualizerReady.cs" />
     <Compile Include="Action\DeleteLogfiles.cs" />
     <Compile Include="Action\GitRepairOptions.cs" />
+    <Compile Include="Remedy\InputConfirmDeleteAllUndeleteTags.cs" />
+    <Compile Include="Remedy\InputConfirmDeleteUndeleteTag.cs" />
     <Compile Include="Remedy\MessageConfirmTouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Remedy\MessageBranchAlreadyExists.cs" />
     <Compile Include="Remedy\MessageConfirmPruneAggressive.cs" />
     <Compile Include="Action\StartGitk.cs" />
     <Compile Include="Step\AskPruneAggressive.cs" />
     <Compile Include="Step\CreateUndeletionTagOnCurrentBranch.cs" />
+    <Compile Include="Step\DeleteUndeleteTag.cs" />
     <Compile Include="Step\TouchTimestampOfCommitsBeforeMerge.cs" />
     <Compile Include="Step\AskTouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Step\PruneAggressive.cs" />
