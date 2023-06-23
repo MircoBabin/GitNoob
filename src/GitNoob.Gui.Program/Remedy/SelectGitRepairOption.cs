@@ -21,7 +21,7 @@ namespace GitNoob.Gui.Program.Remedy
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
                     }),
-                    new VisualizerMessageButton("Set/touch the author and commit timestamps of all unmerged commits on the current branch.", (input) => {
+                    new VisualizerMessageButton("Set/touch the commit timestamps of all unmerged commits on the current branch.", (input) => {
                         var step = new Step.AskTouchTimestampsOnCurrentBranch();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
