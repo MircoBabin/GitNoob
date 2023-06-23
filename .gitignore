@@ -13,9 +13,9 @@ src/GitNoob.Config/.vs
 src/GitNoob.Git/bin
 src/GitNoob.Git/obj
 src/GitNoob.Git/.vs
-src/GitNoob.Git.Result/bin
-src/GitNoob.Git.Result/obj
-src/GitNoob.Git.Result/.vs
+src/GitNoob.GitResult/bin
+src/GitNoob.GitResult/obj
+src/GitNoob.GitResult/.vs
 src/GitNoob.Gui.Forms/bin
 src/GitNoob.Gui.Forms/obj
 src/GitNoob.Gui.Forms/.vs
