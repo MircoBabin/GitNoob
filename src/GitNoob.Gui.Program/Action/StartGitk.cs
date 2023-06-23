@@ -66,7 +66,8 @@ namespace GitNoob.Gui.Program.Action
                 {
                     foreach (var branch in branches)
                     {
-                        batFile.Append(" \"" + branch + "\"");
+                        if (!string.IsNullOrWhiteSpace(branch))
+                            batFile.Append(" \"" + branch + "\"");
                     }
                 }
                 else

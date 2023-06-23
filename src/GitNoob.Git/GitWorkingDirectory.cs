@@ -100,6 +100,18 @@ namespace GitNoob.Git
 
             _workingdirectory = workingdirectory;
         }
+        public GitBranch RetrieveMainBranch()
+        {
+            var mainbranch = new Command.Branch.ListBranches(this, true, MainBranch);
+            mainbranch.WaitFor();
+
+            if (mainbranch.result.Count != 1)
+            {
+                return null;
+            }
+
+            return mainbranch.result[0];
+        }
 
         public StatusResult RetrieveStatus()
         {

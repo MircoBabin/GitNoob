@@ -8,7 +8,13 @@ namespace GitNoob.Gui.Program.Action
 
         public override void execute()
         {
-            executeGitk(new List<string>() { "HEAD" });
+            var result = config.Git.RetrieveMainBranch();
+
+            executeGitk(new List<string>() {
+                "HEAD",
+                config.ProjectWorkingDirectory.Git.MainBranch,
+                (result != null ? result.RemoteBranchFullName : null)
+            });
         }
     }
 }
