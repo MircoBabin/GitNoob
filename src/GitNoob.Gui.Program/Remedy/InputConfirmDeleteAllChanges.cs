@@ -65,7 +65,7 @@ namespace GitNoob.Gui.Program.Remedy
                     new VisualizerMessageButton("Delete all uncommitted changes irreversible." + Environment.NewLine + 
                       "I'm sure and have typed in \"sure\"." + Environment.NewLine +
                       Environment.NewLine +
-                      "I have (optionally) created a copy of the directory to backup the current changes.", (input) => {
+                      "I have (optionally) created a manual copy of the directory to backup the current changes.", (input) => {
                         if (!isSure(input.inputValue)) return;
 
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() {
