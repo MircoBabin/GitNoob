@@ -73,6 +73,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="WindowSizeLocationSaver.cs" />
+    <Compile Include="WindowsKeepActive.cs" />
     <Compile Include="WorkingDirectoryForm.cs">
       <SubType>Form</SubType>
     </Compile>
