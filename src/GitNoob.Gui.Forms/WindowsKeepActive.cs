@@ -21,13 +21,22 @@ namespace GitNoob.Gui.Forms
             }
         }
 
-        public static void SendActive()
+        public static void PreventSleep()
         {
             try
             {
                 NativeMethods.SetThreadExecutionState(NativeMethods.ExecutionState.EsContinuous |
                                                       NativeMethods.ExecutionState.EsSystemRequired |
                                                       NativeMethods.ExecutionState.EsDisplayRequired);
+            }
+            catch { }
+        }
+
+        public static void AllowSleep()
+        {
+            try
+            {
+                NativeMethods.SetThreadExecutionState(NativeMethods.ExecutionState.EsContinuous);
             }
             catch { }
         }

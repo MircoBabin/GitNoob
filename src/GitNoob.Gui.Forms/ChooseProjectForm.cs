@@ -13,6 +13,7 @@ namespace GitNoob.Gui.Forms
         private Visualizer.IVisualizerBootstrapper _bootstrapper;
         private List<Config.IConfig> _configs;
         private ConcurrentDictionary<Config.WorkingDirectory, WorkingDirectoryForm> _forms;
+        private FrontendLockManager _lockManager;
 
         private class ProjectWorkingDirectory
         {
@@ -32,6 +33,7 @@ namespace GitNoob.Gui.Forms
             _bootstrapper = Bootstrapper;
             _configs = configs;
             _forms = new ConcurrentDictionary<Config.WorkingDirectory, WorkingDirectoryForm>();
+            _lockManager = new FrontendLockManager();
 
             InitializeComponent();
             this.Resize += ChooseProjectForm_Resize;
@@ -116,6 +118,8 @@ namespace GitNoob.Gui.Forms
 
                 retry--;
             }
+
+            _lockManager.Dispose();
 
             Application.Exit();
         }
@@ -264,7 +268,8 @@ namespace GitNoob.Gui.Forms
             {
                 try
                 {
-                    form = new WorkingDirectoryForm(_bootstrapper.CreateIVisualizerProgram(projectwd.Project, projectwd.WorkingDirectory), 
+                    form = new WorkingDirectoryForm(_bootstrapper.CreateIVisualizerProgram(projectwd.Project, projectwd.WorkingDirectory),
+                        _lockManager.NewFrontendLock(),
                         projectwd.WorkingDirectory,
                         WorkingDirectoryForm_ChooseProject, _programPath, _licenseText);
                 }

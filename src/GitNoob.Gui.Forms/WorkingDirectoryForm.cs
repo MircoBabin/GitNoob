@@ -18,10 +18,16 @@ namespace GitNoob.Gui.Forms
 
         private int _originalHeight;
 
-        public WorkingDirectoryForm(Visualizer.IVisualizerProgram config, Config.WorkingDirectory workingDirectory,
+        private FrontendLock _frontendLock;
+
+
+        public WorkingDirectoryForm(Visualizer.IVisualizerProgram config,
+            FrontendLock frontendLock,
+            Config.WorkingDirectory workingDirectory,
             System.Action chooseProject, string programPath, string licenseText) :
             base(programPath, licenseText)
         {
+            _frontendLock = frontendLock;
             WorkingDirectory = workingDirectory;
             Config = config;
 
@@ -29,11 +35,6 @@ namespace GitNoob.Gui.Forms
             _chooseProject = chooseProject;
 
             InitializeComponent();
-
-            _keepWindowsActiveTimer = new Timer();
-            _keepWindowsActiveTimer.Tick += _keepWindowsActiveTimer_Tick;
-            _keepWindowsActiveTimer.Interval = 1000;
-            _keepWindowsActiveTimer.Start();
 
             BuildForm();
             this.FormClosed += WorkingDirectoryForm_FormClosed;
@@ -43,22 +44,6 @@ namespace GitNoob.Gui.Forms
 
             _refresh = null;
             this.VisibleChanged += WorkingDirectoryForm_VisibleChanged;
-        }
-
-        private Timer _keepWindowsActiveTimer;
-        private DateTime _keepWindowsActiveTimer_Last = new DateTime(1975, 9, 12, 0, 0, 0, DateTimeKind.Utc);
-        private void _keepWindowsActiveTimer_Tick(object sender, EventArgs e)
-        {
-            lock (_frontendLocked_LockObj)
-            {
-                if (!_frontendLocked) return;
-            }
-
-            if ((DateTime.Now - _keepWindowsActiveTimer_Last).Seconds >= 10)
-            {
-                WindowsKeepActive.SendActive();
-                _keepWindowsActiveTimer_Last = DateTime.Now;
-            }
         }
 
         private void WorkingDirectoryForm_Load(object sender, EventArgs e)
@@ -542,17 +527,9 @@ namespace GitNoob.Gui.Forms
             Clipboard.SetText(text);
         }
 
-        private object _frontendLocked_LockObj = new Object();
-        private volatile bool _frontendLocked = false;
         public void lockFrontend()
         {
-            lock (_frontendLocked_LockObj)
-            {
-                if (_frontendLocked) throw new Exception("frontend is already locked");
-
-                _keepWindowsActiveTimer_Last = new DateTime(1975, 9, 12, 0, 0, 0, DateTimeKind.Utc);
-                _frontendLocked = true;
-            }
+            _frontendLock.Lock();
 
             if (_refresh != null)  _refresh.Suspend();
             showLocked();
@@ -560,10 +537,7 @@ namespace GitNoob.Gui.Forms
 
         public bool isFrontendLocked()
         {
-            lock (_frontendLocked_LockObj)
-            {
-                return _frontendLocked;
-            }
+            return _frontendLock.IsLocked();
         }
 
         private void showLocked()
@@ -586,7 +560,7 @@ namespace GitNoob.Gui.Forms
 
         private void backToStatus()
         {
-            if (_frontendLocked)
+            if (_frontendLock.IsLocked())
             {
                 showLocked();
                 return;
@@ -606,11 +580,7 @@ namespace GitNoob.Gui.Forms
 
         public void unlockFrontend()
         {
-            lock (_frontendLocked_LockObj)
-            {
-                if (!_frontendLocked) throw new Exception("frontend is not locked");
-                _frontendLocked = false;
-            }
+            _frontendLock.Unlock();
 
             _refresh.Resume();
             backToStatus();
