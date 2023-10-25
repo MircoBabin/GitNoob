@@ -2,21 +2,21 @@
 
 namespace GitNoob.Gui.Program.Step
 {
-    public class MergeAbort : Step
+    public class CherryPickAbort : Step
     {
         private bool _presentRemedy;
-        public MergeAbort(bool PresentRemedy) : base()
+        public CherryPickAbort(bool PresentRemedy) : base()
         {
             _presentRemedy = PresentRemedy;
         }
 
         protected override bool run()
         {
-            BusyMessage = "Busy - aborting merge";
+            BusyMessage = "Busy - aborting cherry pick";
 
-            var result = StepsExecutor.Config.Git.MergeAbort(null);
+            var result = StepsExecutor.Config.Git.CherryPickAbort();
 
-            var message = new VisualizerMessageWithLinks("Aborting merge failed.");
+            var message = new VisualizerMessageWithLinks("Aborting cherry pick failed.");
 
             if (!_presentRemedy)
             {
@@ -29,11 +29,11 @@ namespace GitNoob.Gui.Program.Step
                 return false;
             }
 
-            if (result.ErrorNotMerging)
+            if (result.ErrorNotCherryPicking)
             {
                 return true;
             }
-
+            
             if (!result.Aborted)
             {
                 FailureRemedy = new Remedy.MessageUnknownResult(this, message, result);

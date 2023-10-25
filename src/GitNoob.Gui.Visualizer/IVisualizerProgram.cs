@@ -27,6 +27,7 @@
         IViusalizerAction visualizerStartGitkForCurrentBranch();
         void visualizerStartGitkForOneFile(string filename);
         IViusalizerAction visualizerStartGitkAll();
+        IViusalizerAction visualizerCherryPick();
         IViusalizerAction visualizerGetLatest();
         IViusalizerAction visualizerMerge();
         IViusalizerAction visualizerDeleteAllChanges();

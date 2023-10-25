@@ -434,6 +434,12 @@ namespace GitNoob.Gui.Forms
                 this.panelStatus.Controls.Add(new ActionButton(toolTips, "Get latest", null, action, ref location));
             }
 
+            action = Config.visualizerCherryPick();
+            if (action.isStartable())
+            {
+                this.panelStatus.Controls.Add(new ActionButton(toolTips, "Cherry pick one commit", null, action, ref location));
+            }
+
             action = Config.visualizerMerge();
             if (action.isStartable())
             {

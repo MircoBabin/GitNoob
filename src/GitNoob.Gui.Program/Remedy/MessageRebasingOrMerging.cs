@@ -5,7 +5,8 @@ namespace GitNoob.Gui.Program.Remedy
 {
     public class MessageRebasingOrMerging : Remedy
     {
-        public MessageRebasingOrMerging(Step.Step Step, VisualizerMessageWithLinks Message, bool Rebasing, bool Merging) :
+        public MessageRebasingOrMerging(Step.Step Step, VisualizerMessageWithLinks Message, 
+            bool Rebasing, bool Merging) :
             base(Step, ref Message)
         {
             if (Rebasing)

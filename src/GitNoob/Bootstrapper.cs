@@ -91,6 +91,7 @@ namespace GitNoob
 
             Resources.setIcon("git gui", Properties.Resources.breeze_icons_5_81_0_git_gui);
             Resources.setIcon("gitk", Properties.Resources.list_symbol_of_three_items_with_dots_icon_icons_com_72994_modified);
+            Resources.setIcon("cherry pick", Properties.Resources.cherry_svgrepo_com_modified);
             Resources.setIcon("get latest", Properties.Resources.download);
             Resources.setIcon("merge", Properties.Resources.merge);
             Resources.setIcon("delete all changes", Properties.Resources.delete_all_changes);

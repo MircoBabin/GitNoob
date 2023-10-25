@@ -27,6 +27,7 @@ namespace GitNoob.Gui.Program
         private Action.StartGitkForCurrentBranch _startGitkForCurrentBranch;
         private Action.StartGitk _startGitk;
         private Action.StartGitkAll _startGitkAll;
+        private Action.CherryPick _cherryPick;
         private Action.GetLatest _getLatest;
         private Action.Merge _merge;
         private Action.DeleteAllChanges _deleteAllChanges;
@@ -79,6 +80,7 @@ namespace GitNoob.Gui.Program
             _startGitkForCurrentBranch = new Action.StartGitkForCurrentBranch(this);
             _startGitk = new Action.StartGitk(this);
             _startGitkAll = new Action.StartGitkAll(this);
+            _cherryPick = new Action.CherryPick(this);
             _getLatest = new Action.GetLatest(this);
             _merge = new Action.Merge(this);
             _deleteAllChanges = new Action.DeleteAllChanges(this);
@@ -224,6 +226,11 @@ namespace GitNoob.Gui.Program
         public Visualizer.IViusalizerAction visualizerStartGitkAll()
         {
             return _startGitkAll;
+        }
+
+        public Visualizer.IViusalizerAction visualizerCherryPick()
+        {
+            return _cherryPick;
         }
 
         public Visualizer.IViusalizerAction visualizerGetLatest()

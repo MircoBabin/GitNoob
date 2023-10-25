@@ -14,6 +14,12 @@ namespace GitNoob.Gui.Program.Step
 
             var message = new VisualizerMessageWithLinks("Continuing merge failed.");
 
+            if (result.IsGitDisasterHappening != false)
+            {
+                FailureRemedy = new Remedy.MessageGitDisaster(this, message, result);
+                return false;
+            }
+            
             if (result.ErrorNotMerging)
             {
                 return true;

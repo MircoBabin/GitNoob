@@ -2,17 +2,17 @@
 
 namespace GitNoob.Gui.Program.Step
 {
-    public class RebaseContinue : Step
+    public class CherryPickContinue : Step
     {
-        public RebaseContinue() : base() { }
+        public CherryPickContinue() : base() { }
 
         protected override bool run()
         {
-            BusyMessage = "Busy - continuing rebase";
+            BusyMessage = "Busy - continuing cherry pick";
 
-            var result = StepsExecutor.Config.Git.RebaseContinue();
+            var result = StepsExecutor.Config.Git.CherryPickContinue();
 
-            var message = new VisualizerMessageWithLinks("Continuing rebase failed.");
+            var message = new VisualizerMessageWithLinks("Continuing cherry pick failed.");
 
             if (result.IsGitDisasterHappening != false)
             {
@@ -20,18 +20,18 @@ namespace GitNoob.Gui.Program.Step
                 return false;
             }
 
-            if (result.ErrorNotRebasing)
+            if (result.ErrorNotCherryPicking)
             {
                 return true;
             }
 
             if (result.ErrorConflicts)
             {
-                FailureRemedy = new Remedy.ResolveRebaseConflicts(this, message, MainBranch, result.GitDisaster_CurrentBranchShortName);
+                FailureRemedy = new Remedy.ResolveCherryPickConflicts(this, message);
                 return false;
             }
 
-            if (!result.Rebased)
+            if (!result.CherryPicked)
             {
                 FailureRemedy = new Remedy.MessageUnknownResult(this, message, result);
                 return false;

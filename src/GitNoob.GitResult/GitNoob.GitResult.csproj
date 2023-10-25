@@ -45,6 +45,8 @@
     <Compile Include="CreateUndeletionTagResult.cs" />
     <Compile Include="GitReferenceLogResult.cs" />
     <Compile Include="GitReflog.cs" />
+    <Compile Include="CherryPickResult.cs" />
+    <Compile Include="BaseGitDisasterResult.cs" />
     <Compile Include="StageAllChangesOnCurrentBranchResult.cs" />
     <Compile Include="CommitAllChangesOnCurrentBranchResult.cs" />
     <Compile Include="CreateNewBranchResult.cs" />

@@ -39,10 +39,12 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Command\Branch\AmendLastCommit.cs" />
+    <Compile Include="Command\Branch\CherryPickContinue.cs" />
     <Compile Include="Command\Branch\CherryPickOneCommit.cs" />
     <Compile Include="Command\Branch\CreateBranch.cs" />
     <Compile Include="Command\Branch\FindCommonCommitOfTwoBranches.cs" />
     <Compile Include="Command\Branch\ListCommits.cs" />
+    <Compile Include="Command\Branch\CherryPickAbort.cs" />
     <Compile Include="Command\Branch\SetTrackingRemoteBranch.cs" />
     <Compile Include="Command\Branch\MergeContinue.cs" />
     <Compile Include="Command\Branch\ResetCurrentBranchToPreviousCommit.cs" />
@@ -102,9 +104,20 @@
     <Compile Include="Command\Stash\StashWorkingTreeChanges.cs" />
     <Compile Include="Command\Repository\UpdateRepositoryFromRemotes.cs" />
     <Compile Include="GitCredentialsViaKeePassCommander.cs" />
+    <Compile Include="GitDisaster.cs" />
+    <Compile Include="GitDisasterAllowed.cs" />
     <Compile Include="GitLock.cs" />
     <Compile Include="GitLockResult.cs" />
     <Compile Include="GitWorkingDirectory.cs" />
+    <Compile Include="GitWorkingDirectory_Branch.cs" />
+    <Compile Include="GitWorkingDirectory_CherryPick.cs" />
+    <Compile Include="GitWorkingDirectory_Commit.cs" />
+    <Compile Include="GitWorkingDirectory_Committer.cs" />
+    <Compile Include="GitWorkingDirectory_GetLatest.cs" />
+    <Compile Include="GitWorkingDirectory_Merge.cs" />
+    <Compile Include="GitWorkingDirectory_Rebase.cs" />
+    <Compile Include="GitWorkingDirectory_ReferenceLog.cs" />
+    <Compile Include="GitWorkingDirectory_TemporaryCommit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

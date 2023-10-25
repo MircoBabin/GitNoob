@@ -23,15 +23,15 @@ namespace GitNoob.Gui.Program.Step
                 return true;
             }
 
+            if (result.IsGitDisasterHappening != false)
+            {
+                FailureRemedy = new Remedy.MessageGitDisaster(this, message, result);
+                return false;
+            }
+
             if (result.ErrorNotRebasing)
             {
                 return true;
-            }
-
-            if (result.ErrorRebaseInProgress)
-            {
-                FailureRemedy = new Remedy.MessageRebasingOrMerging(this, message, result.ErrorRebaseInProgress, result.ErrorMergeInProgress);
-                return false;
             }
 
             if (!result.Aborted)
