@@ -73,6 +73,16 @@ namespace GitNoob.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
+        internal static System.Drawing.Icon cherry_svgrepo_com_modified {
+            get {
+                object obj = ResourceManager.GetObject("cherry_svgrepo_com_modified", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
         internal static System.Drawing.Icon clear_cache {
             get {
                 object obj = ResourceManager.GetObject("clear_cache", resourceCulture);

@@ -121,6 +121,9 @@
   <data name="breeze_icons_5_81_0_git_gui" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\breeze-icons-5.81.0.git-gui.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="cherry_svgrepo_com_modified" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cherry-svgrepo-com-modified.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="clear_cache" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\clear-cache.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
