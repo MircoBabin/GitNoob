@@ -32,6 +32,12 @@ namespace GitNoob.Gui.Program.Step
                 return false;
             }
 
+            if (result.NothingCherryPicked)
+            {
+                FailureRemedy = new Remedy.MessageNothingCherryPicked(this, message);
+                return false;
+            }
+
             if (!result.CherryPicked)
             {
                 FailureRemedy = new Remedy.MessageUnknownResult(this, message, result);

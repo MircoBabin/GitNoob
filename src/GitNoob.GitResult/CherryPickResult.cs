@@ -5,6 +5,7 @@ namespace GitNoob.GitResult
     public class CherryPickResult : BaseGitDisasterResult
     {
         public bool CherryPicked { get; set; }
+        public bool NothingCherryPicked { get; set; }
         public bool Aborted { get; set; }
 
         public bool ErrorConflicts { get; set; }
@@ -14,6 +15,7 @@ namespace GitNoob.GitResult
         public CherryPickResult() : base()
         {
             CherryPicked = false;
+            NothingCherryPicked = false;
             Aborted = false;
 
             ErrorConflicts = false;

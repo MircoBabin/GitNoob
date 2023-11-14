@@ -57,6 +57,7 @@
     <Compile Include="Remedy\InputConfirmDeleteAllUndeleteTags.cs" />
     <Compile Include="Remedy\InputConfirmDeleteUndeleteTag.cs" />
     <Compile Include="Remedy\InputCherryPickCommitId.cs" />
+    <Compile Include="Remedy\MessageNothingCherryPicked.cs" />
     <Compile Include="Remedy\MessageConfirmTouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Remedy\MessageBranchAlreadyExists.cs" />
     <Compile Include="Remedy\MessageConfirmPruneAggressive.cs" />

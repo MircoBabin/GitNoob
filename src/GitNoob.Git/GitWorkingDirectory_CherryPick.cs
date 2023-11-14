@@ -10,16 +10,22 @@ namespace GitNoob.Git
             if (GitDisaster.Check(this, result))
                 return result;
 
+            var lastcommit0 = new Command.Branch.GetLastCommitOfBranch(this, result.GitDisaster_CurrentBranchShortName);
+            lastcommit0.WaitFor();
+
             var command = new Command.Branch.CherryPickOneCommit(this, commitId);
             command.WaitFor();
 
             var conflicts = new Command.WorkingTree.HasConflicts(this);
             var cherrypicking = new Command.WorkingTree.IsCherryPickActive(this);
+            var lastcommit1 = new Command.Branch.GetLastCommitOfBranch(this, result.GitDisaster_CurrentBranchShortName);
             conflicts.WaitFor();
             cherrypicking.WaitFor();
+            lastcommit1.WaitFor();
 
             if (conflicts.result != false) result.ErrorConflicts = true;
-            if (cherrypicking.result == false) result.CherryPicked = true;
+            if (lastcommit0.commitid == lastcommit1.commitid) result.NothingCherryPicked = true;
+            if (cherrypicking.result == false && lastcommit0.commitid != lastcommit1.commitid) result.CherryPicked = true;
 
             return result;
         }
