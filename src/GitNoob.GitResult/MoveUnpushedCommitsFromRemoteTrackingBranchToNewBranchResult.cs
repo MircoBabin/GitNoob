@@ -1,6 +1,6 @@
 ﻿namespace GitNoob.GitResult
 {
-    public class MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult
+    public class MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult : BaseGitDisasterResult
     {
         public bool Moved { get; set; }
 
@@ -9,7 +9,7 @@
         public bool ErrorRenaming { get; set; }
         public bool ErrorRemovingRemote { get; set; }
 
-        public MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult()
+        public MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult() : base()
         {
             Moved = false;
 

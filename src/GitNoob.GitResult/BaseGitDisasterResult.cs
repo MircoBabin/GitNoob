@@ -2,6 +2,7 @@
 {
     public class BaseGitDisasterResult
     {
+        public GitBranch GitDisaster_CurrentGitBranch { get; set; }
         public string GitDisaster_CurrentBranchShortName { get; set; }
 
         public bool? IsGitDisasterHappening { get; set; }
@@ -18,6 +19,7 @@
 
         protected BaseGitDisasterResult()
         {
+            GitDisaster_CurrentGitBranch = null;
             GitDisaster_CurrentBranchShortName = string.Empty;
 
             IsGitDisasterHappening = null;

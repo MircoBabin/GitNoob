@@ -21,6 +21,7 @@ namespace GitNoob.Git
             cherrypicking.WaitFor();
             reverting.WaitFor();
 
+            result.GitDisaster_CurrentGitBranch = currentbranch.branch;
             result.GitDisaster_CurrentBranchShortName = currentbranch.shortname;
 
             result.GitDisaster_DetachedHead = (currentbranch.DetachedHead != false);

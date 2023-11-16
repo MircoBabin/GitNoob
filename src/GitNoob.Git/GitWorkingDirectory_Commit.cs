@@ -39,19 +39,25 @@ namespace GitNoob.Git
 
         public MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranch(string remoteTrackingBranch, string newBranch)
         {
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
+            var result = new MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult();
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()
+            {
+                Allow_UnpushedCommitsOnMainBranch = true,
+                Allow_WorkingTreeChanges = true,
+                Allow_StagedUncommittedFiles = true,
+            }))
+                return result;
+
             var remotebranch = new Command.Branch.GetRemoteBranch(this, remoteTrackingBranch);
-            currentbranch.WaitFor();
             remotebranch.WaitFor();
 
-            if (currentbranch.shortname == remoteTrackingBranch ||
+            if (result.GitDisaster_CurrentBranchShortName == remoteTrackingBranch ||
                 String.IsNullOrWhiteSpace(remotebranch.result))
             {
-                return new MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult()
-                {
-                    ErrorBranchIsCurrent_UseMoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranch = currentbranch.shortname == remoteTrackingBranch,
-                    ErrorNotTrackingRemoteBranch = String.IsNullOrWhiteSpace(remotebranch.result),
-                };
+                result.ErrorBranchIsCurrent_UseMoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranch = result.GitDisaster_CurrentBranchShortName == remoteTrackingBranch;
+                result.ErrorNotTrackingRemoteBranch = String.IsNullOrWhiteSpace(remotebranch.result);
+
+                return result;
             }
 
             var org_remote = remotebranch.result;
@@ -61,10 +67,9 @@ namespace GitNoob.Git
 
             if (rename.result != true)
             {
-                return new MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult()
-                {
-                    ErrorRenaming = true,
-                };
+                result.ErrorRenaming = true;
+
+                return result;
             }
 
             var removetracking = new Command.Branch.RemoveTrackingRemoteBranch(this, newBranch);
@@ -75,70 +80,50 @@ namespace GitNoob.Git
 
             if (!String.IsNullOrWhiteSpace(remotebranch.result))
             {
-                return new MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult()
-                {
-                    ErrorRemovingRemote = true,
-                };
+                result.ErrorRemovingRemote = true;
+
+                return result;
             }
 
             //recreate tracking branch (might be the main branch)
             var create = new Command.Branch.CreateBranch(this, remoteTrackingBranch, org_remote, false);
             create.WaitFor();
 
-            return new MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult()
-            {
-                Moved = true,
-            };
+            result.Moved = true;
+            return result;
         }
 
         public TouchCommitAndAuthorTimestampsOfCurrentBranchResult TouchCommitAndAuthorTimestampsOfCurrentBranch(DateTime toTime)
         {
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
-            var changes = new Command.WorkingTree.HasChanges(this);
-            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-            var merging = new Command.WorkingTree.IsMergeActive(this);
-            var baseCommit = new Command.Branch.FindCommonCommitOfTwoBranches(this, MainBranch, currentbranch.shortname);
-            currentbranch.WaitFor();
-            changes.WaitFor();
-            rebasing.WaitFor();
-            merging.WaitFor();
+            var result = new TouchCommitAndAuthorTimestampsOfCurrentBranchResult();
+            if (GitDisaster.Check(this, result))
+                return result;
+
+            if (!String.IsNullOrWhiteSpace(result.GitDisaster_CurrentGitBranch.RemoteBranchFullName))
+            {
+                result.ErrorCurrentBranchIsTrackingRemoteBranch = true;
+
+                return result;
+            }
+
+            var baseCommit = new Command.Branch.FindCommonCommitOfTwoBranches(this, MainBranch, result.GitDisaster_CurrentBranchShortName);
             baseCommit.WaitFor();
 
-            if (currentbranch.shortname == MainBranch ||
-                changes.stagedUncommittedFiles != false ||
-                changes.workingtreeChanges != false ||
-                rebasing.result != false ||
-                merging.result != false ||
-                currentbranch.DetachedHead != false ||
-                !String.IsNullOrWhiteSpace(currentbranch.branch.RemoteBranchFullName) ||
-                String.IsNullOrWhiteSpace(baseCommit.commitid))
+            if (String.IsNullOrWhiteSpace(baseCommit.commitid))
             {
-                return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
-                {
-                    CurrentBranch = currentbranch.shortname,
+                result.ErrorNoCommonCommitWithMainBranch = true;
 
-                    ErrorCurrentBranchIsMainBranch = (currentbranch.shortname == MainBranch),
-                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
-                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
-                    ErrorCurrentBranchIsTrackingRemoteBranch = !String.IsNullOrWhiteSpace(currentbranch.branch.RemoteBranchFullName),
-                    ErrorNoCommonCommitWithMainBranch = String.IsNullOrWhiteSpace(baseCommit.commitid),
-                };
+                return result;
             }
 
             //commits on current branch
-            var commits = new Command.Branch.ListCommits(this, baseCommit.commitid, currentbranch.shortname);
+            var commits = new Command.Branch.ListCommits(this, baseCommit.commitid, result.GitDisaster_CurrentBranchShortName);
             commits.WaitFor();
             if (commits.result == null || commits.result.Count == 0)
             {
-                return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
-                {
-                    CurrentBranch = currentbranch.shortname,
+                result.NoCommitsToTouch = true;
 
-                    NoCommitsToTouch = true,
-                };
+                return result;
             }
             commits.result.Reverse(); //Reverse so that commits are: oldest first, newest last
 
@@ -146,12 +131,9 @@ namespace GitNoob.Git
             var tempbranch = CreateTemporaryBranchAndCheckout(baseCommit.commitid);
             if (tempbranch == null)
             {
-                return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
-                {
-                    CurrentBranch = currentbranch.shortname,
+                result.ErrorCreatingTemporaryBranch = true;
 
-                    ErrorCreatingTemporaryBranch = true,
-                };
+                return result;
             }
 
             //cherry pick each commit and amend commit & author timestamp
@@ -168,19 +150,14 @@ namespace GitNoob.Git
 
                 if (same.result != true)
                 {
-                    var checkout = new Command.Branch.ChangeBranchTo(this, currentbranch.shortname);
+                    var checkout = new Command.Branch.ChangeBranchTo(this, result.GitDisaster_CurrentBranchShortName);
                     checkout.WaitFor();
 
                     var deletetemp = new Command.Branch.DeleteBranch(this, tempbranch.ShortName, true);
                     deletetemp.WaitFor();
 
-                    return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
-                    {
-                        CurrentBranch = currentbranch.shortname,
-
-                        ErrorCherryPickingCommit = true,
-                    };
-
+                    result.ErrorCherryPickingCommit = true;
+                    return result;
                 }
 
                 var touch = new Command.Branch.AmendLastCommit(this, toTime, toTime);
@@ -188,36 +165,28 @@ namespace GitNoob.Git
             }
 
             //delete original current branch
-            if (!CreateDeletedBranchUndoTag(currentbranch.shortname, MainBranch, "Touched commit and author timestamps to " + GitUtils.DateTimeToHumanString(toTime)))
+            if (!CreateDeletedBranchUndoTag(result.GitDisaster_CurrentBranchShortName, MainBranch, "Touched commit and author timestamps to " + GitUtils.DateTimeToHumanString(toTime)))
             {
-                var checkout = new Command.Branch.ChangeBranchTo(this, currentbranch.shortname);
+                var checkout = new Command.Branch.ChangeBranchTo(this, result.GitDisaster_CurrentBranchShortName);
                 checkout.WaitFor();
 
                 var deletetemp = new Command.Branch.DeleteBranch(this, tempbranch.ShortName, true);
                 deletetemp.WaitFor();
 
-                return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
-                {
-                    CurrentBranch = currentbranch.shortname,
-
-                    ErrorCreatingSafetyTag = true,
-                };
+                result.ErrorCreatingSafetyTag = true;
+                return result;
             }
 
-            var delete = new Command.Branch.DeleteBranch(this, currentbranch.shortname, true);
+            var delete = new Command.Branch.DeleteBranch(this, result.GitDisaster_CurrentBranchShortName, true);
             delete.WaitFor();
 
             //Rename current checked out temporary branch to original current branch
-            var rename = new Command.Branch.RenameBranch(this, tempbranch.ShortName, currentbranch.shortname);
+            var rename = new Command.Branch.RenameBranch(this, tempbranch.ShortName, result.GitDisaster_CurrentBranchShortName);
             rename.WaitFor();
 
-            return new TouchCommitAndAuthorTimestampsOfCurrentBranchResult()
-            {
-                CurrentBranch = currentbranch.shortname,
-
-                Touched = true,
-                NumberOfTouchedCommits = (uint)commits.result.Count,
-            };
+            result.Touched = true;
+            result.NumberOfTouchedCommits = (uint)commits.result.Count;
+            return result;
         }
 
         public StageAllChangesOnCurrentBranchResult StageAllChangesOnCurrentBranch()
