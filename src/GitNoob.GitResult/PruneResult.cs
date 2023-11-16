@@ -1,24 +1,12 @@
 ﻿namespace GitNoob.GitResult
 {
-    public class PruneResult
+    public class PruneResult : BaseGitDisasterResult
     {
         public bool Pruned { get; set; }
 
-        public bool ErrorDetachedHead { get; set; }
-        public bool ErrorStagedUncommittedFiles { get; set; }
-        public bool ErrorWorkingTreeChanges { get; set; }
-        public bool ErrorRebaseInProgress { get; set; }
-        public bool ErrorMergeInProgress { get; set; }
-
-        public PruneResult()
+        public PruneResult() : base()
         {
             Pruned = false;
-
-            ErrorDetachedHead = false;
-            ErrorStagedUncommittedFiles = false;
-            ErrorWorkingTreeChanges = false;
-            ErrorRebaseInProgress = false;
-            ErrorMergeInProgress = false;
         }
     }
 }
