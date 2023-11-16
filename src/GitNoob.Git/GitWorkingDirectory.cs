@@ -365,11 +365,10 @@ namespace GitNoob.Git
                 {
                     restorebranch = null; //Can't restore current branch as there are working tree changes or staged uncommitted files
 
-                    return new BuildCacheAndCommitOnMainBranchResult()
-                    {
-                        BuildCache = build,
-                        ErrorBuildingCache = true,
-                    };
+                    result.BuildCache = build;
+                    result.ErrorBuildingCache = true;
+
+                    return result;
                 }
 
                 var changes = new Command.WorkingTree.HasChanges(this);
