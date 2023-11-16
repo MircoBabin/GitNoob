@@ -29,27 +29,9 @@ namespace GitNoob.Gui.Program.Step
 
             var message = new VisualizerMessageWithLinks("Rebuilding cache failed.");
 
-            if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
+            if (result.IsGitDisasterHappening != false)
             {
-                FailureRemedy = new Remedy.MessageRebasingOrMerging(this, message, result.ErrorRebaseInProgress, result.ErrorMergeInProgress);
-                return false;
-            }
-
-            if (result.ErrorDetachedHead)
-            {
-                FailureRemedy = new Remedy.MessageDetachedHead(this, message);
-                return false;
-            }
-
-            if (result.ErrorWorkingTreeChanges || result.ErrorStagedUncommittedFiles)
-            {
-                FailureRemedy = new Remedy.MessageChanges(this, message, result.ErrorWorkingTreeChanges, result.ErrorStagedUncommittedFiles);
-                return false;
-            }
-
-            if (result.ErrorUnpushedCommitsOnMainBranch)
-            {
-                FailureRemedy = new Remedy.MessageUnpushedCommits(this, message, MainBranch);
+                FailureRemedy = new Remedy.MessageGitDisaster(this, message, result);
                 return false;
             }
 

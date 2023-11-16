@@ -326,49 +326,21 @@ namespace GitNoob.Git
 
         public BuildCacheAndCommitOnMainBranchResult BuildCacheAndCommitOnMainBranch(Config.IExecutor Executor, string CommitMessage)
         {
+            var result = new BuildCacheAndCommitOnMainBranchResult();
+            if (GitDisaster.Check(this, result))
+                return result;
+
             Config.IProjectType ProjectType = _workingdirectory.ProjectType;
             if (ProjectType == null ||
                 !ProjectType.Capabilities.CapableOfClearAndBuildCache)
             {
-                return new BuildCacheAndCommitOnMainBranchResult
-                {
-                    NotUpdatedBecauseNothingChanged = true,
-                };
-            }
+                result.NotUpdatedBecauseNothingChanged = true;
 
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
-            var unpushedCommitsOnMain = new Command.Branch.HasBranchUnpushedChanges(this, MainBranch, null);
-            var mainCommit = new Command.Branch.GetLastCommitOfBranch(this, MainBranch);
-            var changes = new Command.WorkingTree.HasChanges(this);
-            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-            var merging = new Command.WorkingTree.IsMergeActive(this);
-            currentbranch.WaitFor();
-            changes.WaitFor();
-            rebasing.WaitFor();
-            merging.WaitFor();
-            mainCommit.WaitFor();
-            unpushedCommitsOnMain.WaitFor();
-
-            if (changes.stagedUncommittedFiles != false ||
-                changes.workingtreeChanges != false ||
-                unpushedCommitsOnMain.result != false ||
-                rebasing.result != false ||
-                merging.result != false ||
-                currentbranch.DetachedHead != false)
-            {
-                return new BuildCacheAndCommitOnMainBranchResult()
-                {
-                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
-                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
-                    ErrorUnpushedCommitsOnMainBranch = (unpushedCommitsOnMain.result != false),
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
-                };
+                return result;
             }
 
             string restorebranch = string.Empty;
-            if (currentbranch.shortname != MainBranch)
+            if (result.GitDisaster_CurrentBranchShortName != MainBranch)
             {
                 var checkout = new Command.Branch.ChangeBranchTo(this, MainBranch);
                 checkout.WaitFor();
@@ -378,13 +350,12 @@ namespace GitNoob.Git
 
                 if (branch.shortname != MainBranch)
                 {
-                    return new BuildCacheAndCommitOnMainBranchResult()
-                    {
-                        ErrorChangingToMainBranch = true,
-                    };
+                    result.ErrorChangingToMainBranch = true;
+
+                    return result;
                 }
 
-                restorebranch = currentbranch.shortname;
+                restorebranch = result.GitDisaster_CurrentBranchShortName;
             }
 
             try
@@ -401,18 +372,17 @@ namespace GitNoob.Git
                     };
                 }
 
-                changes = new Command.WorkingTree.HasChanges(this);
-                unpushedCommitsOnMain = new Command.Branch.HasBranchUnpushedChanges(this, MainBranch, null);
+                var changes = new Command.WorkingTree.HasChanges(this);
+                var unpushedCommitsOnMain = new Command.Branch.HasBranchUnpushedChanges(this, MainBranch, null);
 
                 changes.WaitFor();
                 unpushedCommitsOnMain.WaitFor();
                 if (changes.workingtreeChanges != true && changes.stagedUncommittedFiles != true && unpushedCommitsOnMain.result != true)
                 {
-                    return new BuildCacheAndCommitOnMainBranchResult()
-                    {
-                        NotUpdatedBecauseNothingChanged = true,
-                        BuildCache = build,
-                    };
+                    result.NotUpdatedBecauseNothingChanged = true;
+                    result.BuildCache = build;
+
+                    return result;
                 }
 
                 bool updated = (unpushedCommitsOnMain.result == true);
@@ -429,11 +399,10 @@ namespace GitNoob.Git
                         {
                             restorebranch = null; //Can't restore current branch as there are working tree changes or staged uncommitted files
 
-                            return new BuildCacheAndCommitOnMainBranchResult()
-                            {
-                                ErrorCommittingChanges = true,
-                                BuildCache = build,
-                            };
+                            result.ErrorCommittingChanges = true;
+                            result.BuildCache = build;
+
+                            return result;
                         }
                     }
                     else
@@ -442,12 +411,10 @@ namespace GitNoob.Git
                     }
                 }
 
-                return new BuildCacheAndCommitOnMainBranchResult()
-                {
-                    Updated = updated,
-                    NotUpdatedBecauseNothingChanged = !updated,
-                    BuildCache = build,
-                };
+                result.Updated = updated;
+                result.NotUpdatedBecauseNothingChanged = !updated;
+                result.BuildCache = build;
+                return result;
             }
             finally
             {
