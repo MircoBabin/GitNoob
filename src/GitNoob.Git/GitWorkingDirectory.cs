@@ -245,40 +245,24 @@ namespace GitNoob.Git
 
         public PushResult PushMainBranchToRemote(bool CheckGitCredentialsViaKeePassCommander = true)
         {
-            var changes = new Command.WorkingTree.HasChanges(this);
-            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-            var merging = new Command.WorkingTree.IsMergeActive(this);
-            changes.WaitFor();
-            rebasing.WaitFor();
-            merging.WaitFor();
-
-            if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false || rebasing.result != false || merging.result != false)
-            {
-                return new PushResult()
-                {
-                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
-                };
-            }
+            var result = new PushResult();
+            if (GitDisaster.Check(this, result))
+                return result;
 
             if (CheckGitCredentialsViaKeePassCommander && !GitCredentialsViaKeePassCommander.AreCredentialsAvailable(this))
             {
-                return new PushResult
-                {
-                    ErrorKeePassNotStarted = true,
-                };
+                result.ErrorKeePassNotStarted = true;
+
+                return result;
             }
 
             var reachable = new Command.Repository.RemoteReachable(this);
             reachable.WaitFor();
             if (reachable.result != true)
             {
-                return new PushResult
-                {
-                    ErrorRemoteNotReachable = true,
-                };
+                result.ErrorRemoteNotReachable = true;
+
+                return result;
             }
 
             var push = new Command.Branch.PushBranchToRemote(this, MainBranch);
@@ -290,12 +274,10 @@ namespace GitNoob.Git
                 var matches = Regex.Matches(push.output, pattern, RegexOptions.IgnoreCase);
                 if (matches.Count > 0)
                 {
-                    return new PushResult()
-                    {
-                        PushOutput = push.output,
+                    result.PushOutput = push.output;
+                    result.ErrorConflicts = true;
 
-                        ErrorConflicts = true,
-                    };
+                    return result;
                 }
             }
 
@@ -304,16 +286,13 @@ namespace GitNoob.Git
 
             if (unpushedCommitsOnMain.result != false)
             {
-                return new PushResult()
-                {
-                    ErrorStillUnpushedCommitsOnMainBranch = true,
-                };
+                result.ErrorStillUnpushedCommitsOnMainBranch = true;
+
+                return result;
             }
 
-            return new PushResult()
-            {
-                Pushed = true,
-            };
+            result.Pushed = true;
+            return result;
         }
 
         public DeleteWorkingTreeChangesAndStagedUncommittedFilesResult DeleteWorkingTreeChangesAndStagedUncommittedFiles()

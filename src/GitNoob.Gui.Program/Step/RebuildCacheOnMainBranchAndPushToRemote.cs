@@ -93,15 +93,9 @@ namespace GitNoob.Gui.Program.Step
 
             message = new VisualizerMessageWithLinks("Pushing cache to remote failed.");
 
-            if (pushResult.ErrorRebaseInProgress || pushResult.ErrorMergeInProgress)
+            if (pushResult.IsGitDisasterHappening != false)
             {
-                FailureRemedy = new Remedy.MessageRebasingOrMerging(this, message, pushResult.ErrorRebaseInProgress, pushResult.ErrorMergeInProgress);
-                return false;
-            }
-
-            if (pushResult.ErrorWorkingTreeChanges || pushResult.ErrorStagedUncommittedFiles)
-            {
-                FailureRemedy = new Remedy.MessageChanges(this, message, pushResult.ErrorWorkingTreeChanges, pushResult.ErrorStagedUncommittedFiles);
+                FailureRemedy = new Remedy.MessageGitDisaster(this, message, pushResult);
                 return false;
             }
 

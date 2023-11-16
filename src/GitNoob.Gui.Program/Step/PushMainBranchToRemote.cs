@@ -19,15 +19,9 @@ namespace GitNoob.Gui.Program.Step
 
             var message = new VisualizerMessageWithLinks("Pushing main branch to remote failed.");
 
-            if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
+            if (result.IsGitDisasterHappening != false)
             {
-                FailureRemedy = new Remedy.MessageRebasingOrMerging(this, message, result.ErrorRebaseInProgress, result.ErrorMergeInProgress);
-                return false;
-            }
-
-            if (result.ErrorWorkingTreeChanges || result.ErrorStagedUncommittedFiles)
-            {
-                FailureRemedy = new Remedy.MessageChanges(this, message, result.ErrorWorkingTreeChanges, result.ErrorStagedUncommittedFiles);
+                FailureRemedy = new Remedy.MessageGitDisaster(this, message, result);
                 return false;
             }
 
