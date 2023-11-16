@@ -1,21 +1,11 @@
 ﻿namespace GitNoob.GitResult
 {
-    public class CommitAllChangesOnCurrentBranchResult
+    public class CommitAllChangesOnCurrentBranchResult : BaseGitDisasterResult
     {
-        public bool ErrorDetachedHead { get; set; }
-        public bool ErrorStagedUncommittedFiles { get; set; }
-        public bool ErrorRebaseInProgress { get; set; }
-        public bool ErrorMergeInProgress { get; set; }
-
         public bool Committed { get; set; }
 
-        public CommitAllChangesOnCurrentBranchResult()
+        public CommitAllChangesOnCurrentBranchResult() : base()
         {
-            ErrorDetachedHead = false;
-            ErrorStagedUncommittedFiles = false;
-            ErrorRebaseInProgress = false;
-            ErrorMergeInProgress = false;
-
             Committed = false;
         }
     }

@@ -17,15 +17,9 @@ namespace GitNoob.Gui.Program.Step
 
                 var message = new VisualizerMessageWithLinks("Staging all changes failed.");
 
-                if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
+                if (result.IsGitDisasterHappening != false)
                 {
-                    FailureRemedy = new Remedy.MessageRebasingOrMerging(this, message, result.ErrorRebaseInProgress, result.ErrorMergeInProgress);
-                    return false;
-                }
-
-                if (result.ErrorDetachedHead)
-                {
-                    FailureRemedy = new Remedy.MessageDetachedHead(this, message);
+                    FailureRemedy = new Remedy.MessageGitDisaster(this, message, result);
                     return false;
                 }
 

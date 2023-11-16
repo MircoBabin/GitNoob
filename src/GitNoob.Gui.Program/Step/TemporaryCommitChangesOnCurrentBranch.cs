@@ -14,21 +14,9 @@ namespace GitNoob.Gui.Program.Step
 
             var message = new VisualizerMessageWithLinks("Committing all changes into a temporary commit is not possible.");
 
-            if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
+            if (result.IsGitDisasterHappening != false)
             {
-                FailureRemedy = new Remedy.MessageRebasingOrMerging(this, message, result.ErrorRebaseInProgress, result.ErrorMergeInProgress);
-                return false;
-            }
-
-            if (result.ErrorDetachedHead)
-            {
-                FailureRemedy = new Remedy.MessageDetachedHead(this, message);
-                return false;
-            }
-
-            if (result.ErrorStagedUncommittedFiles)
-            {
-                FailureRemedy = new Remedy.MessageStagedUncommittedFiles(this, message);
+                FailureRemedy = new Remedy.MessageGitDisaster(this, message, result);
                 return false;
             }
 

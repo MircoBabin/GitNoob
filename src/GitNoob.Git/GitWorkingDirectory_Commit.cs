@@ -191,69 +191,39 @@ namespace GitNoob.Git
 
         public StageAllChangesOnCurrentBranchResult StageAllChangesOnCurrentBranch()
         {
+            var result = new StageAllChangesOnCurrentBranchResult();
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()
             {
-                var currentbranch = new Command.Branch.GetCurrentBranch(this);
-                var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-                var merging = new Command.WorkingTree.IsMergeActive(this);
-                currentbranch.WaitFor();
-                rebasing.WaitFor();
-                merging.WaitFor();
+                Allow_UnpushedCommitsOnMainBranch = true,
+                Allow_WorkingTreeChanges = true,
+                Allow_StagedUncommittedFiles = true,
+            }))
+                return result;
 
-                if (currentbranch.DetachedHead != false ||
-                    rebasing.result != false ||
-                    merging.result != false)
-                {
-                    return new StageAllChangesOnCurrentBranchResult()
-                    {
-                        ErrorDetachedHead = (currentbranch.DetachedHead != false),
-                        ErrorRebaseInProgress = (rebasing.result != false),
-                        ErrorMergeInProgress = (merging.result != false),
-                    };
-                }
-            }
 
             {
                 var commit = new Command.Branch.CommitAllChanges(this, null);
                 commit.WaitFor();
             }
 
-            return new StageAllChangesOnCurrentBranchResult()
-            {
-                Staged = true,
-            };
-
+            result.Staged = true;
+            return result;
         }
 
         public CommitAllChangesOnCurrentBranchResult CommitAllChangesOnCurrentBranch(string commitMessage)
         {
+            var result = new CommitAllChangesOnCurrentBranchResult();
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()
+            {
+                Allow_UnpushedCommitsOnMainBranch = true,
+                Allow_WorkingTreeChanges = true,
+                Allow_StagedUncommittedFiles = true,
+            }))
+                return result;
+
             if (String.IsNullOrWhiteSpace(commitMessage))
             {
                 commitMessage = TemporaryCommitMessage;
-            }
-
-            {
-                var currentbranch = new Command.Branch.GetCurrentBranch(this);
-                var changes = new Command.WorkingTree.HasChanges(this);
-                var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-                var merging = new Command.WorkingTree.IsMergeActive(this);
-                currentbranch.WaitFor();
-                changes.WaitFor();
-                rebasing.WaitFor();
-                merging.WaitFor();
-
-                if (currentbranch.DetachedHead != false ||
-                    changes.stagedUncommittedFiles != false ||
-                    rebasing.result != false ||
-                    merging.result != false)
-                {
-                    return new CommitAllChangesOnCurrentBranchResult()
-                    {
-                        ErrorDetachedHead = (currentbranch.DetachedHead != false),
-                        ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                        ErrorRebaseInProgress = (rebasing.result != false),
-                        ErrorMergeInProgress = (merging.result != false),
-                    };
-                }
             }
 
             {
@@ -261,10 +231,8 @@ namespace GitNoob.Git
                 commit.WaitFor();
             }
 
-            return new CommitAllChangesOnCurrentBranchResult()
-            {
-                Committed = true,
-            };
+            result.Committed = true;
+            return result;
         }
     }
 }
