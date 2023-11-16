@@ -24,5 +24,21 @@
             Allow_CherryPickInProgress = false;
             Allow_RevertInProgress = false;
         }
+
+        public static GitDisasterAllowed AllowAll()
+        {
+            return new GitDisasterAllowed()
+            {
+                Allow_DetachedHead = true,
+                Allow_StagedUncommittedFiles = true,
+                Allow_WorkingTreeChanges = true,
+                Allow_UnpushedCommitsOnMainBranch = true,
+
+                Allow_RebaseInProgress = true,
+                Allow_MergeInProgress = true,
+                Allow_CherryPickInProgress = true,
+                Allow_RevertInProgress = true,
+            };
+        }
     }
 }

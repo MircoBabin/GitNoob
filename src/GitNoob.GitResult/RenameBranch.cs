@@ -1,18 +1,14 @@
 ﻿namespace GitNoob.GitResult
 {
-    public class RenameBranchResult
+    public class RenameBranchResult : BaseGitDisasterResult
     {
         public bool Renamed { get; set; }
 
-        public bool ErrorRebaseInProgress { get; set; }
-        public bool ErrorMergeInProgress { get; set; }
         public bool ErrorRenaming { get; set; }
 
-        public RenameBranchResult()
+        public RenameBranchResult() : base()
         {
             Renamed = false;
-            ErrorRebaseInProgress = false;
-            ErrorMergeInProgress = false;
             ErrorRenaming = false;
         }
     }

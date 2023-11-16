@@ -41,17 +41,12 @@ namespace GitNoob.Gui.Program.Step
             {
                 if (_onConflicts_ResetMainBranchToRemote_UsingCurrentBranchStored)
                 {
-                    var resetResult = StepsExecutor.Config.Git.ResetMainBranchToRemote(StepsExecutor.CurrentBranchStored);
+                    var resetResult = StepsExecutor.Config.Git.ResetMainBranchToRemote();
 
-                    if (resetResult.ErrorRebaseInProgress || resetResult.ErrorMergeInProgress)
+                    if (result.IsGitDisasterHappening != false)
                     {
                         message.Append(Environment.NewLine);
-                        message.Append("Resetting main branch to remote failed! A rebase/merge is in progress.");
-                    }
-                    else if (resetResult.ErrorWorkingTreeChanges || resetResult.ErrorStagedUncommittedFiles)
-                    {
-                        message.Append(Environment.NewLine);
-                        message.Append("Resetting main branch to remote failed! There are working tree changes or staged uncommitted files.");
+                        message.Append("Resetting main branch to remote failed! The current branch \"" + StepsExecutor.CurrentBranchStored + "\" has git disaster (staged uncommitted files, working tree changes, rebasing, merging, cherry-picking, reverting).");
                     }
                     else if (resetResult.ErrorCurrentBranchCommitUnequalsMainBranchCommit)
                     {

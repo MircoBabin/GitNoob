@@ -73,6 +73,10 @@ namespace GitNoob.Git
 
         public EnsureMainBranchExistanceResult EnsureMainBranchExistance()
         {
+            var result = new EnsureMainBranchExistanceResult();
+            if (GitDisaster.Check(this, result, GitDisasterAllowed.AllowAll()))
+                return result;
+
             var list = new Command.Branch.ListBranches(this, true);
             list.WaitFor();
 
@@ -84,10 +88,8 @@ namespace GitNoob.Git
                     case GitBranch.BranchType.LocalTrackingRemoteBranch:
                         if (branch.ShortName == MainBranch)
                         {
-                            return new EnsureMainBranchExistanceResult()
-                            {
-                                Exists = true,
-                            };
+                            result.Exists = true;
+                            return result;
                         }
                         break;
 
@@ -106,10 +108,9 @@ namespace GitNoob.Git
 
             if (remote == null)
             {
-                return new EnsureMainBranchExistanceResult()
-                {
-                    ErrorRemoteBranchNotFound = true,
-                };
+                result.ErrorRemoteBranchNotFound = true;
+
+                return result;
             }
 
             var create = new Command.Branch.CreateBranch(this, MainBranch, remote.FullName, false);
@@ -120,73 +121,55 @@ namespace GitNoob.Git
 
             if (list.result.Count != 1)
             {
-                return new EnsureMainBranchExistanceResult()
-                {
-                    ErrorCreatingMainBranch = true,
-                };
+                result.ErrorCreatingMainBranch = true;
+
+                return result;
             }
 
             if (list.result[0].Type != GitBranch.BranchType.LocalTrackingRemoteBranch)
             {
-                return new EnsureMainBranchExistanceResult()
-                {
-                    ErrorCreatingMainBranch = true,
-                };
+                result.ErrorCreatingMainBranch = true;
+
+                return result;
             }
 
-            return new EnsureMainBranchExistanceResult()
-            {
-                Exists = true,
-            };
+            result.Exists = true;
+            return result;
         }
 
-        public ResetMainBranchToRemoteResult ResetMainBranchToRemote(string currentBranch)
+        public ResetMainBranchToRemoteResult ResetMainBranchToRemote()
         {
-            if (currentBranch == MainBranch)
+            var result = new ResetMainBranchToRemoteResult();
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()
             {
-                return new ResetMainBranchToRemoteResult()
-                {
-                    ErrorCurrentBranchIsMainBranch = true,
-                };
+                Allow_UnpushedCommitsOnMainBranch = true,
+            }))
+                return result;
+
+            if (result.GitDisaster_CurrentBranchShortName == MainBranch)
+            {
+                result.ErrorCurrentBranchIsMainBranch = true;
+
+                return result;
             }
 
-            var currentCommit = new Command.Branch.GetLastCommitOfBranch(this, currentBranch);
+            var currentCommit = new Command.Branch.GetLastCommitOfBranch(this, result.GitDisaster_CurrentBranchShortName);
             var mainCommit = new Command.Branch.GetLastCommitOfBranch(this, MainBranch);
-            var changes = new Command.WorkingTree.HasChanges(this);
-            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-            var merging = new Command.WorkingTree.IsMergeActive(this);
-            changes.WaitFor();
-            rebasing.WaitFor();
-            merging.WaitFor();
             currentCommit.WaitFor();
             mainCommit.WaitFor();
 
-            if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false || rebasing.result != false || merging.result != false)
-            {
-                return new ResetMainBranchToRemoteResult()
-                {
-                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
-                };
-            }
-
-
             if (string.IsNullOrWhiteSpace(currentCommit.commitid) || string.IsNullOrWhiteSpace(mainCommit.commitid))
             {
-                return new ResetMainBranchToRemoteResult()
-                {
-                    ErrorCurrentBranchCommitUnequalsMainBranchCommit = true,
-                };
+                result.ErrorCurrentBranchCommitUnequalsMainBranchCommit = true;
+
+                return result;
             }
 
             if (currentCommit.commitid != mainCommit.commitid)
             {
-                return new ResetMainBranchToRemoteResult()
-                {
-                    ErrorCurrentBranchCommitUnequalsMainBranchCommit = true,
-                };
+                result.ErrorCurrentBranchCommitUnequalsMainBranchCommit = true;
+
+                return result;
             }
 
             {
@@ -194,15 +177,13 @@ namespace GitNoob.Git
                 var delete = new Command.Branch.DeleteBranch(this, MainBranch, true);
                 delete.WaitFor();
 
-                //recreate automatically as a tracking branch by git checkout
-                var checkout = new Command.Branch.ChangeBranchTo(this, currentBranch);
+                //keep current branch
+                var checkout = new Command.Branch.ChangeBranchTo(this, result.GitDisaster_CurrentBranchShortName);
                 checkout.WaitFor();
             }
 
-            return new ResetMainBranchToRemoteResult()
-            {
-                Reset = true,
-            };
+            result.Reset = true;
+            return result;
         }
 
         public RemotesResult RetrieveRemotes()
@@ -211,7 +192,6 @@ namespace GitNoob.Git
 
             var command = new Command.Remote.ListRemotes(this);
             command.WaitFor();
-
 
             if (command.result != null)
             {
@@ -226,6 +206,10 @@ namespace GitNoob.Git
 
         public SetRemoteForBranchResult SetRemoteForBranch(string branch, string remoteName, string remoteUrl = null)
         {
+            var result = new SetRemoteForBranchResult();
+            if (GitDisaster.Check(this, result, GitDisasterAllowed.AllowAll()))
+                return result;
+
             if (!string.IsNullOrEmpty(remoteUrl))
             {
                 var change = new Command.Remote.ChangeUrl(this, remoteName, remoteUrl);
@@ -248,10 +232,9 @@ namespace GitNoob.Git
 
                     if (!found)
                     {
-                        return new SetRemoteForBranchResult()
-                        {
-                            ErrorSettingRemoteUrl = true,
-                        };
+                        result.ErrorSettingRemoteUrl = true;
+
+                        return result;
                     }
                 }
             }
@@ -265,17 +248,14 @@ namespace GitNoob.Git
 
                 if (branchremote.result != (remoteName + "/" + branch))
                 {
-                    return new SetRemoteForBranchResult()
-                    {
-                        ErrorSettingRemoteForBranch = true,
-                    };
+                    result.ErrorSettingRemoteForBranch = true;
+
+                    return result;
                 }
             }
 
-            return new SetRemoteForBranchResult()
-            {
-                RemoteSet = true,
-            };
+            result.RemoteSet = true;
+            return result;
         }
 
         public BranchesResult RetrieveBranches()
@@ -309,62 +289,34 @@ namespace GitNoob.Git
 
         public RenameBranchResult RenameBranch(string branchname, string newname)
         {
-            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-            var merging = new Command.WorkingTree.IsMergeActive(this);
-
-            rebasing.WaitFor();
-            merging.WaitFor();
-
-            if (rebasing.result != false || merging.result != false)
+            var result = new RenameBranchResult();
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()
             {
-                return new RenameBranchResult()
-                {
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
-                };
-            }
+                Allow_UnpushedCommitsOnMainBranch = true,
+                Allow_StagedUncommittedFiles = true,
+                Allow_WorkingTreeChanges = true,
+            }))
+                return result;
 
             var rename = new Command.Branch.RenameBranch(this, branchname, newname);
             rename.WaitFor();
 
             if (rename.result != true)
             {
-                return new RenameBranchResult()
-                {
-                    ErrorRenaming = true,
-                };
+                result.ErrorRenaming = true;
+
+                return result;
             }
 
-            return new RenameBranchResult()
-            {
-                Renamed = true,
-            };
+            result.Renamed = true;
+            return result;
         }
 
         public CreateNewBranchResult CreateNewBranch(string branchname, string branchFromBranchName, bool checkoutNewBranch)
         {
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
-            var changes = new Command.WorkingTree.HasChanges(this);
-            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-            var merging = new Command.WorkingTree.IsMergeActive(this);
-            currentbranch.WaitFor();
-            changes.WaitFor();
-            rebasing.WaitFor();
-            merging.WaitFor();
-
-            if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false ||
-                rebasing.result != false || merging.result != false ||
-                currentbranch.DetachedHead != false)
-            {
-                return new CreateNewBranchResult()
-                {
-                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
-                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
-                };
-            }
+            var result = new CreateNewBranchResult();
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()))
+                return result;
 
             {
                 var command = new Command.Branch.ListBranches(this, false, branchname);
@@ -372,18 +324,17 @@ namespace GitNoob.Git
 
                 if (command.result.Count > 0)
                 {
-                    return new CreateNewBranchResult()
-                    {
-                        ErrorBranchAlreadyExists = true,
-                    };
+                    result.ErrorBranchAlreadyExists = true;
+
+                    return result;
                 }
             }
 
             var create = new Command.Branch.CreateBranch(this, branchname, branchFromBranchName, checkoutNewBranch);
             create.WaitFor();
 
-            currentbranch = new Command.Branch.GetCurrentBranch(this);
-            bool created = false;
+            var currentbranch = new Command.Branch.GetCurrentBranch(this);
+            bool created;
             {
                 var command = new Command.Branch.ListBranches(this, false, branchname);
                 command.WaitFor();
@@ -392,13 +343,10 @@ namespace GitNoob.Git
             }
             currentbranch.WaitFor();
 
-            return new CreateNewBranchResult()
-            {
-                Created = created,
-                CurrentBranch = currentbranch.shortname,
-
-                ErrorCreating = !created,
-            };
+            result.Created = created;
+            result.CurrentBranch = currentbranch.shortname;
+            result.ErrorCreating = !created;
+            return result;
         }
 
         private bool CreateDeletedBranchUndoTag(string branchName, string mainBranch, string message)
@@ -455,90 +403,43 @@ namespace GitNoob.Git
 
         public CreateUndeletionTagResult CreateUndeletionTagOnCurrentBranch(string message)
         {
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
-            var changes = new Command.WorkingTree.HasChanges(this);
-            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-            var merging = new Command.WorkingTree.IsMergeActive(this);
-            currentbranch.WaitFor();
-            changes.WaitFor();
-            rebasing.WaitFor();
-            merging.WaitFor();
+            var result = new CreateUndeletionTagResult();
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()))
+                return result;
 
-            if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false ||
-                rebasing.result != false || merging.result != false ||
-                currentbranch.DetachedHead != false)
+            if (!CreateDeletedBranchUndoTag(result.GitDisaster_CurrentBranchShortName, MainBranch, message))
             {
-                return new CreateUndeletionTagResult()
-                {
-                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
-                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
-                };
+                result.ErrorCreatingSafetyTag = true;
+
+                return result;
             }
 
-            if (!CreateDeletedBranchUndoTag(currentbranch.shortname, MainBranch, message))
-            {
-                return new CreateUndeletionTagResult()
-                {
-                    ErrorCreatingSafetyTag = true,
-                };
-            }
-
-            return new CreateUndeletionTagResult()
-            {
-                Created = true,
-            };
+            result.Created = true;
+            return result;
         }
 
         public DeleteCurrentBranchResult DeleteCurrentBranch(string branchname, string message)
         {
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
-            var changes = new Command.WorkingTree.HasChanges(this);
-            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-            var merging = new Command.WorkingTree.IsMergeActive(this);
-            currentbranch.WaitFor();
-            changes.WaitFor();
-            rebasing.WaitFor();
-            merging.WaitFor();
+            var result = new DeleteCurrentBranchResult();
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()))
+                return result;
 
-            if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false ||
-                rebasing.result != false || merging.result != false ||
-                currentbranch.DetachedHead != false)
+            if (branchname != result.GitDisaster_CurrentBranchShortName)
             {
-                return new DeleteCurrentBranchResult()
-                {
-                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
-                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
-                };
-            }
-
-            if (branchname != currentbranch.shortname)
-            {
-                return new DeleteCurrentBranchResult()
-                {
-                    ErrorCurrentBranchHasChanged = true,
-                };
+                result.ErrorCurrentBranchHasChanged = true;
+                return result;
             }
 
             if (branchname == MainBranch)
             {
-                return new DeleteCurrentBranchResult()
-                {
-                    ErrorCannotDeleteMainBranch = true,
-                };
+                result.ErrorCannotDeleteMainBranch = true;
+                return result;
             }
 
             if (!CreateDeletedBranchUndoTag(branchname, MainBranch, message))
             {
-                return new DeleteCurrentBranchResult()
-                {
-                    ErrorCreatingSafetyTag = true,
-                };
+                result.ErrorCreatingSafetyTag = true;
+                return result;
             }
 
             var checkoutMainBranch = new Command.Branch.ChangeBranchTo(this, MainBranch);
@@ -551,16 +452,12 @@ namespace GitNoob.Git
             branchesCommand.WaitFor();
             if (branchesCommand.result.Count != 0)
             {
-                return new DeleteCurrentBranchResult()
-                {
-                    ErrorDeleting = true,
-                };
+                result.ErrorDeleting = true;
+                return result;
             }
 
-            return new DeleteCurrentBranchResult()
-            {
-                Deleted = true,
-            };
+            result.Deleted = true;
+            return result;
         }
 
         public DeletedBranchesResult RetrieveDeletedBranches()
@@ -600,22 +497,27 @@ namespace GitNoob.Git
 
         public MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranchResult MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranch(string currentBranch, string newBranch)
         {
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
-            var remotebranch = new Command.Branch.GetRemoteBranch(this, currentBranch);
-            currentbranch.WaitFor();
-            remotebranch.WaitFor();
-            if (currentbranch.DetachedHead != false ||
-                currentbranch.shortname != currentBranch ||
-                String.IsNullOrWhiteSpace(remotebranch.result)
-                )
-            {
-                return new MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranchResult()
+            var result = new MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranchResult();
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()
                 {
-                    CurrentBranch = currentbranch.shortname,
-                    ErrorDetachedHead = currentbranch.DetachedHead != false,
-                    ErrorUnexpectedCurrentBranch = currentbranch.shortname != currentBranch,
-                    ErrorNotTrackingRemoteBranch = String.IsNullOrWhiteSpace(remotebranch.result),
-                };
+                    Allow_UnpushedCommitsOnMainBranch = true,
+                    Allow_StagedUncommittedFiles = true,
+                    Allow_WorkingTreeChanges = true,
+                }))
+                return result;
+
+            if (result.GitDisaster_CurrentBranchShortName != currentBranch)
+            {
+                result.ErrorUnexpectedCurrentBranch = true;
+                return result;
+            }
+
+            var remotebranch = new Command.Branch.GetRemoteBranch(this, currentBranch);
+            remotebranch.WaitFor();
+            if (String.IsNullOrWhiteSpace(remotebranch.result))
+            {
+                result.ErrorNotTrackingRemoteBranch = true;
+                return result;
             }
 
             var org_remote = remotebranch.result;
@@ -623,17 +525,15 @@ namespace GitNoob.Git
             var rename = new Command.Branch.RenameBranch(this, currentBranch, newBranch);
             rename.WaitFor();
 
-            currentbranch = new Command.Branch.GetCurrentBranch(this);
+            var currentbranch = new Command.Branch.GetCurrentBranch(this);
             currentbranch.WaitFor();
+            result.CurrentBranch = currentbranch.shortname;
 
             if (rename.result != true ||
                 currentbranch.shortname != newBranch)
             {
-                return new MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranchResult()
-                {
-                    CurrentBranch = currentbranch.shortname,
-                    ErrorRenaming = true,
-                };
+                result.ErrorRenaming = true;
+                return result;
             }
 
             var removetracking = new Command.Branch.RemoveTrackingRemoteBranch(this, newBranch);
@@ -644,22 +544,16 @@ namespace GitNoob.Git
 
             if (!String.IsNullOrWhiteSpace(remotebranch.result))
             {
-                return new MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranchResult()
-                {
-                    CurrentBranch = currentbranch.shortname,
-                    ErrorRemovingRemote = true,
-                };
+                result.ErrorRemovingRemote = true;
+                return result;
             }
 
             //recreate tracking branch (might be the main branch)
             var create = new Command.Branch.CreateBranch(this, currentBranch, org_remote, false);
             create.WaitFor();
 
-            return new MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranchResult()
-            {
-                CurrentBranch = currentbranch.shortname,
-                Moved = true,
-            };
+            result.Moved = true;
+            return result;
         }
     }
 }
