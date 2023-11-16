@@ -9,61 +9,32 @@ namespace GitNoob.Git
         public enum UnpackLastCommitType { All, OnlyUnpackTemporaryCommit }
         public UnpackLastCommitOnCurrentBranchResult UnpackLastCommitOnCurrentBranch(UnpackLastCommitType unpackType)
         {
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
-            var changes = new Command.WorkingTree.HasChanges(this);
-            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-            var merging = new Command.WorkingTree.IsMergeActive(this);
-            currentbranch.WaitFor();
-            changes.WaitFor();
-            rebasing.WaitFor();
-            merging.WaitFor();
+            var result = new UnpackLastCommitOnCurrentBranchResult();
+            if (GitDisaster.Check(this, result))
+                return result;
 
-            if (changes.stagedUncommittedFiles != false || changes.workingtreeChanges != false || rebasing.result != false || merging.result != false || currentbranch.DetachedHead != false)
-            {
-                return new UnpackLastCommitOnCurrentBranchResult()
-                {
-                    CurrentBranch = currentbranch.shortname,
-
-                    ErrorDetachedHead = (currentbranch.DetachedHead != false),
-                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
-                };
-            }
-
-            var lastcommit = new Command.Branch.GetLastCommitOfBranch(this, currentbranch.shortname);
+            var lastcommit = new Command.Branch.GetLastCommitOfBranch(this,result.GitDisaster_CurrentBranchShortName);
             lastcommit.WaitFor();
             if (lastcommit.commitmessage == null)
             {
-                return new UnpackLastCommitOnCurrentBranchResult()
-                {
-                    CurrentBranch = currentbranch.shortname,
+                result.NoCommitToUnpack = true;
 
-                    NoCommitToUnpack = true,
-                };
+                return result;
             }
 
             if (unpackType == UnpackLastCommitType.OnlyUnpackTemporaryCommit &&
                 !lastcommit.commitmessage.StartsWith(TemporaryCommitMessage))
             {
-                return new UnpackLastCommitOnCurrentBranchResult()
-                {
-                    CurrentBranch = currentbranch.shortname,
+                result.NoCommitToUnpack = true;
 
-                    NoCommitToUnpack = true,
-                };
+                return result;
             }
 
             var unpack = new Command.Branch.ResetCurrentBranchToPreviousCommit(this, true);
             unpack.WaitFor();
 
-            return new UnpackLastCommitOnCurrentBranchResult()
-            {
-                CurrentBranch = currentbranch.shortname,
-
-                Unpacked = true,
-            };
+            result.Unpacked = true;
+            return result;
         }
 
         public MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranch(string remoteTrackingBranch, string newBranch)
