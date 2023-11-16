@@ -297,20 +297,9 @@ namespace GitNoob.Git
 
         public DeleteWorkingTreeChangesAndStagedUncommittedFilesResult DeleteWorkingTreeChangesAndStagedUncommittedFiles()
         {
-            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
-            var merging = new Command.WorkingTree.IsMergeActive(this);
-            rebasing.WaitFor();
-            merging.WaitFor();
-
-            if (rebasing.result != false ||
-                merging.result != false)
-            {
-                return new DeleteWorkingTreeChangesAndStagedUncommittedFilesResult()
-                {
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
-                };
-            }
+            var result = new DeleteWorkingTreeChangesAndStagedUncommittedFilesResult();
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed() { Allow_StagedUncommittedFiles = true, Allow_WorkingTreeChanges = true }))
+                return result;
 
             {
                 var changes = new Command.WorkingTree.DeleteAllWorkingTreeChangesAndStagedUncommittedFiles(this);
@@ -324,18 +313,15 @@ namespace GitNoob.Git
                 if (changes.stagedUncommittedFiles != false ||
                     changes.workingtreeChanges != false)
                 {
-                    return new DeleteWorkingTreeChangesAndStagedUncommittedFilesResult()
-                    {
-                        ErrorStillStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                        ErrorStillWorkingTreeChanges = (changes.workingtreeChanges != false),
-                    };
+                    result.ErrorStillStagedUncommittedFiles = (changes.stagedUncommittedFiles != false);
+                    result.ErrorStillWorkingTreeChanges = (changes.workingtreeChanges != false);
+
+                    return result;
                 }
             }
 
-            return new DeleteWorkingTreeChangesAndStagedUncommittedFilesResult()
-            {
-                ChangesDeleted = true,
-            };
+            result.ChangesDeleted = true;
+            return result;
         }
 
         public BuildCacheAndCommitOnMainBranchResult BuildCacheAndCommitOnMainBranch(Config.IExecutor Executor, string CommitMessage)

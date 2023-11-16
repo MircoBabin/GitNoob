@@ -14,9 +14,9 @@ namespace GitNoob.Gui.Program.Step
 
             var message = new VisualizerMessageWithLinks("Deleting all working tree changes and staged uncommitted files failed.");
 
-            if (result.ErrorRebaseInProgress || result.ErrorMergeInProgress)
+            if (result.IsGitDisasterHappening != false)
             {
-                FailureRemedy = new Remedy.MessageRebasingOrMerging(this, message, result.ErrorRebaseInProgress, result.ErrorMergeInProgress);
+                FailureRemedy = new Remedy.MessageGitDisaster(this, message, result);
                 return false;
             }
 
