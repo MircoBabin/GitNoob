@@ -6,6 +6,41 @@ namespace GitNoob.Git
 {
     public partial class GitWorkingDirectory
     {
+        public ChangeCurrentBranchResult ChangeCurrentBranchTo(string branchname)
+        {
+            //explicitly no check for detached head.
+            //to allow for resolving detached head state by checking out a branch.
+            var result = new ChangeCurrentBranchResult();
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()
+            {
+                Allow_DetachedHead = true,
+                Allow_UnpushedCommitsOnMainBranch = true,
+            }))
+                return result;
+
+            if (branchname.Contains("/"))
+            {
+                branchname = branchname.Substring(branchname.LastIndexOf("/") + 1);
+            }
+
+            var command = new Command.Branch.ChangeBranchTo(this, branchname);
+            command.WaitFor();
+
+            var currentbranch = new Command.Branch.GetCurrentBranch(this);
+            currentbranch.WaitFor();
+            result.CurrentBranch = currentbranch.shortname;
+
+            if (currentbranch.shortname != branchname)
+            {
+                result.ErrorChanging = true;
+
+                return result;
+            }
+
+            result.Changed = true;
+            return result;
+        }
+
         public GitBranch RetrieveMainBranch()
         {
             var mainbranch = new Command.Branch.ListBranches(this, true, MainBranch);
