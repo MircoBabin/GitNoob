@@ -41,6 +41,23 @@ namespace GitNoob.Git
             return result;
         }
 
+        private GitBranch CreateTemporaryBranchAndCheckout(string branchFromBranchNameOrCommitId)
+        {
+            string tempbranchname = "gitnoob-tempbranch-" + GitUtils.GenerateRandomSha1();
+
+            var create = new Command.Branch.CreateBranch(this, tempbranchname, branchFromBranchNameOrCommitId, true);
+            create.WaitFor();
+
+            var tempbranch = new Command.Branch.GetCurrentBranch(this);
+            tempbranch.WaitFor();
+            if (tempbranch.shortname != tempbranchname)
+            {
+                return null;
+            }
+
+            return tempbranch.branch;
+        }
+
         public GitBranch RetrieveMainBranch()
         {
             var mainbranch = new Command.Branch.ListBranches(this, true, MainBranch);
