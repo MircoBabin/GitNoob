@@ -246,7 +246,7 @@ namespace GitNoob.Git
         public PushResult PushMainBranchToRemote(bool CheckGitCredentialsViaKeePassCommander = true)
         {
             var result = new PushResult();
-            if (GitDisaster.Check(this, result))
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed() { Allow_UnpushedCommitsOnMainBranch = true }))
                 return result;
 
             if (CheckGitCredentialsViaKeePassCommander && !GitCredentialsViaKeePassCommander.AreCredentialsAvailable(this))
