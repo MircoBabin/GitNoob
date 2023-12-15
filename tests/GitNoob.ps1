@@ -482,6 +482,16 @@ function GitNoob_CompareDirectories
     try {
         $t1 = Get-ChildItem -Path $upstreamTestdirectory.path -Recurse | ForEach-Object { Get-FileHash -Path $_.FullName }
         $t2 = Get-ChildItem -Path $testdirectory.path -Recurse | ForEach-Object { Get-FileHash -Path $_.FullName }
+
+        if ($t1 -eq $null) {
+            if ($t2 -eq $null) {
+                return $true;
+            }
+        }
+        if ($t2 -eq $null) {
+            return $false;
+        }
+
         $diff = Compare-Object -ReferenceObject $t1 -DifferenceObject $t2 -Property hash -PassThru | Measure
         if ($diff.count -ne 0) {
             return $false;
