@@ -40,6 +40,7 @@
     </Compile>
     <Compile Include="BranchesResult.cs" />
     <Compile Include="BuildCacheAndCommitOnMainBranchResult.cs" />
+    <Compile Include="CheckForGitDisasterResult.cs" />
     <Compile Include="ChangeCommitterResult.cs" />
     <Compile Include="ChangeCurrentBranchResult.cs" />
     <Compile Include="CreateUndeletionTagResult.cs" />

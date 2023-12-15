@@ -133,9 +133,6 @@ namespace GitNoob.Git
             var mainbranchremote = new Command.Branch.GetRemoteBranch(this, MainBranch);
 
             currentbranch.WaitFor();
-            var currentlastcommit = new Command.Branch.GetLastCommitOfBranch(this, currentbranch.shortname);
-            currentlastcommit.WaitFor();
-
             commitname.WaitFor();
             changes.WaitFor();
             rebasing.WaitFor();
@@ -154,8 +151,6 @@ namespace GitNoob.Git
                 TouchTimestampOfCommitsBeforeMerge = ConfigWorkingDirectory.Git.TouchTimestampOfCommitsBeforeMerge.Value,
                 DetachedHead_NotOnBranch = (currentbranch.DetachedHead == true),
                 CurrentBranch = currentbranch.shortname,
-                CurrentBranchLastCommitId = currentlastcommit.commitid,
-                CurrentBranchLastCommitMessage = currentlastcommit.commitmessage,
                 CommitFullName = commitname.result,
                 CommitName = commitname.name,
                 CommitEmail = commitname.email,
@@ -170,6 +165,21 @@ namespace GitNoob.Git
                 MainBranchIsTrackingRemoteBranch = (!string.IsNullOrEmpty(mainbranchremote.result)),
             };
         }
+
+        public CheckForGitDisasterResult CheckForGitDisaster()
+        {
+            var result = new CheckForGitDisasterResult();
+            if (GitDisaster.Check(this, result))
+                return result;
+
+            var currentlastcommit = new Command.Branch.GetLastCommitOfBranch(this, result.GitDisaster_CurrentBranchShortName);
+            currentlastcommit.WaitFor();
+
+            result.CurrentBranchLastCommitId = currentlastcommit.commitid;
+            result.CurrentBranchLastCommitMessage = currentlastcommit.commitmessage;
+            return result;
+        }
+
 
         public PruneResult PruneAggressive()
         {

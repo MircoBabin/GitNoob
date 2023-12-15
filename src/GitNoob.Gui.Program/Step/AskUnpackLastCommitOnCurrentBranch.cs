@@ -10,30 +10,18 @@ namespace GitNoob.Gui.Program.Step
         {
             BusyMessage = "Busy - retrieving status";
 
-            var result = StepsExecutor.Config.Git.RetrieveStatus();
             var message = new VisualizerMessageWithLinks();
 
-            if (result.Rebasing || result.Merging)
+            var result = StepsExecutor.Config.Git.CheckForGitDisaster();
+            if (result.IsGitDisasterHappening != false)
             {
-                FailureRemedy = new Remedy.MessageRebasingOrMerging(this, message, result.Rebasing, result.Merging);
-                return false;
-            }
-
-            if (result.DetachedHead_NotOnBranch)
-            {
-                FailureRemedy = new Remedy.MessageDetachedHead(this, message);
-                return false;
-            }
-
-            if (result.HasWorkingTreeChanges || result.HasStagedUncommittedFiles)
-            {
-                FailureRemedy = new Remedy.MessageChanges(this, message, result.HasWorkingTreeChanges, result.HasStagedUncommittedFiles);
+                FailureRemedy = new Remedy.MessageGitDisaster(this, message, result);
                 return false;
             }
 
             //not really a failure, but a solution to ask for confirmation
 
-            FailureRemedy = new Remedy.MessageConfirmUnpackLastCommitOnCurrentBranch(this, message, result.CurrentBranch, result.CurrentBranchLastCommitId, result.CurrentBranchLastCommitMessage);
+            FailureRemedy = new Remedy.MessageConfirmUnpackLastCommitOnCurrentBranch(this, message, result.GitDisaster_CurrentBranchShortName, result.CurrentBranchLastCommitId, result.CurrentBranchLastCommitMessage);
             return false;
         }
     }

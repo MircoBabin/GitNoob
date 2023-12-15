@@ -8,8 +8,6 @@
         public bool TouchTimestampOfCommitsBeforeMerge { get; set; }
         public bool DetachedHead_NotOnBranch { get; set; }
         public string CurrentBranch { get; set; }
-        public string CurrentBranchLastCommitId { get; set; }
-        public string CurrentBranchLastCommitMessage { get; set; }
         public string CommitFullName { get; set; }
         public string CommitName { get; set; }
         public string CommitEmail { get; set; }
@@ -31,8 +29,6 @@
             TouchTimestampOfCommitsBeforeMerge = false;
             DetachedHead_NotOnBranch = false;
             CurrentBranch = string.Empty;
-            CurrentBranchLastCommitId = string.Empty;
-            CurrentBranchLastCommitMessage = string.Empty;
             CommitFullName = string.Empty;
             CommitName = string.Empty;
             CommitEmail = string.Empty;
