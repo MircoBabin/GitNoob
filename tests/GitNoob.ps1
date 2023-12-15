@@ -11,6 +11,18 @@ if (-Not (Test-Path $GitNoob_Git_Dll)) {
 }
 [Reflection.Assembly]::LoadFile("$GitNoob_Git_Dll") | Out-Null
 
+$GitNoob_Utils_Dll = Join-Path -Path $PSScriptRoot  -ChildPath '..\bin\Debug\GitNoob.Utils.dll'
+if (-Not (Test-Path $GitNoob_Utils_Dll)) {
+    Throw "GitNoob.Utils.dll not found: " + $GitNoob_Utils_Dll
+}
+[Reflection.Assembly]::LoadFile("$GitNoob_Utils_Dll") | Out-Null
+
+$GitNoob_GitResult_Dll = Join-Path -Path $PSScriptRoot  -ChildPath '..\bin\Debug\GitNoob.GitResult.dll'
+if (-Not (Test-Path $GitNoob_GitResult_Dll)) {
+    Throw "GitNoob.GitResult.dll not found: " + $GitNoob_GitResult_Dll
+}
+[Reflection.Assembly]::LoadFile("$GitNoob_GitResult_Dll") | Out-Null
+
 $GitNoob_Gui_Program_Dll = Join-Path -Path $PSScriptRoot  -ChildPath '..\bin\Debug\GitNoob.Gui.Program.dll'
 if (-Not (Test-Path $GitNoob_Gui_Program_Dll)) {
     Throw "GitNoob.Gui.Program.dll not found: " + $GitNoob_Gui_Program_Dll
