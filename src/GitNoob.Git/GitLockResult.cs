@@ -2,16 +2,11 @@
 
 namespace GitNoob.Git
 {
-    public class GitLockResult
+    public class GitLockResult : GitResult.BaseGitDisasterResult
     {
         public bool Locked { get; set; }
         public bool Unlocked { get; set; }
         public GitLock GitLock { get; set; }
-
-        public bool ErrorStagedUncommittedFiles { get; set; }
-        public bool ErrorWorkingTreeChanges { get; set; }
-        public bool ErrorRebaseInProgress { get; set; }
-        public bool ErrorMergeInProgress { get; set; }
 
         public bool ErrorRetrievingRemoteBranchName { get; set; }
         public bool ErrorCreatingEmptyLockCommit { get; set; }
@@ -28,16 +23,11 @@ namespace GitNoob.Git
         public string LockedBy { get; set; }
         public string LockedMessage { get; set; }
 
-        public GitLockResult()
+        public GitLockResult() : base()
         {
             Locked = false;
             Unlocked = false;
             GitLock = null;
-
-            ErrorStagedUncommittedFiles = false;
-            ErrorWorkingTreeChanges = false;
-            ErrorRebaseInProgress = false;
-            ErrorMergeInProgress = false;
 
             ErrorRetrievingRemoteBranchName = false;
             ErrorCreatingEmptyLockCommit = false;

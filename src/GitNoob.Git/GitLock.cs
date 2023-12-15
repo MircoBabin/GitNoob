@@ -172,25 +172,9 @@ namespace GitNoob.Git
 
         public GitLockResult Acquire(string username, string message = null, bool CheckGitCredentialsViaKeePassCommander = true)
         {
-            var currentbranch = new Command.Branch.GetCurrentBranch(gitworkingdirectory);
-            var changes = new Command.WorkingTree.HasChanges(gitworkingdirectory);
-            var rebasing = new Command.WorkingTree.IsRebaseActive(gitworkingdirectory);
-            var merging = new Command.WorkingTree.IsMergeActive(gitworkingdirectory);
-            currentbranch.WaitFor();
-            changes.WaitFor();
-            rebasing.WaitFor();
-            merging.WaitFor();
-
-            if (changes.workingtreeChanges != false || changes.stagedUncommittedFiles != false || rebasing.result != false || merging.result != false)
-            {
-                return new GitLockResult()
-                {
-                    ErrorStagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
-                    ErrorWorkingTreeChanges = (changes.workingtreeChanges != false),
-                    ErrorRebaseInProgress = (rebasing.result != false),
-                    ErrorMergeInProgress = (merging.result != false),
-                };
-            }
+            var result = new GitLockResult();
+            if (GitDisaster.Check(gitworkingdirectory, result))
+                return result;
 
             /* 0. Initialize */
             string randomsha1 = GitUtils.GenerateRandomSha1();
@@ -210,10 +194,9 @@ namespace GitNoob.Git
                 branch.WaitFor();
                 if (branch.shortname != branchName)
                 {
-                    return new GitLockResult()
-                    {
-                        ErrorCreatingEmptyLockCommit = true,
-                    };
+                    result.ErrorCreatingEmptyLockCommit = true;
+
+                    return result;
                 }
             }
 
@@ -231,10 +214,9 @@ namespace GitNoob.Git
                     branch.WaitFor();
                     if (branch.shortname != tempbranch)
                     {
-                        return new GitLockResult()
-                        {
-                            ErrorCreatingEmptyLockCommit = true,
-                        };
+                        result.ErrorCreatingEmptyLockCommit = true;
+
+                        return result;
                     }
                 }
 
@@ -257,30 +239,27 @@ namespace GitNoob.Git
                         locktag = GetLockTag();
                         if (locktag == null || locktag.Message != rawlockmessage)
                         {
-                            return new GitLockResult()
-                            {
-                                ErrorCreatingLockTag = true,
-                            };
+                            result.ErrorCreatingLockTag = true;
+
+                            return result;
                         }
                     }
 
                     /* pre 5 Check remote reachable */
                     if (CheckGitCredentialsViaKeePassCommander && !GitCredentialsViaKeePassCommander.AreCredentialsAvailable(gitworkingdirectory))
                     {
-                        return new GitLockResult
-                        {
-                            ErrorKeePassNotStarted = true,
-                        };
+                        result.ErrorKeePassNotStarted = true;
+
+                        return result;
                     }
 
                     var reachable = new Command.Repository.RemoteReachable(gitworkingdirectory);
                     reachable.WaitFor();
                     if (reachable.result != true)
                     {
-                        return new GitLockResult
-                        {
-                            ErrorRemoteNotReachable = true,
-                        };
+                        result.ErrorRemoteNotReachable = true;
+
+                        return result;
                     }
 
                     /* 5 Push locktag to remote */
@@ -308,7 +287,7 @@ namespace GitNoob.Git
                 finally
                 {
                     /* Delete temporary branch, created in 2.*/
-                    var change = new Command.Branch.ChangeBranchTo(gitworkingdirectory, currentbranch.shortname);
+                    var change = new Command.Branch.ChangeBranchTo(gitworkingdirectory, result.GitDisaster_CurrentBranchShortName);
                     change.WaitFor();
 
                     var delete = new Command.Branch.DeleteBranch(gitworkingdirectory, tempbranch, true);
@@ -332,26 +311,25 @@ namespace GitNoob.Git
                             SplitLockMessage(remotetag.Message, out lockedby, out lockedtime, out lockedrandomsha1, out lockedmessage);
                         }
 
-                        return new GitLockResult()
-                        {
-                            ErrorCreatingLockTag = true,
+                        result.ErrorCreatingLockTag = true;
 
-                            ErrorPushingLockTag = locktagPushError,
-                            PushOutput = locktagPushoutput,
+                        result.ErrorPushingLockTag = locktagPushError;
+                        result.PushOutput = locktagPushoutput;
 
-                            LockedTime = lockedtime,
-                            LockedBy = lockedby,
-                            LockedMessage = lockedmessage,
+                        result.LockedTime = lockedtime;
+                        result.LockedBy = lockedby;
+                        result.LockedMessage = lockedmessage;
 
-                            GitLock = this,
-                        };
+                        result.GitLock = this;
+
+                        return result;
                     }
                 }
             }
             finally
             {
                 /* Restore current branch, changed in 1. */
-                var change = new Command.Branch.ChangeBranchTo(gitworkingdirectory, currentbranch.shortname);
+                var change = new Command.Branch.ChangeBranchTo(gitworkingdirectory, result.GitDisaster_CurrentBranchShortName);
                 change.WaitFor();
             }
 
@@ -359,39 +337,39 @@ namespace GitNoob.Git
             acquired = true;
             acquiredTag = locktag;
 
-            return new GitLockResult()
-            {
-                Locked = true,
-                GitLock = this,
-            };
+            result.Locked = true;
+            result.GitLock = this;
+
+            return result;
         }
 
-        public GitLockResult Release(bool CheckGitCredentialsViaKeePassCommander = true)
+        private GitLockResult InternalReset(bool OnlyIfOwned, bool CheckGitCredentialsViaKeePassCommander)
         {
+            var result = new GitLockResult();
+            if (GitDisaster.Check(gitworkingdirectory, result, GitDisasterAllowed.AllowAll()))
+                return result;
+
             if (!acquired)
             {
-                return new GitLockResult()
-                {
-                    ErrorLockNotAcquired = true,
-                };
+                result.ErrorLockNotAcquired = true;
+
+                return result;
             }
 
             if (CheckGitCredentialsViaKeePassCommander && !GitCredentialsViaKeePassCommander.AreCredentialsAvailable(gitworkingdirectory))
             {
-                return new GitLockResult
-                {
-                    ErrorKeePassNotStarted = true,
-                };
+                result.ErrorKeePassNotStarted = true;
+
+                return result;
             }
 
             var reachable = new Command.Repository.RemoteReachable(gitworkingdirectory);
             reachable.WaitFor();
             if (reachable.result != true)
             {
-                return new GitLockResult
-                {
-                    ErrorRemoteNotReachable = true,
-                };
+                result.ErrorRemoteNotReachable = true;
+
+                return result;
             }
 
             var delete = new Command.Tag.DeleteLocalTag(gitworkingdirectory, lockTagName);
@@ -401,56 +379,30 @@ namespace GitNoob.Git
             fetch.WaitFor();
 
             var remotetag = GetLockTag();
-            if (remotetag == null || remotetag.PointingToCommitId != acquiredTag.PointingToCommitId || remotetag.Message != acquiredTag.Message)
+            if (OnlyIfOwned)
             {
-                string lockedby = String.Empty;
-                DateTime? lockedtime = null;
-                string lockedrandomsha1 = String.Empty;
-                string lockedmessage = String.Empty;
-                if (remotetag != null)
+                if (remotetag == null || remotetag.PointingToCommitId != acquiredTag.PointingToCommitId || remotetag.Message != acquiredTag.Message)
                 {
-                    SplitLockMessage(remotetag.Message, out lockedby, out lockedtime, out lockedrandomsha1, out lockedmessage);
-                }
-
-                return new GitLockResult()
-                {
-                    ErrorLockNotOwned = true,
-
-                    LockedTime = lockedtime,
-                    LockedBy = lockedby,
-                    LockedMessage = lockedmessage,
-                };
-            }
-
-            return Reset(false, false);
-        }
-
-        public GitLockResult Reset(bool CheckGitCredentialsViaKeePassCommander = true, bool CheckRemoteReachable = true)
-        {
-            //Hard reset lock, doesn't check if the lock is owned
-
-            if (CheckGitCredentialsViaKeePassCommander && !GitCredentialsViaKeePassCommander.AreCredentialsAvailable(gitworkingdirectory))
-            {
-                return new GitLockResult
-                {
-                    ErrorKeePassNotStarted = true,
-                };
-            }
-
-            if (CheckRemoteReachable)
-            {
-                var reachable = new Command.Repository.RemoteReachable(gitworkingdirectory);
-                reachable.WaitFor();
-                if (reachable.result != true)
-                {
-                    return new GitLockResult
+                    string lockedby = String.Empty;
+                    DateTime? lockedtime = null;
+                    string lockedrandomsha1 = String.Empty;
+                    string lockedmessage = String.Empty;
+                    if (remotetag != null)
                     {
-                        ErrorRemoteNotReachable = true,
-                    };
+                        SplitLockMessage(remotetag.Message, out lockedby, out lockedtime, out lockedrandomsha1, out lockedmessage);
+                    }
+
+                    result.ErrorLockNotOwned = true;
+
+                    result.LockedTime = lockedtime;
+                    result.LockedBy = lockedby;
+                    result.LockedMessage = lockedmessage;
+
+                    return result;
                 }
             }
 
-            var delete = new Command.Tag.DeleteLocalTag(gitworkingdirectory, lockTagName);
+            delete = new Command.Tag.DeleteLocalTag(gitworkingdirectory, lockTagName);
             delete.WaitFor();
 
             var remote = new Command.Tag.DeleteRemoteTag(gitworkingdirectory, remoteName, lockTagName);
@@ -459,13 +411,25 @@ namespace GitNoob.Git
             acquired = false;
             acquiredTag = null;
 
-            return new GitLockResult()
-            {
-                Unlocked = (remote.result == true),
+            result.Unlocked = (remote.result == true);
 
-                ErrorPushingLockTag = (remote.result != true),
-                PushOutput = remote.output,
-            };
+            result.ErrorPushingLockTag = (remote.result != true);
+            result.PushOutput = remote.output;
+            return result;
+        }
+
+        public GitLockResult Release(bool CheckGitCredentialsViaKeePassCommander = true)
+        {
+            //Reset lock, only if owned
+
+            return InternalReset(true, CheckGitCredentialsViaKeePassCommander);
+        }
+
+        public GitLockResult Reset(bool CheckGitCredentialsViaKeePassCommander = true)
+        {
+            //Hard reset lock, doesn't check if the lock is owned
+
+            return InternalReset(false, CheckGitCredentialsViaKeePassCommander);
         }
     }
 }
