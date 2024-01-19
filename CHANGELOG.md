@@ -1,5 +1,9 @@
 # GitNoob changelog
 
+## Version 1.21
+* Add: cherry pick a commit.
+* Fix: prevent Windows screensaver when merging.
+
 ## Version 1.20
 * Add: show git reference log.
 * Add: delete of undeletion tag.
