@@ -349,7 +349,7 @@ namespace GitNoob.Git
             if (GitDisaster.Check(gitworkingdirectory, result, GitDisasterAllowed.AllowAll()))
                 return result;
 
-            if (!acquired)
+            if (OnlyIfOwned && !acquired)
             {
                 result.ErrorLockNotAcquired = true;
 
