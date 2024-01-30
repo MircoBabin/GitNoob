@@ -1,5 +1,8 @@
 # GitNoob changelog
 
+## Version 1.22
+* Fix: reset abandoned lock.
+
 ## Version 1.21
 * Add: cherry pick a commit.
 * Fix: prevent Windows screensaver when merging.
