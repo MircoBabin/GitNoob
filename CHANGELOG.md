@@ -1,5 +1,12 @@
 # GitNoob changelog
 
+## Version 1.23
+* Add: option to start DOS Prompt when a merge, rebase, cherry pick conflict arises.
+* Add: Edit GitNoob root configuration file.
+* Fix: cherry pick conflict.
+* Fix: rebase conflict.
+* Fix: tests
+
 ## Version 1.22
 * Fix: reset abandoned lock.
 
