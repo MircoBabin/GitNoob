@@ -28,6 +28,8 @@ namespace GitNoob.Config.Loader
 
         private Dictionary<string, Project> _projects;
 
+        public string rootConfigurationIniFilename {  get { return _rootConfigurationIniFilename; } }
+
         public RootIniFileLoader(string RootConfigurationIniFilename, string GitNoobProgramPath)
         {
             _rootConfigurationIniFilename = Path.GetFullPath(RootConfigurationIniFilename);

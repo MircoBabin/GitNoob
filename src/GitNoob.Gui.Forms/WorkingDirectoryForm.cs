@@ -24,8 +24,8 @@ namespace GitNoob.Gui.Forms
         public WorkingDirectoryForm(Visualizer.IVisualizerProgram config,
             FrontendLock frontendLock,
             Config.WorkingDirectory workingDirectory,
-            System.Action chooseProject, string programPath, string licenseText) :
-            base(programPath, licenseText)
+            System.Action chooseProject, string programPath, string licenseText, string rootConfigurationFilename) :
+            base(programPath, licenseText, rootConfigurationFilename)
         {
             _frontendLock = frontendLock;
             WorkingDirectory = workingDirectory;

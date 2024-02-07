@@ -27,8 +27,8 @@ namespace GitNoob.Gui.Forms
             }
         }
 
-        public ChooseProjectForm(Visualizer.IVisualizerBootstrapper Bootstrapper, List<Config.IConfig> configs, string programPath, string licenseText) : 
-            base(programPath, licenseText)
+        public ChooseProjectForm(Visualizer.IVisualizerBootstrapper Bootstrapper, List<Config.IConfig> configs, string programPath, string licenseText, string rootConfigurationFilename) : 
+            base(programPath, licenseText, rootConfigurationFilename)
         {
             _bootstrapper = Bootstrapper;
             _configs = configs;
@@ -271,7 +271,7 @@ namespace GitNoob.Gui.Forms
                     form = new WorkingDirectoryForm(_bootstrapper.CreateIVisualizerProgram(projectwd.Project, projectwd.WorkingDirectory),
                         _lockManager.NewFrontendLock(),
                         projectwd.WorkingDirectory,
-                        WorkingDirectoryForm_ChooseProject, _programPath, _licenseText);
+                        WorkingDirectoryForm_ChooseProject, _programPath, _licenseText, _rootConfigurationFilename);
                 }
                 catch (Exception ex)
                 {

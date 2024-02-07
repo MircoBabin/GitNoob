@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
@@ -74,6 +75,95 @@ namespace GitNoob.Utils
             bat.Start();
         }
 
+        private static string _cacheEditorExecutable = null;
+        private static bool _cacheEditorExecutableMultipleFiles = false;
+        private static Tuple<string, bool> GetEditorExecutable()
+        {
+            if (_cacheEditorExecutable == null)
+            {
+                try
+                {
+                    _cacheEditorExecutable = FileUtils.FindExeInProgramFiles("Notepad++\\notepad++.exe");
+                    _cacheEditorExecutableMultipleFiles = true;
+                }
+                catch { }
+            }
+
+            if (_cacheEditorExecutable == null)
+            {
+                try
+                {
+                    _cacheEditorExecutable = FileUtils.FindExePath("notepad.exe");
+                    _cacheEditorExecutableMultipleFiles = false;
+                }
+                catch { }
+            }
+
+            if (_cacheEditorExecutable == null) throw new Exception("Notepad++ or notepad is not found.");
+
+            return new Tuple<string, bool>(_cacheEditorExecutable, _cacheEditorExecutableMultipleFiles);
+        }
+        public static void StartEditor(OnErrorCallback onError,
+            IEnumerable<string> files)
+        {
+            StartEditor(onError, files, null, null, null);
+        }
+
+        public static void StartEditor(OnErrorCallback onError,
+            IEnumerable<string> files,
+            Config.Project project, Config.WorkingDirectory projectworkingdirectory, ConfigFileTemplate.PhpIni phpIni)
+        {
+            string exeFilename;
+            bool multipleFiles;
+            try
+            {
+                var setting = GetEditorExecutable();
+                exeFilename = setting.Item1;
+                multipleFiles = setting.Item2;
+            }
+            catch (Exception ex)
+            {
+                if (onError != null)
+                    onError(ex);
+                else
+                    throw;
+                return;
+            }
+
+            if (multipleFiles)
+            {
+                StringBuilder cmdline = new StringBuilder();
+                foreach (var file in files)
+                {
+                    cmdline.Append(" \"");
+                    cmdline.Append(file);
+                    cmdline.Append("\"");
+                }
+                string commandLine = cmdline.ToString();
+
+                var bat = new BatFile(onError,
+                    "executable", RunAsType.runAsInvoker, WindowType.hideWindow,
+                    "GitNoob - start editor",
+                    project, projectworkingdirectory, phpIni);
+                bat.AppendLine("start \"\" \"" + exeFilename + "\"" + (!string.IsNullOrWhiteSpace(commandLine) ? " " + commandLine : ""));
+                bat.Start();
+            }
+            else
+            {
+                foreach (var file in files)
+                {
+                    string commandLine = " \"" + file + "\"";
+
+                    var bat = new BatFile(onError,
+                        "executable", RunAsType.runAsInvoker, WindowType.hideWindow,
+                        "GitNoob - start editor",
+                        project, projectworkingdirectory, phpIni);
+                    bat.AppendLine("start \"\" \"" + exeFilename + "\"" + (!string.IsNullOrWhiteSpace(commandLine) ? " " + commandLine : ""));
+                    bat.Start();
+                }
+            }
+        }
+
         public BatFile(OnErrorCallback onError,
             string name, RunAsType runAs, WindowType window, string windowTitle,
             Config.Project project, Config.WorkingDirectory projectworkingdirectory,
@@ -123,31 +213,36 @@ namespace GitNoob.Utils
             contents.AppendLine("title " + _windowTitle);
             if (!String.IsNullOrWhiteSpace(_batWorkingDirectory))
                 contents.AppendLine("cd /D \"" + _batWorkingDirectory + "\"");
-            else
+            else if (_projectWorkingDirectory != null)
                 contents.AppendLine("cd /D \"" + _projectWorkingDirectory.Path.ToString() + "\"");
+            else
+                contents.AppendLine("cd /D \"%~dp0\"");
 
-            if (NeedsPhp())
+            if (_projectWorkingDirectory != null)
             {
-                contents.AppendLine("set PHPRC=" + _phpIni.IniPath); /* Directory containing php.ini */
-                contents.AppendLine("path %path%;" + _projectWorkingDirectory.Php.Path.ToString());
-
-                //Global Composer bin directory, e.g. for php-cs-fixer
-                //    %appdata%\Composer\\vendor\bin
-                string composerGlobalBin = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Composer\\vendor\\bin");
-                if (Directory.Exists(composerGlobalBin))
+                if (NeedsPhp())
                 {
-                    contents.AppendLine("path %path%;" + composerGlobalBin);
+                    contents.AppendLine("set PHPRC=" + _phpIni.IniPath); /* Directory containing php.ini */
+                    contents.AppendLine("path %path%;" + _projectWorkingDirectory.Php.Path.ToString());
+
+                    //Global Composer bin directory, e.g. for php-cs-fixer
+                    //    %appdata%\Composer\\vendor\bin
+                    string composerGlobalBin = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Composer\\vendor\\bin");
+                    if (Directory.Exists(composerGlobalBin))
+                    {
+                        contents.AppendLine("path %path%;" + composerGlobalBin);
+                    }
                 }
-            }
 
-            if (!string.IsNullOrEmpty(_projectWorkingDirectory.Ngrok.AuthToken))
-            {
-                contents.AppendLine("set NGROK_AUTHTOKEN=" + _projectWorkingDirectory.Ngrok.AuthToken);
-            }
+                if (!string.IsNullOrEmpty(_projectWorkingDirectory.Ngrok.AuthToken))
+                {
+                    contents.AppendLine("set NGROK_AUTHTOKEN=" + _projectWorkingDirectory.Ngrok.AuthToken);
+                }
 
-            if (!string.IsNullOrEmpty(_projectWorkingDirectory.Ngrok.ApiKey))
-            {
-                contents.AppendLine("set NGROK_API_KEY=" + _projectWorkingDirectory.Ngrok.ApiKey);
+                if (!string.IsNullOrEmpty(_projectWorkingDirectory.Ngrok.ApiKey))
+                {
+                    contents.AppendLine("set NGROK_API_KEY=" + _projectWorkingDirectory.Ngrok.ApiKey);
+                }
             }
 
             contents.AppendLine();

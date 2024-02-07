@@ -36,7 +36,9 @@ namespace GitNoob
         {
             configs = new List<Config.IConfig>();
 
-            configs.Add(new Config.Loader.RootIniFileLoader(rootConfigurationFilename, programPath));
+            var root = new Config.Loader.RootIniFileLoader(rootConfigurationFilename, programPath);
+            configs.Add(root);
+            rootConfigurationFilename = root.rootConfigurationIniFilename;
 
             var ProjectsCount = 0;
             foreach (var config in configs)
@@ -139,7 +141,7 @@ namespace GitNoob
 
         private Form CreateMainForm()
         {
-            return new Gui.Forms.ChooseProjectForm(this, configs, programPath, licenseText);
+            return new Gui.Forms.ChooseProjectForm(this, configs, programPath, licenseText, rootConfigurationFilename);
         }
 
         public Gui.Visualizer.IVisualizerProgram CreateIVisualizerProgram(Config.Project Project, Config.WorkingDirectory WorkingDirectory)

@@ -10,10 +10,14 @@ namespace GitNoob.Gui.Forms
 {
     public class GitNoobBaseForm : Form
     {
-        // Add "About GitNoob" and "Check for GitNoob update" to the form system menu (top left corner).
+        // Add to the form system menu (top left corner):
+        // - About GitNoob
+        // - Check for GitNoob update
+        // - Edit GitNoob root configuration file
 
         protected readonly string _programPath;
         protected readonly string _licenseText;
+        protected readonly string _rootConfigurationFilename;
         private readonly string _GitNoobUpdaterExe;
 
         private class NativeMethods
@@ -33,6 +37,7 @@ namespace GitNoob.Gui.Forms
         // ID for the About item on the system menu
         private int SYSMENU_ABOUT_ID = 0x1;
         private int SYSMENU_CHECKFORUPDATE_ID = 0x2;
+        private int SYSMENU_EDITROOTCONFIGURATION_ID = 0x3;
 
         public GitNoobBaseForm()
         {
@@ -41,10 +46,11 @@ namespace GitNoob.Gui.Forms
             _GitNoobUpdaterExe = null;
         }
 
-        public GitNoobBaseForm(string programPath, string licenseText)
+        public GitNoobBaseForm(string programPath, string licenseText, string rootConfigurationFilename)
         {
             _programPath = programPath;
             _licenseText = licenseText;
+            _rootConfigurationFilename = rootConfigurationFilename;
             _GitNoobUpdaterExe = Path.Combine(_programPath, "GitNoobUpdater.exe");
             if (!File.Exists(_GitNoobUpdaterExe)) _GitNoobUpdaterExe = null;
 
@@ -66,9 +72,11 @@ namespace GitNoob.Gui.Forms
                 NativeMethods.AppendMenu(hSysMenu, NativeMethods.MF_STRING, SYSMENU_CHECKFORUPDATE_ID, "Check for GitNoob update");
             }
 
+            // Add the Edit GitNoob root configuration file menu item
+            NativeMethods.AppendMenu(hSysMenu, NativeMethods.MF_STRING, SYSMENU_EDITROOTCONFIGURATION_ID, "Edit GitNoob root configuration file");
+
             // Add the About menu item
             NativeMethods.AppendMenu(hSysMenu, NativeMethods.MF_STRING, SYSMENU_ABOUT_ID, "About GitNoob");
-
         }
 
         private Thread _updaterThread = null;
@@ -133,6 +141,20 @@ namespace GitNoob.Gui.Forms
                     };
                     _updaterThread.Start();
 
+                }
+                return;
+            }
+
+            // Test if the Edit GitNoob root configuration file item was selected from the system menu
+            if ((m.Msg == NativeMethods.WM_SYSCOMMAND) && ((int)m.WParam == SYSMENU_EDITROOTCONFIGURATION_ID))
+            {
+                try
+                {
+                    Utils.BatFile.StartEditor(null, new string[] { _rootConfigurationFilename });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "GitNoob - Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 return;
             }
