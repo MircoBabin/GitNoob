@@ -52,18 +52,18 @@ namespace GitNoob.Gui.Program.Remedy
 
                         Done();
                     }),
+                    (StepsExecutor.WorkspaceIsStartable() ?
+                        new VisualizerMessageButton("Start workspace.", (input) => {
+                            StepsExecutor.StartWorkspace();
+                        }) : null
+                    ),
                     new VisualizerMessageButton("Start Git Gui.", (input) => {
                         StepsExecutor.StartGitGui();
                     }),
+                    new VisualizerMessageButton("Start DOS Prompt.", (input) => {
+                        StepsExecutor.StartDosPromptAsUser();
+                    }),
                 };
-
-            if (StepsExecutor.WorkspaceIsStartable())
-            {
-                VisualizerMessageButtons.Add(new VisualizerMessageButton("Start workspace", (input) =>
-                {
-                    StepsExecutor.StartWorkspace();
-                }));
-            }
         }
     }
 }

@@ -28,7 +28,6 @@ namespace GitNoob.Gui.Program.Remedy
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
 
                         Done();
-
                     }),
                     new VisualizerMessageButton("The conflicts are manually resolved and staged. Continue the cherry pick.", (input) => {
                         var step = new Step.CherryPickContinue();
@@ -36,18 +35,18 @@ namespace GitNoob.Gui.Program.Remedy
 
                         Done();
                     }),
+                    (StepsExecutor.WorkspaceIsStartable() ?
+                        new VisualizerMessageButton("Start workspace.", (input) => {
+                            StepsExecutor.StartWorkspace();
+                        }) : null
+                    ),
                     new VisualizerMessageButton("Start Git Gui.", (input) => {
                         StepsExecutor.StartGitGui();
                     }),
+                    new VisualizerMessageButton("Start DOS Prompt.", (input) => {
+                        StepsExecutor.StartDosPromptAsUser();
+                    }),
                 };
-
-            if (StepsExecutor.WorkspaceIsStartable())
-            {
-                VisualizerMessageButtons.Add(new VisualizerMessageButton("Start workspace", (input) =>
-                {
-                    StepsExecutor.StartWorkspace();
-                }));
-            }
         }
     }
 }

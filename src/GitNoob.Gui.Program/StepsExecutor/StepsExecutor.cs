@@ -187,6 +187,12 @@ namespace GitNoob.Gui.Program.StepsExecutor
             action.execute();
         }
 
+        public void StartDosPromptAsUser()
+        {
+            var action = new Action.StartDosPromptAsUser(_config);
+            action.execute();
+        }
+
         public void StartGitGui()
         {
             var action = new Action.StartGitGui(_config);

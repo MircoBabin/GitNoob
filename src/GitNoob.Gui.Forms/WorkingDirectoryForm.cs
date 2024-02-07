@@ -692,10 +692,13 @@ namespace GitNoob.Gui.Forms
                 int no = 0;
                 foreach (var item in message.VisualizerMessageButtons)
                 {
-                    ErrorButton button = _errorButtons[no];
-                    button.ShowErrorButton(toolTips, input, item, ref location, size);
+                    if (item != null)
+                    {
+                        ErrorButton button = _errorButtons[no];
+                        button.ShowErrorButton(toolTips, input, item, ref location, size);
 
-                    no++;
+                        no++;
+                    }
                 }
                 while (no < _errorButtons.Count)
                 {
