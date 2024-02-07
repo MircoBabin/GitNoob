@@ -29,7 +29,7 @@ namespace GitNoob.Gui.Program.Remedy
 
                         Done();
                     }),
-                    new VisualizerMessageButton("The conflicts are manually resolved and staged. Continue the cherry pick.", (input) => {
+                    new VisualizerMessageButton("The conflicts are manually resolved and staged (do not commit, only stage). Continue the cherry pick.", (input) => {
                         var step = new Step.CherryPickContinue();
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
 
