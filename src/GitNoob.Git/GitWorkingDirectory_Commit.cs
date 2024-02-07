@@ -37,62 +37,6 @@ namespace GitNoob.Git
             return result;
         }
 
-        public MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranch(string remoteTrackingBranch, string newBranch)
-        {
-            var result = new MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult();
-            if (GitDisaster.Check(this, result, new GitDisasterAllowed()
-            {
-                Allow_UnpushedCommitsOnMainBranch = true,
-                Allow_WorkingTreeChanges = true,
-                Allow_StagedUncommittedFiles = true,
-            }))
-                return result;
-
-            var remotebranch = new Command.Branch.GetRemoteBranch(this, remoteTrackingBranch);
-            remotebranch.WaitFor();
-
-            if (result.GitDisaster_CurrentBranchShortName == remoteTrackingBranch ||
-                String.IsNullOrWhiteSpace(remotebranch.result))
-            {
-                result.ErrorBranchIsCurrent_UseMoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranch = result.GitDisaster_CurrentBranchShortName == remoteTrackingBranch;
-                result.ErrorNotTrackingRemoteBranch = String.IsNullOrWhiteSpace(remotebranch.result);
-
-                return result;
-            }
-
-            var org_remote = remotebranch.result;
-
-            var rename = new Command.Branch.RenameBranch(this, remoteTrackingBranch, newBranch);
-            rename.WaitFor();
-
-            if (rename.result != true)
-            {
-                result.ErrorRenaming = true;
-
-                return result;
-            }
-
-            var removetracking = new Command.Branch.RemoveTrackingRemoteBranch(this, newBranch);
-            removetracking.WaitFor();
-
-            remotebranch = new Command.Branch.GetRemoteBranch(this, newBranch);
-            remotebranch.WaitFor();
-
-            if (!String.IsNullOrWhiteSpace(remotebranch.result))
-            {
-                result.ErrorRemovingRemote = true;
-
-                return result;
-            }
-
-            //recreate tracking branch (might be the main branch)
-            var create = new Command.Branch.CreateBranch(this, remoteTrackingBranch, org_remote, false);
-            create.WaitFor();
-
-            result.Moved = true;
-            return result;
-        }
-
         public TouchCommitAndAuthorTimestampsOfCurrentBranchResult TouchCommitAndAuthorTimestampsOfCurrentBranch(DateTime toTime)
         {
             var result = new TouchCommitAndAuthorTimestampsOfCurrentBranchResult();
