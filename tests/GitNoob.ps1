@@ -765,6 +765,9 @@ function GitNoob_GitInit
     { 
         throw 'git init failed'
     }
+
+    GitNoob_RunGitExe -testdirectory $testdirectory -commandline 'config user.name "GitNoob Test"'
+    GitNoob_RunGitExe -testdirectory $testdirectory -commandline 'config user.email "test@gitnoob.world.nl"'
 }
 
 function GitNoob_GitRemoveWorkingTreeChanges
@@ -876,7 +879,7 @@ function GitNoob_GitGetLastCommitId
     )
     
     $output = GitNoob_RunGitExe -testdirectory $testdirectory -commandline ('rev-parse --verify HEAD') -returnStdout $true
-    return $output
+    return $output.Trim()
 }
 
 function GitNoob_GitCreateBranch
@@ -936,6 +939,16 @@ function GitNoob_GitMergeIntoCurrentBranch
     )
     
     GitNoob_RunGitExe -testdirectory $testdirectory -commandline ('merge "' + $fromBranch + '"')
+}
+
+function GitNoob_GitCherryPickIntoCurrentBranch
+{
+    param (
+        [Parameter(Mandatory=$true)][pscustomobject]$testdirectory,
+        [Parameter(Mandatory=$true)]$fromCommitId
+    )
+
+    GitNoob_RunGitExe -testdirectory $testdirectory -commandline ('cherry-pick "' + $fromCommitId + '"')
 }
 
 function GitNoob_GitPushBranch
@@ -1199,6 +1212,12 @@ function GitNoob_AssertGetLatest
         #- also update tags from remote - no check          
         $result = $GitWorkingDirectory.GetLatest($false) # don't check for GitCredentialsViaKeePassCommander
         
+        if ($result.Cloned -eq $true)
+        {
+            GitNoob_RunGitExe -testdirectory $testdirectory -commandline 'config user.name "GitNoob Test"'
+            GitNoob_RunGitExe -testdirectory $testdirectory -commandline 'config user.email "test@gitnoob.world.nl"'
+        }
+
         if ($AssertStatus -eq $true)    
         {
             GitNoob_AssertStatus -description ('[' + (GitNoob_AssertGetCallingFunctionName) + '] GetLatest status: ' + $description) `
@@ -1553,7 +1572,8 @@ function GitNoob_AssertIsRebaseActive
         [Parameter(Mandatory=$false)]$LaunchDebugger = $false,
         [Parameter(Mandatory=$true)]$active,
         [Parameter(Mandatory=$true)]$currentBranch,
-        [Parameter(Mandatory=$true)]$ontoBranch
+        [Parameter(Mandatory=$true)]$ontoBranch,
+        [Parameter(Mandatory=$false)]$throwOnInvalid = $false
     )
 
     GitNoob_LaunchDebugger -LaunchDebugger $LaunchDebugger
@@ -1612,13 +1632,17 @@ function GitNoob_AssertIsRebaseActive
     
     if ($valid -ne $true)
     {
-        Write-Host "`n!!! ERROR - GitNoob_AssertIsRebaseActive !!!"
-        Write-Host $message
-        Write-Host ('result        : ' + $result)
-        Write-Host ('currentBranch : ')
-        Write-Host ($resultCurrentBranch | Format-List | Out-String)
-        Write-Host ('ontoBranch : ')
-        Write-Host ($resultOntoBranch | Format-List | Out-String)
+        if ($throwOnInvalid -eq $true) {
+            throw "!!! ERROR - GitNoob_AssertIsRebaseActive !!!"
+        } else {
+            Write-Host "`n!!! ERROR - GitNoob_AssertIsRebaseActive !!!"
+            Write-Host $message
+            Write-Host ('result        : ' + $result)
+            Write-Host ('currentBranch : ')
+            Write-Host ($resultCurrentBranch | Format-List | Out-String)
+            Write-Host ('ontoBranch : ')
+            Write-Host ($resultOntoBranch | Format-List | Out-String)
+        }
     }
 }        
 
@@ -1630,7 +1654,8 @@ function GitNoob_AssertIsMergeActive
         [Parameter(Mandatory=$false)]$LaunchDebugger = $false,
         [Parameter(Mandatory=$true)]$active,
         [Parameter(Mandatory=$true)]$currentBranch, #not checked, not returned
-        [Parameter(Mandatory=$true)]$fromBranch     #not checked, not returned
+        [Parameter(Mandatory=$true)]$fromBranch,    #not checked, not returned
+        [Parameter(Mandatory=$false)]$throwOnInvalid = $false
     )
 
     GitNoob_LaunchDebugger -LaunchDebugger $LaunchDebugger
@@ -1689,13 +1714,93 @@ function GitNoob_AssertIsMergeActive
     
     if ($valid -ne $true)
     {
-        Write-Host "`n!!! ERROR - GitNoob_AssertIsMergeActive !!!"
-        Write-Host $message
-        Write-Host ('result        : ' + $result)
-        Write-Host ('currentBranch : ')
-        Write-Host ($resultCurrentBranch | Format-List | Out-String)
-        Write-Host ('fromBranch : ')
-        Write-Host ($resultFromBranch | Format-List | Out-String)
+        if ($throwOnInvalid -eq $true) {
+            throw "!!! ERROR - GitNoob_AssertIsMergeActive !!!"
+        } else {
+            Write-Host "`n!!! ERROR - GitNoob_AssertIsMergeActive !!!"
+            Write-Host $message
+            Write-Host ('result        : ' + $result)
+            Write-Host ('currentBranch : ')
+            Write-Host ($resultCurrentBranch | Format-List | Out-String)
+            Write-Host ('fromBranch : ')
+            Write-Host ($resultFromBranch | Format-List | Out-String)
+        }
+    }
+}
+
+function GitNoob_AssertIsCherryPickActive
+{
+    param (
+        [Parameter(Mandatory=$true)]$description,
+        [Parameter(Mandatory=$true)]$testdirectory,
+        [Parameter(Mandatory=$false)]$LaunchDebugger = $false,
+        [Parameter(Mandatory=$true)]$active,
+        [Parameter(Mandatory=$true)]$currentBranch, #not checked, not returned
+        [Parameter(Mandatory=$true)]$fromCommitId,  #not checked, not returned
+        [Parameter(Mandatory=$false)]$throwOnInvalid = $false
+    )
+
+    GitNoob_LaunchDebugger -LaunchDebugger $LaunchDebugger
+
+    $valid = $true
+    $message = '[' + (GitNoob_AssertGetCallingFunctionName) + '] Description: ' + $description + "`n"
+    $result = $null
+    $resultCurrentBranch = $null
+    $resultFromCommitId = $null
+
+    $stopwatch = [GitNoob_Stopwatch]::new()
+    try {
+
+        $GitWorkingDirectory = GitNoob_Git_New_GitWorkingDirectory -testdirectory $testdirectory
+
+        $command = new-object GitNoob.Git.Command.WorkingTree.IsCherryPickActive($GitWorkingDirectory)
+        $command.WaitFor()
+
+        $result = $command.result
+
+        if ($result -ne $active)
+        {
+            $valid = $false
+            $message = $message + 'Result = ' + $result + ', should be ' + $active + "`n"
+        }
+
+        if ($result -eq $true)
+        {
+            <#
+            if ($resultCurrentBranch -eq $null -And $currentBranch -ne $null)
+            {
+                $valid = $false
+                $message = $message + 'currentBranch = ' + $resultCurrentBranch + ', should be ' + $currentBranch + "`n"
+            }
+
+            if ($resultCurrentBranch -ne $null -And $resultCurrentBranch.ShortName -ne $currentBranch)
+            {
+                $valid = $false
+                $message = $message + 'currentBranch = ' + $resultCurrentBranch + ', should be ' + $currentBranch + "`n"
+            }
+
+            if ($resultFromCommitId -eq $null -And $fromCommitId -ne $null)
+            {
+                $valid = $false
+                $message = $message + 'fromCommitId = ' + $resultFromCommitId + ', should be ' + $fromCommitId + "`n"
+            }
+            #>
+        }
+    } finally { $stopwatch.stop() }
+
+    if ($valid -ne $true)
+    {
+        if ($throwOnInvalid -eq $true) {
+            throw "!!! ERROR - GitNoob_AssertIsCherryPickActive !!!"
+        } else {
+            Write-Host "`n!!! ERROR - GitNoob_AssertIsCherryPickActive !!!"
+            Write-Host $message
+            Write-Host ('result        : ' + $result)
+            Write-Host ('currentBranch : ')
+            Write-Host ($resultCurrentBranch | Format-List | Out-String)
+            Write-Host ('fromCommitId : ')
+            Write-Host ($resultFromCommitId | Format-List | Out-String)
+        }
     }
 }        
 
@@ -1970,7 +2075,7 @@ function GitNoob_AssertRebaseCurrentBranchOntoMainBranch
     try {
         $GitWorkingDirectory = GitNoob_Git_New_GitWorkingDirectory -testdirectory $testdirectory
         
-        $result = $GitWorkingDirectory.RebaseCurrentBranchOntoMainBranch()
+        $result = $GitWorkingDirectory.RebaseCurrentBranchOntoMainBranch('GitNoob test - undelete tag message')
         
         if ($result.Rebased -ne $Rebased)
         {
@@ -1978,22 +2083,22 @@ function GitNoob_AssertRebaseCurrentBranchOntoMainBranch
             $message = $message + 'Rebased = ' + $result.Rebased + ', should be ' + $Rebased + "`n"
         }
 
-        if ($ErrorWorkingTreeChanges -ne $null -And $result.ErrorWorkingTreeChanges -ne $ErrorWorkingTreeChanges)
+        if ($ErrorWorkingTreeChanges -ne $null -And $result.GitDisaster_WorkingTreeChanges -ne $ErrorWorkingTreeChanges)
         {
             $valid = $false
-            $message = $message + 'ErrorWorkingTreeChanges = ' + $result.ErrorWorkingTreeChanges + ', should be ' + $ErrorWorkingTreeChanges + "`n"
+            $message = $message + 'GitDisaster_WorkingTreeChanges = ' + $result.GitDisaster_WorkingTreeChanges + ', should be ' + $ErrorWorkingTreeChanges + "`n"
         }
         
-        if ($ErrorStagedUncommittedFiles -ne $null -And $result.ErrorStagedUncommittedFiles -ne $ErrorStagedUncommittedFiles)
+        if ($ErrorStagedUncommittedFiles -ne $null -And $result.GitDisaster_StagedUncommittedFiles -ne $ErrorStagedUncommittedFiles)
         {
             $valid = $false
-            $message = $message + 'ErrorStagedUncommittedFiles = ' + $result.ErrorStagedUncommittedFiles + ', should be ' + $ErrorStagedUncommittedFiles + "`n"
+            $message = $message + 'GitDisaster_StagedUncommittedFiles = ' + $result.GitDisaster_StagedUncommittedFiles + ', should be ' + $ErrorStagedUncommittedFiles + "`n"
         }
         
-        if ($ErrorUnpushedCommitsOnMainBranch -ne $null -And $result.ErrorUnpushedCommitsOnMainBranch -ne $ErrorUnpushedCommitsOnMainBranch)
+        if ($ErrorUnpushedCommitsOnMainBranch -ne $null -And $result.GitDisaster_UnpushedCommitsOnMainBranch -ne $ErrorUnpushedCommitsOnMainBranch)
         {
             $valid = $false
-            $message = $message + 'ErrorUnpushedCommitsOnMainBranch = ' + $result.ErrorUnpushedCommitsOnMainBranch + ', should be ' + $ErrorUnpushedCommitsOnMainBranch + "`n"
+            $message = $message + 'GitDisaster_UnpushedCommitsOnMainBranch = ' + $result.GitDisaster_UnpushedCommitsOnMainBranch + ', should be ' + $ErrorUnpushedCommitsOnMainBranch + "`n"
         }
         
         if ($ErrorConflicts -ne $null -And $result.ErrorConflicts -ne $ErrorConflicts)
@@ -2050,9 +2155,13 @@ function GitNoob_AssertBuildCacheAndCommitOnMainBranch
                                                                    -phpPath $projectType.phpPath `
                                                                    -phpIniTemplateFilename $projectType.phpIniTemplateFile
 
-        $phpIni = new-object GitNoob.Gui.Program.ConfigFileTemplate.PhpIni($null, $GitWorkingDirectory.ConfigWorkingDirectory)
+        $phpIni = new-object GitNoob.Utils.ConfigFileTemplate.PhpIni($null, $GitWorkingDirectory.ConfigWorkingDirectory)
         $tempPath = GitNoob_GetRootDirectoryForTesting
-        $IExecutor = new-object GitNoob.Gui.Program.ConfigIExecutor($true, $projectType.phpPath, $phpIni.IniPath, $tempPath, $testdirectory.path)
+        $IExecutor = new-object GitNoob.Utils.BatFile(
+            $null,
+            'GitNoob Test', [GitNoob.Utils.BatFile+RunAstype]::runAsInvoker, [GitNoob.Utils.BatFile+WindowType]::hideWindow, 'GitNoob Test',
+            $null, $GitWorkingDirectory.ConfigWorkingDirectory,
+            $phpIni)
 
         $result = $GitWorkingDirectory.BuildCacheAndCommitOnMainBranch($IExecutor, 'Build cache - GitNoob_AssertBuildCacheAndCommitOnMainBranch')
         

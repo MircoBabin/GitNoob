@@ -11,7 +11,7 @@ $GitNoob_ps1 = Join-Path -Path $PSScriptRoot  -ChildPath 'GitNoob.ps1'
 #       $global:GitNoob_RunGitExe_Verbose = $true
 
 
-function RunMergeWithNoConflicts
+function RunCherryPickWithNoConflicts
 {
     param (
         [Parameter(Mandatory=$true)]$upstreamRepository
@@ -32,11 +32,11 @@ function RunMergeWithNoConflicts
 
         GitNoob_GitCreateBranch -testdirectory $testrepository.testdirectory -name "wip"
         
-        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'myfile-master-RunWithMergeNoConflicts'
+        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'myfile-master-RunCherryPickWithNoConflicts'
         GitNoob_GitStageFile -testdirectory $testrepository.testdirectory -name 'myfile'
         GitNoob_GitCommit -testdirectory $testrepository.testdirectory -name 'new (1) commit on local master'    
         
-        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'changed-myfile-master-RunWithMergeNoConflicts'
+        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'changed-myfile-master-RunCherryPickWithNoConflicts'
         GitNoob_GitStageFile -testdirectory $testrepository.testdirectory -name 'myfile'
         GitNoob_GitCommit -testdirectory $testrepository.testdirectory -name 'new (2) commit on local master'
         
@@ -44,34 +44,32 @@ function RunMergeWithNoConflicts
         GitNoob_GitPushBranch -testdirectory $testrepository.testdirectory -remotename "origin" -name "master"
         
         GitNoob_GitCheckoutBranch -testdirectory $testrepository.testdirectory -name "wip"
-        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile-wip' -contents 'myfile-wip1-RunWithMergeNoConflicts'
+        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile-wip' -contents 'myfile-wip1-RunCherryPickWithNoConflicts'
         GitNoob_GitStageFile -testdirectory $testrepository.testdirectory -name 'myfile-wip'
         GitNoob_GitCommit -testdirectory $testrepository.testdirectory -name 'new (1) commit on local wip'
 
-        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile-wip' -contents 'myfile-wip2-RunWithMergeNoConflicts'
-        GitNoob_GitStageFile -testdirectory $testrepository.testdirectory -name 'myfile-wip'
-        GitNoob_GitCommit -testdirectory $testrepository.testdirectory -name 'new (2) commit on local wip'
+        $commitId = GitNoob_GitGetLastCommitId -testdirectory $testrepository.testdirectory
 
-        GitNoob_AssertIsMergeActive -description 'merge not active' `
-                                    -testdirectory $testrepository.testdirectory `
-                                    -active $false `
-                                    -currentBranch '' `
-                                    -fromBranch ''
+        GitNoob_AssertIsCherryPickActive -description 'cherry-pick not active' `
+                                         -testdirectory $testrepository.testdirectory `
+                                         -active $false `
+                                         -currentBranch '' `
+                                         -fromCommitId ''
 
         GitNoob_GitCheckoutBranch -testdirectory $testrepository.testdirectory -name "master"
-        GitNoob_GitMergeIntoCurrentBranch -testdirectory $testrepository.testdirectory -fromBranch 'wip'
+        GitNoob_GitCherryPickIntoCurrentBranch -testdirectory $testrepository.testdirectory -fromCommitId $commitId
                                                     
-        GitNoob_AssertIsMergeActive -description 'Merge wip onto main branch "master" with no conflicts' `
-                                     -testdirectory $testrepository.testdirectory `
-                                     -active $false `
-                                     -currentBranch '' `
-                                     -fromBranch ''
+        GitNoob_AssertIsCherryPickActive -description 'Cherry-pick commit onto main branch "master" with no conflicts' `
+                                         -testdirectory $testrepository.testdirectory `
+                                         -active $false `
+                                         -currentBranch '' `
+                                         -fromCommitId ''
     } finally {
         GitNoob_DeleteTestDirectory -testdirectory $testrepository.testdirectory
     }
 }
 
-function RunMergeWithConflicts
+function RunCherryPickWithConflicts
 {
     param (
         [Parameter(Mandatory=$true)]$upstreamRepository
@@ -92,11 +90,11 @@ function RunMergeWithConflicts
 
         GitNoob_GitCreateBranch -testdirectory $testrepository.testdirectory -name "wip"
         
-        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'myfile-master-RunWithAddAddConflicts'
+        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'myfile-master-RunCherryPickWithConflicts'
         GitNoob_GitStageFile -testdirectory $testrepository.testdirectory -name 'myfile'
         GitNoob_GitCommit -testdirectory $testrepository.testdirectory -name 'new (1) commit on local master'    
         
-        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'changed-myfile-master-RunWithAddAddConflicts'
+        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'changed-myfile-master-RunCherryPickWithConflicts'
         GitNoob_GitStageFile -testdirectory $testrepository.testdirectory -name 'myfile'
         GitNoob_GitCommit -testdirectory $testrepository.testdirectory -name 'new (2) commit on local master'
 
@@ -104,28 +102,48 @@ function RunMergeWithConflicts
         GitNoob_GitPushBranch -testdirectory $testrepository.testdirectory -remotename "origin" -name "master"
         
         GitNoob_GitCheckoutBranch -testdirectory $testrepository.testdirectory -name "wip"
-        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'myfile-wip1-RunWithAddAddConflicts'
+        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'myfile-wip1-RunCherryPickWithConflicts'
         GitNoob_GitStageFile -testdirectory $testrepository.testdirectory -name 'myfile'
         GitNoob_GitCommit -testdirectory $testrepository.testdirectory -name 'new (1) commit on local wip'
 
-        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'myfile-wip2-RunWithAddAddConflicts'
+        GitNoob_CreateFile -testdirectory $testrepository.testdirectory -name 'myfile' -contents 'myfile-wip2-RunCherryPickWithConflicts'
         GitNoob_GitStageFile -testdirectory $testrepository.testdirectory -name 'myfile'
         GitNoob_GitCommit -testdirectory $testrepository.testdirectory -name 'new (2) commit on local wip'
 
-        GitNoob_AssertIsMergeActive -description 'rebase not active' `
-                                    -testdirectory $testrepository.testdirectory `
-                                    -active $false `
-                                    -currentBranch '' `
-                                    -fromBranch ''
+        $commitId = GitNoob_GitGetLastCommitId -testdirectory $testrepository.testdirectory
+
+        GitNoob_AssertIsCherryPickActive -description 'cherry-pick not active' `
+                                         -testdirectory $testrepository.testdirectory `
+                                         -active $false `
+                                         -currentBranch '' `
+                                         -fromCommitId ''
 
         GitNoob_GitCheckoutBranch -testdirectory $testrepository.testdirectory -name "master"
-        GitNoob_GitMergeIntoCurrentBranch -testdirectory $testrepository.testdirectory -fromBranch 'wip'
-                                                    
-        GitNoob_AssertIsMergeActive -description 'Merge wip into main branch "master" with add - add conflicts' `
-                                    -testdirectory $testrepository.testdirectory `
-                                    -active $true `
-                                    -currentBranch 'master' `
-                                    -fromBranch 'wip'
+        GitNoob_GitCherryPickIntoCurrentBranch -testdirectory $testrepository.testdirectory -fromCommitId $commitId
+
+        GitNoob_AssertIsCherryPickActive -description 'Cherry-pick commit onto main branch "master" with conflicts' `
+                                         -testdirectory $testrepository.testdirectory `
+                                         -active $true `
+                                         -currentBranch 'master' `
+                                         -fromCommitId $commitId
+
+        # commit file with conflict markers - normally the file would be edited cleanly.
+        GitNoob_GitStageFile -testdirectory $testrepository.testdirectory -name 'myfile'
+
+        GitNoob_AssertIsCherryPickActive -description 'Cherry-pick commit onto main branch "master" with conflicts [staged]' `
+                                         -testdirectory $testrepository.testdirectory `
+                                         -active $true `
+                                         -currentBranch 'master' `
+                                         -fromCommitId $commitId
+
+        GitNoob_GitCommit -testdirectory $testrepository.testdirectory -name 'cherry-picked conflict'
+
+        GitNoob_AssertIsCherryPickActive -description 'Cherry-pick commit onto main branch "master" with conflicts [committed]' `
+                                         -testdirectory $testrepository.testdirectory `
+                                         -active $false `
+                                         -currentBranch '' `
+                                         -fromCommitId ''
+
     } finally {
         GitNoob_DeleteTestDirectory -testdirectory $testrepository.testdirectory
     }
@@ -133,8 +151,8 @@ function RunMergeWithConflicts
 
 $upstreamRepository = GitNoob_Repository_CreateTest
 try {
-    RunMergeWithNoConflicts -upstreamRepository $upstreamRepository
-    RunMergeWithConflicts -upstreamRepository $upstreamRepository
+    RunCherryPickWithNoConflicts -upstreamRepository $upstreamRepository
+    RunCherryPickWithConflicts -upstreamRepository $upstreamRepository
 } finally {
     GitNoob_DeleteTestDirectory -testdirectory $upstreamRepository.testdirectory
 }
