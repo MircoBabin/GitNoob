@@ -33,7 +33,10 @@ namespace GitNoob.Git
         public CherryPickResult CherryPickContinue()
         {
             var result = new CherryPickResult();
-            if (GitDisaster.Check(this, result, new GitDisasterAllowed() { Allow_CherryPickInProgress = true }))
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed() {
+                Allow_CherryPickInProgress = true,
+                Allow_StagedUncommittedFiles = true,
+            }))
                 return result;
 
             if (result.GitDisaster_CherryPickInProgress != true)
