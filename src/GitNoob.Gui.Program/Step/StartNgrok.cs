@@ -94,7 +94,7 @@ namespace GitNoob.Gui.Program.Step
                     " --host-header=localhost:" + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port +
                     " " + (StepsExecutor.Config.ProjectWorkingDirectory.Apache.UseSsl.Value ? "https" : "http") + "://localhost:" + StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port;
 
-                Utils.BatFile.StartExecutable(_ngrokExe, commandline,
+                Utils.BatFile.StartExecutable(StepsExecutor.Config.visualizerShowException, _ngrokExe, commandline,
                     StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory, StepsExecutor.Config.PhpIni);
             }
 

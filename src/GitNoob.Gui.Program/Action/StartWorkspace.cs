@@ -39,7 +39,7 @@ namespace GitNoob.Gui.Program.Action
             string filename = GetFile();
             bool asAdministrator = config.ProjectWorkingDirectory.Editor.WorkspaceRunAsAdministrator.Value;
 
-            var batFile = new BatFile("run-workspace", (asAdministrator ? BatFile.RunAsType.runAsAdministrator : BatFile.RunAsType.runAsInvoker), BatFile.WindowType.hideWindow, "GitNoob - Workspace",
+            var batFile = new BatFile(config.visualizerShowException, "run-workspace", (asAdministrator ? BatFile.RunAsType.runAsAdministrator : BatFile.RunAsType.runAsInvoker), BatFile.WindowType.hideWindow, "GitNoob - Workspace",
                 config.Project, config.ProjectWorkingDirectory,
                 config.PhpIni);
             batFile.AppendLine("start \"Workspace\" \"" + filename + "\"");

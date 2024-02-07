@@ -1,4 +1,6 @@
-﻿namespace GitNoob.Gui.Visualizer
+﻿using System;
+
+namespace GitNoob.Gui.Visualizer
 {
     public interface IVisualizer
     {
@@ -6,6 +8,7 @@
         bool isFrontendLocked();
         void unlockFrontend();
 
+        void showException(Exception ex);
         void busyMessage(string message);
         void message(IVisualizerMessage message);
 

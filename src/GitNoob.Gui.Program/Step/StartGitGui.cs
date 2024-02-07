@@ -15,7 +15,7 @@ namespace GitNoob.Gui.Program.Step
             string executable = Action.StartGitGui.GetExecutable();
             if (string.IsNullOrWhiteSpace(executable)) return true;
 
-            var batFile = new BatFile("run-gitk-current-branch", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow, "GitNoob - Git History",
+            var batFile = new BatFile(StepsExecutor.Config.visualizerShowException, "run-gitk-current-branch", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow, "GitNoob - Git History",
                 StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory,
                 StepsExecutor.Config.PhpIni);
             batFile.AppendLine("start \"Git-Gui\" \"" + executable + "\"");

@@ -1,10 +1,13 @@
-﻿namespace GitNoob.Gui.Visualizer
+﻿using System;
+
+namespace GitNoob.Gui.Visualizer
 {
     public interface IVisualizerProgram
     {
         void visualizerSet(IVisualizer visualizer);
         void visualizerExit();
         void visualizerReady(GitResult.StatusResult status);
+        void visualizerShowException(Exception ex);
 
         GitResult.StatusResult visualizerRetrieveStatus();
 

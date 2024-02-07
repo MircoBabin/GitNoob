@@ -41,7 +41,7 @@ namespace GitNoob.Gui.Program.Action
             var executable = GetExecutable();
             if (string.IsNullOrEmpty(executable)) return;
 
-            BatFile.StartDosPrompt(asAdministrator, config.Project, config.ProjectWorkingDirectory, config.PhpIni);
+            BatFile.StartDosPrompt(config.visualizerShowException, asAdministrator, config.Project, config.ProjectWorkingDirectory, config.PhpIni);
         }
     }
 }

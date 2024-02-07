@@ -64,6 +64,7 @@ namespace GitNoob.Gui.Program
             ApacheConf = new GitNoob.Utils.ConfigFileTemplate.ApacheConf(Project, ProjectWorkingDirectory, PhpIni);
 
             Executor = new BatFile(
+                visualizerShowException,
                 "iexecutor",
                 BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow,
                 "ProjectType - Executor",
@@ -96,7 +97,6 @@ namespace GitNoob.Gui.Program
             _startNgrok = new Action.StartNgrok(this);
         }
 
-
         public void visualizerSet(Visualizer.IVisualizer visualizer)
         {
             Visualizer = visualizer;
@@ -116,6 +116,13 @@ namespace GitNoob.Gui.Program
         {
             var ready = new Action.VisualizerReady(this);
             ready.execute(status);
+        }
+
+        public void visualizerShowException(Exception ex)
+        {
+            if (Visualizer == null) throw ex;
+
+            Visualizer.showException(ex);
         }
 
         public GitResult.StatusResult visualizerRetrieveStatus()

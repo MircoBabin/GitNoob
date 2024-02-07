@@ -40,7 +40,7 @@ namespace GitNoob.Gui.Program.Action
         {
             var path = config.ProjectWorkingDirectory.Path.ToString();
 
-            Utils.BatFile.StartWindowsExplorer(path, config.Project, config.ProjectWorkingDirectory, config.PhpIni);
+            Utils.BatFile.StartWindowsExplorer(config.visualizerShowException, path, config.Project, config.ProjectWorkingDirectory, config.PhpIni);
         }
     }
 }

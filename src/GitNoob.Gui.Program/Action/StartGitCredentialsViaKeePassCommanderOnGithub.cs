@@ -18,7 +18,7 @@ namespace GitNoob.Gui.Program.Action
 
         public override void execute()
         {
-            Utils.BatFile.StartWebBrowser("https://github.com/MircoBabin/GitCredentialsViaKeePassCommander", 
+            Utils.BatFile.StartWebBrowser(config.visualizerShowException, "https://github.com/MircoBabin/GitCredentialsViaKeePassCommander", 
                 config.Project, config.ProjectWorkingDirectory, config.PhpIni);
         }
     }

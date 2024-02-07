@@ -43,7 +43,7 @@ namespace GitNoob.Gui.Program.Action
             var executable = GetExecutable();
             if (string.IsNullOrEmpty(executable)) return;
 
-            var batFile = new BatFile("run-gitgui", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow, "GitNoob - Git Gui",
+            var batFile = new BatFile(config.visualizerShowException, "run-gitgui", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow, "GitNoob - Git Gui",
                 config.Project, config.ProjectWorkingDirectory,
                 config.PhpIni);
             batFile.AppendLine("start \"Git-Gui\" \"" + executable + "\"");

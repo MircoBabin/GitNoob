@@ -69,14 +69,14 @@ namespace GitNoob.Gui.Program.Step
                         cmdline.Append("\"");
                     }
 
-                    Utils.BatFile.StartExecutable(exe, cmdline.ToString(),
+                    Utils.BatFile.StartExecutable(StepsExecutor.Config.visualizerShowException, exe, cmdline.ToString(),
                         StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory, StepsExecutor.Config.PhpIni);
                 }
                 else
                 {
                     foreach (var file in _files)
                     {
-                        Utils.BatFile.StartExecutable(exe, "\"" + file + "\"",
+                        Utils.BatFile.StartExecutable(StepsExecutor.Config.visualizerShowException, exe, "\"" + file + "\"",
                             StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory, StepsExecutor.Config.PhpIni);
                     }
 

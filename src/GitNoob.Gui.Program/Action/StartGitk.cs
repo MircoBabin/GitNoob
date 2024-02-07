@@ -50,7 +50,7 @@ namespace GitNoob.Gui.Program.Action
             var executable = GetExecutable();
             if (string.IsNullOrEmpty(executable)) return;
 
-            var batFile = new BatFile("run-gitkall", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow, "GitNoob - Git History",
+            var batFile = new BatFile(config.visualizerShowException, "run-gitkall", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.hideWindow, "GitNoob - Git History",
                 config.Project, config.ProjectWorkingDirectory,
                 config.PhpIni);
 

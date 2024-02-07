@@ -34,7 +34,7 @@ namespace GitNoob.Gui.Program.Remedy
                         Cancel();
                     }),
                     new VisualizerMessageButton("Execute the check command in a command prompt. And manually investigate the problem.", (input) => {
-                        var batfile = new Utils.BatFile("git-remote",
+                        var batfile = new Utils.BatFile(this.StepsExecutor.Config.visualizerShowException, "git-remote",
                             Utils.BatFile.RunAsType.runAsInvoker, Utils.BatFile.WindowType.showWindow, "Git remote",
                             this.StepsExecutor.Config.Project,
                             this.StepsExecutor.Config.ProjectWorkingDirectory,

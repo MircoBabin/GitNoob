@@ -592,6 +592,14 @@ namespace GitNoob.Gui.Forms
             backToStatus();
         }
 
+        public void showException(Exception ex)
+        {
+            this.Invoke((MethodInvoker)delegate
+            {
+                MessageBox.Show(ex.Message, "GitNoob - Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            });
+        }
+
         public void busyMessage(string message)
         {
             if (!this.Visible) return;

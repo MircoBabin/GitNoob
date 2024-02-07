@@ -47,7 +47,7 @@ namespace GitNoob.Gui.Program.Action
             var executable = GetExecutable();
             if (string.IsNullOrEmpty(executable)) return;
 
-            Utils.BatFile.StartExecutable(executable, null, 
+            Utils.BatFile.StartExecutable(config.visualizerShowException, executable, null, 
                 config.Project, config.ProjectWorkingDirectory, config.PhpIni);
         }
     }

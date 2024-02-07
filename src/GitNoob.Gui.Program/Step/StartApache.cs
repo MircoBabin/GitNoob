@@ -45,7 +45,7 @@ namespace GitNoob.Gui.Program.Step
             if (!running)
             {
                 var confFilename = StepsExecutor.Config.ApacheConf.ConfFullFilename;
-                var batFile = new BatFile("run-apache", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.showWindow, "Apache for " + StepsExecutor.Config.ApacheConf.ProjectnameASCII,
+                var batFile = new BatFile(StepsExecutor.Config.visualizerShowException, "run-apache", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.showWindow, "Apache for " + StepsExecutor.Config.ApacheConf.ProjectnameASCII,
                     StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory,
                     StepsExecutor.Config.PhpIni,
                     apacheBinPath);
