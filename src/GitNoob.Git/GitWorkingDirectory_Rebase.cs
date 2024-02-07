@@ -15,10 +15,8 @@ namespace GitNoob.Git
             {
                 if (!CreateDeletedBranchUndoTag(currentbranch, MainBranch, createUndeleteTagMessage))
                 {
-                    return new RebaseResult()
-                    {
-                        ErrorCreatingSafetyTag = true,
-                    };
+                    result.ErrorCreatingSafetyTag = true;
+                    return result;
                 }
             }
 
@@ -26,7 +24,7 @@ namespace GitNoob.Git
             rebase.WaitFor();
 
             var conflicts = new Command.WorkingTree.HasConflicts(this);
-            var rebasing = new Command.WorkingTree.IsCherryPickActive(this);
+            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
             conflicts.WaitFor();
             rebasing.WaitFor();
 
@@ -52,7 +50,7 @@ namespace GitNoob.Git
             rebase.WaitFor();
 
             var conflicts = new Command.WorkingTree.HasConflicts(this);
-            var rebasing = new Command.WorkingTree.IsCherryPickActive(this);
+            var rebasing = new Command.WorkingTree.IsRebaseActive(this);
             conflicts.WaitFor();
             rebasing.WaitFor();
 

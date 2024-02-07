@@ -10,7 +10,7 @@ namespace GitNoob.Utils
     public class BatFile : Config.IExecutor
     {
         public enum RunAsType { runAsInvoker, runAsAdministrator }
-        public enum WindowType { showWindow, hideWindow }
+        public enum WindowType { showWindow, hideWindow, showWindowWithPauseAtEnd }
 
         public delegate void OnErrorCallback(Exception ex);
 
@@ -248,6 +248,14 @@ namespace GitNoob.Utils
             contents.AppendLine();
             contents.Append(_contents);
 
+            switch(_window)
+            {
+                case WindowType.showWindowWithPauseAtEnd:
+                    contents.AppendLine();
+                    contents.AppendLine("pause");
+                    break;
+            }
+
             string batFileContents = contents.ToString();
 
             string filename = "ExecuteBatFile.";
@@ -305,9 +313,14 @@ namespace GitNoob.Utils
 
         public void StartAndKeepDosPromptOpen()
         {
-            if (_window != WindowType.showWindow)
+            switch(_window)
             {
-                throw new Exception("BatFile.StartAndKeepDosPromptOpen can only be used with showWindow");
+                case WindowType.showWindow:
+                case WindowType.showWindowWithPauseAtEnd:
+                    break;
+
+                default:
+                    throw new Exception("BatFile.StartAndKeepDosPromptOpen can only be used with showWindow");
             }
 
             var orgTitle = _windowTitle;
@@ -366,12 +379,12 @@ namespace GitNoob.Utils
         {
             if (_runAs != RunAsType.runAsInvoker)
             {
-                throw new Exception("BatFile.RunWithConsoleExecutor can only be used with runAsInvoker");
+                throw new Exception("BatFile.ExecuteBatFile - ConsoleExecutor can only be used with runAsInvoker");
             }
 
             if (_window != WindowType.hideWindow)
             {
-                throw new Exception("BatFile.RunWithConsoleExecutor can only be used with hideWindow");
+                throw new Exception("BatFile.ExecuteBatFile - ConsoleExecutor can only be used with hideWindow");
             }
 
             Clear();
