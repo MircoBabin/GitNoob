@@ -12,6 +12,7 @@ namespace GitNoob.Gui.Program.Remedy
 
         public IVisualizerMessageType VisualizerMessageType { get; protected set; }
         public VisualizerMessageWithLinks VisualizerMessageText { get; protected set; }
+        public VisualizerMessageWithLinks VisualizerMessageInput2 { get; protected set; }
         public List<VisualizerMessageButton> VisualizerMessageButtons { get; protected set; }
 
         protected Remedy(Step.Step Step, ref VisualizerMessageWithLinks Message)
@@ -23,6 +24,8 @@ namespace GitNoob.Gui.Program.Remedy
             VisualizerMessageText = new VisualizerMessageWithLinks(Message);
             VisualizerMessageText.Append(Environment.NewLine);
             VisualizerMessageText.Append(Environment.NewLine);
+
+            VisualizerMessageInput2 = new VisualizerMessageWithLinks();
 
             VisualizerMessageButtons = null;
             Message = null; //prevent changing the wrong message

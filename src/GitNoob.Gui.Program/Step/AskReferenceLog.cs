@@ -36,7 +36,7 @@ namespace GitNoob.Gui.Program.Step
                         msg.Append(reflog.CommitMessage);
                     }
 
-                    var remedy = new Remedy.InputNewBranchName(this, msg, "Create new branch based on git reference log entry.", (input) => {
+                    var remedy = new Remedy.InputNewBranchName(this, msg, "Create new branch based on git reference log entry.", false, (input, OnCommitId) => {
                         var createBranch = new CreateBranchOnGitReferenceLog(reflog, input);
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { createBranch });
                     });

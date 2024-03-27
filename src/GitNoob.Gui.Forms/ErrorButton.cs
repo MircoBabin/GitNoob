@@ -10,6 +10,7 @@ namespace GitNoob.Gui.Forms
     {
         private System.Action<Visualizer.VisualizerInput> _action = null;
         private TextBox _input = null;
+        private TextBox _input2 = null;
         private ControlCollection _parent = null;
 
         private new bool Visible { get { return base.Visible; } } // because of subbuttons, use ShowErrorbutton() & HideErrorButton()
@@ -53,6 +54,10 @@ namespace GitNoob.Gui.Forms
             if (_input != null)
             {
                 input.inputValue = _input.Text;
+            }
+            if (_input2 != null)
+            {
+                input.input2Value = _input2.Text;
             }
 
             action(input);
@@ -111,12 +116,13 @@ namespace GitNoob.Gui.Forms
             catch { }
         }
 
-        public void ShowErrorButton(ToolTip toolTips, TextBox Input, Visualizer.VisualizerMessageButton button, ref Point Location, Size size)
+        public void ShowErrorButton(ToolTip toolTips, TextBox Input, TextBox Input2, Visualizer.VisualizerMessageButton button, ref Point Location, Size size)
         {
             HideErrorButton();
 
             _action = button.onClicked;
             _input = Input;
+            _input2 = Input2;
 
             const int margin = 8;
             Point sublocation = new Point(Location.X, Location.Y);

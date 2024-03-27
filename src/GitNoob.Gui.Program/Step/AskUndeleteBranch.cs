@@ -35,7 +35,7 @@ namespace GitNoob.Gui.Program.Step
                         msg.Append(branch.Message);
                     }
 
-                    var remedy = new Remedy.InputNewBranchName(this, msg, "Undelete branch. Create new branch on last commit of deleted branch.", (input) => {
+                    var remedy = new Remedy.InputNewBranchName(this, msg, "Undelete branch. Create new branch on last commit of deleted branch.", false, (input, OnCommitId) => {
                         var undeleteStep = new UndeleteBranch(branch, input);
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { undeleteStep });
                     });

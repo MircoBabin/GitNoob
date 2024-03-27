@@ -7,21 +7,32 @@ namespace GitNoob.Gui.Program.Remedy
     public class InputNewBranchName : Remedy
     {
         public InputNewBranchName(Step.Step Step, VisualizerMessageWithLinks Message, 
-            string MoveButtonText, System.Action<string> OnMoveButtonAction) :
+            string NewButtonText,
+            bool AskOnCommitId,
+            System.Action<string, string> OnNewButtonAction) :
             base(Step, ref Message)
         {
             VisualizerMessageText.Append("A branch name can only contain A-Z, a-z, 0-9, _ (underscore) and - (dash). And should not start with \"gitlock-\" or \"gitnoob-\".");
             VisualizerMessageText.Append(Environment.NewLine);
             VisualizerMessageText.Append("Enter the name of the new branch:");
 
-            VisualizerMessageType = IVisualizerMessageType.input;
+            if (AskOnCommitId)
+            {
+                VisualizerMessageInput2.Append("On which commit-id should the branch be created:");
+                VisualizerMessageType = IVisualizerMessageType.input2;
+            }
+            else
+            {
+                VisualizerMessageType = IVisualizerMessageType.input;
+            }
+
             VisualizerMessageButtons = 
                 new List<VisualizerMessageButton>()
                 {
                     new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
                     }),
-                    new VisualizerMessageButton(MoveButtonText, (input) => {
+                    new VisualizerMessageButton(NewButtonText, (input) => {
                         if (input.inputValue.ToLowerInvariant().StartsWith("gitnoob-")) return;
                         if (input.inputValue.ToLowerInvariant().StartsWith("gitlock-")) return;
 
@@ -36,7 +47,7 @@ namespace GitNoob.Gui.Program.Remedy
                             if (!valid) return;
                         }
 
-                        OnMoveButtonAction(input.inputValue);
+                        OnNewButtonAction(input.inputValue, (AskOnCommitId ? input.input2Value : null));
                         Done();
                     }),
                 };

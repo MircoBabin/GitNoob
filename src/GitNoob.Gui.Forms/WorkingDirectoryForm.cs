@@ -662,8 +662,16 @@ namespace GitNoob.Gui.Forms
 
             LinkLabelUtils.SetLinkLabel(errorText, message.VisualizerMessageText.Message.ToString(), message.VisualizerMessageText.Links);
 
+            errorText2.MaximumSize = size;
+            errorText2.AutoSize = true;
+
+            LinkLabelUtils.SetLinkLabel(errorText2, message.VisualizerMessageInput2.Message.ToString(), message.VisualizerMessageInput2.Links);
+
             Point location;
             TextBox input;
+            TextBox input2 = null;
+            errorText2.Visible = false;
+            errorInput2.Visible = false;
             switch (message.VisualizerMessageType)
             {
                 case Visualizer.IVisualizerMessageType.options:
@@ -674,6 +682,7 @@ namespace GitNoob.Gui.Forms
                     break;
 
                 case Visualizer.IVisualizerMessageType.input:
+                case Visualizer.IVisualizerMessageType.input2:
                     location = new Point(errorText.Left, errorText.Top + errorText.Height + 5);
                     errorInput.Location = location;
                     errorInput.Width = errorText.MaximumSize.Width;
@@ -682,6 +691,21 @@ namespace GitNoob.Gui.Forms
 
                     location = new Point(errorInput.Left, errorInput.Top + errorInput.Height + 30);
                     input = errorInput;
+
+                    if (message.VisualizerMessageType == Visualizer.IVisualizerMessageType.input2)
+                    {
+                        errorText2.Location = location;
+                        errorText2.Visible = true;
+                        location = new Point(errorText2.Left, errorText2.Top + errorText2.Height + 5);
+
+                        errorInput2.Location = location;
+                        errorInput2.Width = errorText.MaximumSize.Width;
+                        errorInput2.Text = String.Empty;
+                        errorInput2.Visible = true;
+
+                        location = new Point(errorInput2.Left, errorInput2.Top + errorInput2.Height + 30);
+                        input2 = errorInput2;
+                    }
                     break;
 
                 default:
@@ -695,7 +719,7 @@ namespace GitNoob.Gui.Forms
                     if (item != null)
                     {
                         ErrorButton button = _errorButtons[no];
-                        button.ShowErrorButton(toolTips, input, item, ref location, size);
+                        button.ShowErrorButton(toolTips, input, input2, item, ref location, size);
 
                         no++;
                     }

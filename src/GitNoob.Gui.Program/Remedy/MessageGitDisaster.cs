@@ -84,7 +84,7 @@ namespace GitNoob.Gui.Program.Remedy
                         var message = new VisualizerMessageWithLinks();
                         message.Append("Move changes on main branch \"" + MainBranch + "\" to a new branch.");
 
-                        var remedy = new InputNewBranchName(Step, message, "Move changes", (NewBranchName) =>
+                        var remedy = new InputNewBranchName(Step, message, "Move changes", false, (NewBranchName, OnCommitId) =>
                         {
                             var step = new Step.MoveChangesOnMainBranchToNewBranch(MainBranch, NewBranchName);
                             StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });

@@ -9,6 +9,7 @@ namespace GitNoob.Gui.Program.Remedy
             IEnumerable<string> branches, string CancelText, 
             string RenameCurrentBranchText, string CurrentBranch,
             string NewBranchText, string MainBranch,
+            string NewBranchOnSpecificCommitText,
             string DeleteBranchText, 
             System.Action<string> OnSelectedBranchAction) :
             base(Step, ref Message)
@@ -30,7 +31,7 @@ namespace GitNoob.Gui.Program.Remedy
             if (!string.IsNullOrWhiteSpace(RenameCurrentBranchText))
             {
                 VisualizerMessageButtons.Add(new VisualizerMessageButton(RenameCurrentBranchText, (input) => {
-                    var remedy = new InputNewBranchName(Step, new VisualizerMessageWithLinks("Rename branch."), RenameCurrentBranchText, (NewBranchName) =>
+                    var remedy = new InputNewBranchName(Step, new VisualizerMessageWithLinks("Rename branch."), RenameCurrentBranchText, false, (NewBranchName, OnCommitId) =>
                     {
                         var step = new Step.RenameBranch(CurrentBranch, NewBranchName);
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
@@ -44,9 +45,23 @@ namespace GitNoob.Gui.Program.Remedy
             if (!string.IsNullOrWhiteSpace(NewBranchText))
             {
                 VisualizerMessageButtons.Add(new VisualizerMessageButton(NewBranchText, (input) => {
-                    var remedy = new InputNewBranchName(Step, new VisualizerMessageWithLinks("Create new branch."), NewBranchText, (NewBranchName) =>
+                    var remedy = new InputNewBranchName(Step, new VisualizerMessageWithLinks("Create new branch."), NewBranchText, false, (NewBranchName, OnCommitId) =>
                     {
                         var step = new Step.CreateBranchOntoMainBranch(NewBranchName);
+                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
+                    });
+
+                    StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor> { remedy });
+                    Done();
+                }));
+            }
+
+            if (!string.IsNullOrWhiteSpace(NewBranchOnSpecificCommitText))
+            {
+                VisualizerMessageButtons.Add(new VisualizerMessageButton(NewBranchOnSpecificCommitText, (input) => {
+                    var remedy = new InputNewBranchName(Step, new VisualizerMessageWithLinks("Create new branch on specific commit-id."), NewBranchOnSpecificCommitText, true, (NewBranchName, OnCommitId) =>
+                    {
+                        var step = new Step.CreateBranchOntoCommitId(NewBranchName, OnCommitId);
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                     });
 

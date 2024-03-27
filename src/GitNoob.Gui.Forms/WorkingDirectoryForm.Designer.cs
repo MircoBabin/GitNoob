@@ -42,12 +42,14 @@
             this.lblStatusValue = new System.Windows.Forms.Label();
             this.labelBusy = new System.Windows.Forms.Label();
             this.panelError = new System.Windows.Forms.Panel();
+            this.errorInput2 = new System.Windows.Forms.TextBox();
             this.errorInput = new System.Windows.Forms.TextBox();
-            this.errorText = new System.Windows.Forms.LinkLabel();
             this.errorBottom = new System.Windows.Forms.Label();
             this.errorPicture = new System.Windows.Forms.PictureBox();
+            this.errorText = new System.Windows.Forms.LinkLabel();
             this.lblCurrentbranchValue = new System.Windows.Forms.LinkLabel();
             this.toolTips = new System.Windows.Forms.ToolTip(this.components);
+            this.errorText2 = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
             this.panelStatus.SuspendLayout();
             this.panelError.SuspendLayout();
@@ -155,6 +157,8 @@
             // 
             // panelError
             // 
+            this.panelError.Controls.Add(this.errorText2);
+            this.panelError.Controls.Add(this.errorInput2);
             this.panelError.Controls.Add(this.errorInput);
             this.panelError.Controls.Add(this.errorBottom);
             this.panelError.Controls.Add(this.errorPicture);
@@ -165,22 +169,19 @@
             this.panelError.Size = new System.Drawing.Size(982, 265);
             this.panelError.TabIndex = 16;
             // 
+            // errorInput2
+            // 
+            this.errorInput2.Location = new System.Drawing.Point(76, 189);
+            this.errorInput2.Name = "errorInput2";
+            this.errorInput2.Size = new System.Drawing.Size(100, 25);
+            this.errorInput2.TabIndex = 7;
+            // 
             // errorInput
             // 
             this.errorInput.Location = new System.Drawing.Point(76, 44);
             this.errorInput.Name = "errorInput";
             this.errorInput.Size = new System.Drawing.Size(100, 25);
             this.errorInput.TabIndex = 6;
-            // 
-            // errorText
-            // 
-            this.errorText.Location = new System.Drawing.Point(72, 12);
-            this.errorText.Name = "errorText";
-            this.errorText.Size = new System.Drawing.Size(898, 95);
-            this.errorText.TabIndex = 5;
-            this.errorText.TabStop = true;
-            this.errorText.Text = "errorText";
-            this.errorText.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.errorText_LinkClicked);
             // 
             // errorBottom
             // 
@@ -200,6 +201,16 @@
             this.errorPicture.TabIndex = 3;
             this.errorPicture.TabStop = false;
             // 
+            // errorText
+            // 
+            this.errorText.Location = new System.Drawing.Point(72, 12);
+            this.errorText.Name = "errorText";
+            this.errorText.Size = new System.Drawing.Size(898, 95);
+            this.errorText.TabIndex = 5;
+            this.errorText.TabStop = true;
+            this.errorText.Text = "errorText";
+            this.errorText.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.errorText_LinkClicked);
+            // 
             // lblCurrentbranchValue
             // 
             this.lblCurrentbranchValue.AutoSize = true;
@@ -211,6 +222,15 @@
             this.lblCurrentbranchValue.Text = "...";
             this.lblCurrentbranchValue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblCurrentbranchValue_LinkClicked);
             // 
+            // errorText2
+            // 
+            this.errorText2.Location = new System.Drawing.Point(72, 119);
+            this.errorText2.Name = "errorText2";
+            this.errorText2.Size = new System.Drawing.Size(898, 95);
+            this.errorText2.TabIndex = 8;
+            this.errorText2.TabStop = true;
+            this.errorText2.Text = "errorText2";
+            // 
             // WorkingDirectoryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -218,7 +238,6 @@
             this.ClientSize = new System.Drawing.Size(982, 382);
             this.Controls.Add(this.lblCurrentbranchValue);
             this.Controls.Add(this.labelBusy);
-            this.Controls.Add(this.panelStatus);
             this.Controls.Add(this.Picture);
             this.Controls.Add(this.lblCommitnameValue);
             this.Controls.Add(this.lblCommitname);
@@ -228,6 +247,7 @@
             this.Controls.Add(this.lblCurrentbranch);
             this.Controls.Add(this.lblMainbranch);
             this.Controls.Add(this.panelError);
+            this.Controls.Add(this.panelStatus);
             this.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "WorkingDirectoryForm";
@@ -264,6 +284,8 @@
         private System.Windows.Forms.TextBox errorInput;
         private System.Windows.Forms.LinkLabel lblCurrentbranchValue;
         private System.Windows.Forms.ToolTip toolTips;
+        private System.Windows.Forms.TextBox errorInput2;
+        private System.Windows.Forms.LinkLabel errorText2;
     }
 }
 
