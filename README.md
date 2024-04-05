@@ -20,7 +20,7 @@ GitNoob solves the following problems:
 - Deleting a branch. With the safety first feature to also undelete the deleted branch.
 - Flushing all your current changes down the toilet. To be able to start over, continue with a clean slate.
 - When having committed to the wrong branch (e.g. the main branch) provide a remedy to move the commits to a new branch.
-- Prevent git disaster from happening when: in detached head state, inside rebase, inside merge, having working tree changes, having staged uncommitted files.
+- Prevent git disaster from happening when: in detached head state, inside rebase, inside merge, inside cherry-picking, inside reverting, having working tree changes, having staged uncommitted files.
 - When using [Git Credentials via KeePassCommander](https://github.com/MircoBabin/GitCredentialsViaKeePassCommander) ensure KeePass is started.
 - Starting a dosprompt. Also with the "as administrator" option.
 - Starting an explorer.

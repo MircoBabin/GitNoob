@@ -1,5 +1,11 @@
 # GitNoob changelog
 
+## Version 1.24
+* Add: create a new branch on a specific commit-id.
+* Add: edit GitNoob project configuration file.
+* Fix: automatic create temporary commit, if necessary, when changing branch.
+* Fix: php.exe already present in Windows global path.
+
 ## Version 1.23
 * Add: option to start DOS Prompt when a merge, rebase, cherry pick conflict arises.
 * Add: Edit GitNoob root configuration file.
