@@ -225,78 +225,36 @@ namespace GitNoob.Utils
                 if (NeedsPhp())
                 {
                     string phpPath = FileUtils.GetExactPathName(_projectWorkingDirectory.Php.Path.ToString());
+
                     contents.AppendLine("set PHPRC=" + _phpIni.IniPath); /* Directory containing php.ini */
-                    contents.AppendLine("path %path%;" + phpPath);
+
+                    var environmentPathParts = FileUtils.RemoveExeFromEnvironmentPath("php.exe");
+                    environmentPathParts.Add(phpPath);
 
                     //Global Composer bin directory, e.g. for php-cs-fixer
                     //    %appdata%\Composer\\vendor\bin
                     string composerGlobalBin = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Composer\\vendor\\bin");
                     if (Directory.Exists(composerGlobalBin))
                     {
-                        contents.AppendLine("path %path%;" + composerGlobalBin);
+                        environmentPathParts.Add(composerGlobalBin);
                     }
 
-                    string phpExe = FileUtils.GetExactPathName(Path.Combine(phpPath, "php.exe"));
-                    string tmpFile;
-                    string tmpExpectFile;
+                    //Rebuild path
+                    bool first = true;
+                    foreach(var part in environmentPathParts)
                     {
-
-                        var now = DateTime.UtcNow;
-                        var randomBytes = new Byte[30];
-                        Random random = new Random();
-                        random.NextBytes(randomBytes);
-
-                        tmpFile = Path.Combine(path, "where-php-exe." +
-                            now.Year.ToString().PadLeft(4, '0') + "-" + now.Month.ToString().PadLeft(2, '0') + "-" + now.Day.ToString().PadLeft(2, '0') +
-                            "_" +
-                            now.Hour.ToString().PadLeft(2, '0') + "_" + now.Minute.ToString().PadLeft(2, '0') + "_" + now.Second.ToString().PadLeft(2, '0') + "_" + now.Millisecond.ToString().PadLeft(3, '0') +
-                            "_" +
-                            BitConverter.ToString(randomBytes).Replace("-", string.Empty)
-                            );
-                        tmpExpectFile = tmpFile + ".expect";
+                        if (first)
+                        {
+                            contents.AppendLine("set GitNoob_TmpPath=" + part);
+                            first = false;
+                        }
+                        else
+                        {
+                            contents.AppendLine("set GitNoob_TmpPath=%GitNoob_TmpPath%;" + part);
+                        }
                     }
-                    File.WriteAllText(tmpExpectFile, phpExe + "\r\n", new UTF8Encoding(false));
-
-                    contents.AppendLine("where php.exe > \"" + tmpFile + "\" 2>nul");
-                    contents.AppendLine("fc /b \"" + tmpFile + "\" \"" + tmpExpectFile + "\" >nul 2>&1");
-                    contents.AppendLine("if errorlevel 1 goto php_find_error");
-                    contents.AppendLine("del /q \"" + tmpFile + "\" >nul 2>&1");
-                    contents.AppendLine("del /q \"" + tmpExpectFile + "\" >nul 2>&1");
-                    contents.AppendLine("goto php_find_done");
-                    contents.AppendLine(":php_find_error");
-                    contents.AppendLine("echo.");
-                    contents.AppendLine("echo.");
-                    contents.AppendLine("echo.");
-                    contents.AppendLine("echo PHP.EXE is not found or found in the wrong path.");
-                    contents.AppendLine("echo Maybe another tool like XAMPP / WAMP or the like is globally installed in the Windows PATH?");
-                    contents.AppendLine("echo This interferes with GitNoob.");
-                    contents.AppendLine("echo.");
-                    contents.AppendLine("echo ----------------------------------------------------------------------");
-                    contents.AppendLine("echo Expected:");
-                    contents.AppendLine("echo " + phpExe);
-                    contents.AppendLine("echo ----------------------------------------------------------------------");
-                    contents.AppendLine("echo But found:");
-                    contents.AppendLine("type \"" + tmpFile + "\"");
-                    contents.AppendLine("echo ----------------------------------------------------------------------");
-                    contents.AppendLine("echo.");
-                    contents.AppendLine("echo.");
-                    contents.AppendLine("echo.");
-
-                    switch (_window)
-                    {
-                        case WindowType.showWindow:
-                        case WindowType.showWindowWithPauseAtEnd:
-                            contents.AppendLine();
-                            contents.AppendLine("pause");
-                            break;
-                    }
-
-                    contents.AppendLine("del /q \"" + tmpFile + "\" >nul 2>&1");
-                    contents.AppendLine("del /q \"" + tmpExpectFile + "\" >nul 2>&1");
-                    contents.AppendLine("exit 1");
-
-
-                    contents.AppendLine(":php_find_done");
+                    contents.AppendLine("path %GitNoob_TmpPath%");
+                    contents.AppendLine("set GitNoob_TmpPath=");
                 }
 
                 if (!string.IsNullOrEmpty(_projectWorkingDirectory.Ngrok.AuthToken))

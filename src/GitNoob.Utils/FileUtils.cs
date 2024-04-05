@@ -73,6 +73,30 @@ namespace GitNoob.Utils
             throw new FileNotFoundException(new FileNotFoundException().Message, subpathAndExe);
         }
 
+        public static List<string> RemoveExeFromEnvironmentPath(string exe, string EnvironmentPath = null)
+        {
+            List<string> parts = new List<string>();
+
+            if (EnvironmentPath == null)
+                EnvironmentPath = Environment.GetEnvironmentVariable("PATH");
+
+            string[] paths = EnvironmentPath.Split(new char[1] { Path.PathSeparator });
+            foreach (string directory in paths)
+            {
+                string dir = directory.Trim();
+                if (dir.Length > 2 && dir.StartsWith("\""))
+                    dir = dir.Substring(1, dir.Length - 2);
+
+                string tryexe = Path.Combine(dir, exe);
+                if (!String.IsNullOrEmpty(dir) && !File.Exists(tryexe))
+                {
+                    parts.Add(directory.Trim());
+                }
+            }
+
+            return parts;
+        }
+
         public static string FindExePath(string exe)
         {
             exe = Environment.ExpandEnvironmentVariables(exe);
@@ -91,7 +115,7 @@ namespace GitNoob.Utils
                     dir = dir.Substring(1, dir.Length - 2);
 
                 string tryexe = Path.Combine(dir, exe);
-                if (!String.IsNullOrEmpty(path) && File.Exists(tryexe))
+                if (!String.IsNullOrEmpty(dir) && File.Exists(tryexe))
                     return Path.GetFullPath(tryexe);
             }
 
