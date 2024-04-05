@@ -50,6 +50,9 @@ namespace GitNoob.Gui.Program.Remedy
                         OnNewButtonAction(input.inputValue, (AskOnCommitId ? input.input2Value : null));
                         Done();
                     }),
+                    new VisualizerMessageButton("Show history.", (input) => {
+                        StepsExecutor.StartGitk(null, String.Empty);
+                    }),
                 };
         }
     }
