@@ -23,7 +23,7 @@ namespace GitNoob.Gui.Program.Action
 
             var executor = new StepsExecutor.StepsExecutor(config, new List<StepsExecutor.IExecutableByStepsExecutor>()
             {
-                new Step.EnsureStatus("Change branch is not possible.", null, Step.EnsureStatus.WorkingTreeChanges.FalseAndCanTemporaryCommit, false, false, null),
+                new Step.EnsureStatus("Change branch is not possible.", null, Step.EnsureStatus.WorkingTreeChanges.Null, null, false, null),
                 new Step.AskChangeBranch()
             });
             executor.execute();

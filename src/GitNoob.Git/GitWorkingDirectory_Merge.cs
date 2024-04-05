@@ -13,42 +13,9 @@ namespace GitNoob.Git
                 return result;
             var currentbranch = result.GitDisaster_CurrentBranchShortName;
 
-            var lastcommit = new Command.Branch.GetLastCommitOfBranch(this, currentbranch);
-            lastcommit.WaitFor();
-            if (lastcommit.commitmessage == null)
-            {
-                result.ErrorRetrievingLastCommit = true;
-                return result;
-            }
-            bool lastCommitIsTemporary = lastcommit.commitmessage.StartsWith(TemporaryCommitMessage);
-
-            Command.Branch.MergeFastForwardOnly merge;
-            if (!lastCommitIsTemporary)
-            {
-                merge = new Command.Branch.MergeFastForwardOnly(this, currentbranch, MainBranch);
-                merge.WaitFor();
-                //Because of fast-forward-only there can be no conflicts.
-            }
-            else
-            {
-                //create branch on previous commit (last commit is a temporary commit)
-                string randomsha1 = GitUtils.GenerateRandomSha1();
-                string tempbranch = "gitnoob-temp-" + randomsha1;
-
-                var newbranch = new Command.Branch.CreateBranch(this, tempbranch, currentbranch + "^", false);
-                newbranch.WaitFor();
-                try
-                {
-                    merge = new Command.Branch.MergeFastForwardOnly(this, tempbranch, MainBranch);
-                    merge.WaitFor();
-                    //Because of fast-forward-only there can be no conflicts.
-                }
-                finally
-                {
-                    var delnewbranch = new Command.Branch.DeleteBranch(this, tempbranch, true);
-                    delnewbranch.WaitFor();
-                }
-            }
+            Command.Branch.MergeFastForwardOnly merge = new Command.Branch.MergeFastForwardOnly(this, currentbranch, MainBranch);
+            merge.WaitFor();
+            //Because of fast-forward-only there can be no conflicts.
 
             //restore current branch
             var change = new Command.Branch.ChangeBranchTo(this, currentbranch);

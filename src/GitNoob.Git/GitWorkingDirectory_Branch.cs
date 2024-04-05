@@ -15,8 +15,30 @@ namespace GitNoob.Git
             {
                 Allow_DetachedHead = true,
                 Allow_UnpushedCommitsOnMainBranch = true,
+
+                Allow_StagedUncommittedFiles = true,
+                Allow_WorkingTreeChanges = true,
             }))
                 return result;
+
+
+            if (result.GitDisaster_StagedUncommittedFiles.Value || result.GitDisaster_WorkingTreeChanges.Value)
+            {
+                // Create temporary commit
+                result.TemporaryCommitResult = CommitAllChangesOnCurrentBranch(null);
+                if (!result.TemporaryCommitResult.Committed)
+                {
+                    result.TemporaryCommitFailed = true;
+                    return result;
+                }
+
+                if (GitDisaster.Check(this, result, new GitDisasterAllowed()
+                {
+                    Allow_DetachedHead = true,
+                    Allow_UnpushedCommitsOnMainBranch = true,
+                }))
+                    return result;
+            }
 
             if (branchname.Contains("/"))
             {
@@ -315,8 +337,37 @@ namespace GitNoob.Git
         public CreateNewBranchResult CreateNewBranch(string branchname, string branchFromBranchName, bool checkoutNewBranch)
         {
             var result = new CreateNewBranchResult();
-            if (GitDisaster.Check(this, result, new GitDisasterAllowed()))
-                return result;
+            if (checkoutNewBranch)
+            {
+                if (GitDisaster.Check(this, result, new GitDisasterAllowed()
+                {
+                    Allow_DetachedHead = true,
+                    Allow_UnpushedCommitsOnMainBranch = true,
+
+                    Allow_StagedUncommittedFiles = true,
+                    Allow_WorkingTreeChanges = true,
+                }))
+                    return result;
+
+
+                if (result.GitDisaster_StagedUncommittedFiles.Value || result.GitDisaster_WorkingTreeChanges.Value)
+                {
+                    // Create temporary commit
+                    result.TemporaryCommitResult = CommitAllChangesOnCurrentBranch(null);
+                    if (!result.TemporaryCommitResult.Committed)
+                    {
+                        result.TemporaryCommitFailed = true;
+                        return result;
+                    }
+
+                    if (GitDisaster.Check(this, result, new GitDisasterAllowed()
+                    {
+                        Allow_DetachedHead = true,
+                        Allow_UnpushedCommitsOnMainBranch = true,
+                    }))
+                        return result;
+                }
+            }
 
             {
                 var command = new Command.Branch.ListBranches(this, false, branchname);

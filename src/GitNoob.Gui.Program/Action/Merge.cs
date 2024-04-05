@@ -26,7 +26,7 @@ namespace GitNoob.Gui.Program.Action
             var executor = new StepsExecutor.StepsExecutor(config, new List<StepsExecutor.IExecutableByStepsExecutor>()
             {
                 new Step.AskStartMerge(),
-                new Step.EnsureStatus("Merge is not possible.", false, Step.EnsureStatus.WorkingTreeChanges.FalseAndCanTemporaryCommit, false, false, null),
+                new Step.EnsureStatus("Merge is not possible.", false, Step.EnsureStatus.WorkingTreeChanges.False, false, false, null),
                 new Step.EnsureMainBranchExistance("Merge is not possible."),
                 new Step.CheckGitNoobTemporaryCommitsOnCurrentBranch("Continue merging GitNoob Temporary Commits ?"),
                 new Step.LockMainBranch("Merging local changes from " + config.Project.Name + " - " + config.ProjectWorkingDirectory.Name),

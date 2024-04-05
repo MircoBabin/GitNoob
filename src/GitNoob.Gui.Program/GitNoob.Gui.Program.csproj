@@ -95,7 +95,6 @@
     <Compile Include="Action\StartSmtpServer.cs" />
     <Compile Include="Remedy\CommitName.cs" />
     <Compile Include="Remedy\InputChooseBranch.cs" />
-    <Compile Include="Remedy\MessageTemporaryCommitWorkingTreeChanges.cs" />
     <Compile Include="Remedy\MessageConfirmStartMerge.cs" />
     <Compile Include="Remedy\InputConfirmDeleteAllChanges.cs" />
     <Compile Include="Remedy\MessageBuildingCacheFailed.cs" />

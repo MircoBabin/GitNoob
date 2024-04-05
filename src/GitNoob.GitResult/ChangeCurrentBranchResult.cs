@@ -9,12 +9,18 @@ namespace GitNoob.GitResult
 
         public bool ErrorChanging { get; set; }
 
+        public bool TemporaryCommitFailed { get; set; }
+        public CommitAllChangesOnCurrentBranchResult TemporaryCommitResult { get; set; }
+
         public ChangeCurrentBranchResult() : base()
         {
             Changed = false;
             CurrentBranch = String.Empty;
 
             ErrorChanging = false;
+
+            TemporaryCommitFailed = false;
+            TemporaryCommitResult = null;
         }
     }
 }

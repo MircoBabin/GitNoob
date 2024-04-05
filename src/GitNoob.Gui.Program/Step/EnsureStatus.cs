@@ -4,7 +4,7 @@ namespace GitNoob.Gui.Program.Step
 {
     public class EnsureStatus : Step
     {
-        public enum WorkingTreeChanges { Null, True, False, FalseAndCanTemporaryCommit}
+        public enum WorkingTreeChanges { Null, True, False }
         private string _message;
         private bool? _detachedHead;
         private WorkingTreeChanges _workingTreeChanges;
@@ -98,20 +98,6 @@ namespace GitNoob.Gui.Program.Step
                     if (result.HasWorkingTreeChanges != false)
                     {
                         FailureRemedy = new Remedy.MessageChanges(this, message, result.HasWorkingTreeChanges, result.HasStagedUncommittedFiles);
-                        return false;
-                    }
-                    break;
-
-                case WorkingTreeChanges.FalseAndCanTemporaryCommit:
-                    if (result.HasWorkingTreeChanges != false)
-                    {
-                        if (result.DetachedHead_NotOnBranch)
-                        {
-                            FailureRemedy = new Remedy.MessageDetachedHead(this, message);
-                            return false;
-                        }
-
-                        FailureRemedy = new Remedy.MessageTemporaryCommitWorkingTreeChanges(this, message);
                         return false;
                     }
                     break;

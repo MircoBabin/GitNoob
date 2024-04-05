@@ -10,6 +10,9 @@ namespace GitNoob.GitResult
         public bool ErrorBranchAlreadyExists { get; set; }
         public bool ErrorCreating { get; set; }
 
+        public bool TemporaryCommitFailed { get; set; }
+        public CommitAllChangesOnCurrentBranchResult TemporaryCommitResult { get; set; }
+
         public CreateNewBranchResult()
         {
             Created = false;
@@ -17,6 +20,9 @@ namespace GitNoob.GitResult
 
             ErrorBranchAlreadyExists = false;
             ErrorCreating = false;
+
+            TemporaryCommitFailed = false;
+            TemporaryCommitResult = null;
         }
     }
 }
