@@ -19,8 +19,12 @@
         public SmtpServer SmtpServer { get; set; }
         public Editor Editor { get; set; }
 
-        public WorkingDirectory()
+        public string projectConfigurationIniFilename { get; private set; }
+
+        public WorkingDirectory(string projectConfigurationIniFilename)
         {
+            this.projectConfigurationIniFilename = projectConfigurationIniFilename;
+
             ProjectType = null;
 
             Path = new ConfigPath(null);

@@ -14,10 +14,12 @@ namespace GitNoob.Gui.Forms
         // - About GitNoob
         // - Check for GitNoob update
         // - Edit GitNoob root configuration file
+        // - Edit GitNoob project configuration file
 
         protected readonly string _programPath;
         protected readonly string _licenseText;
         protected readonly string _rootConfigurationFilename;
+        protected readonly string _projectConfigurationFilename;
         private readonly string _GitNoobUpdaterExe;
 
         private class NativeMethods
@@ -38,6 +40,7 @@ namespace GitNoob.Gui.Forms
         private int SYSMENU_ABOUT_ID = 0x1;
         private int SYSMENU_CHECKFORUPDATE_ID = 0x2;
         private int SYSMENU_EDITROOTCONFIGURATION_ID = 0x3;
+        private int SYSMENU_EDITPROJECTCONFIGURATION_ID = 0x4;
 
         public GitNoobBaseForm()
         {
@@ -46,11 +49,12 @@ namespace GitNoob.Gui.Forms
             _GitNoobUpdaterExe = null;
         }
 
-        public GitNoobBaseForm(string programPath, string licenseText, string rootConfigurationFilename)
+        public GitNoobBaseForm(string programPath, string licenseText, string rootConfigurationFilename, string projectConfigurationFilename)
         {
             _programPath = programPath;
             _licenseText = licenseText;
             _rootConfigurationFilename = rootConfigurationFilename;
+            _projectConfigurationFilename = projectConfigurationFilename;
             _GitNoobUpdaterExe = Path.Combine(_programPath, "GitNoobUpdater.exe");
             if (!File.Exists(_GitNoobUpdaterExe)) _GitNoobUpdaterExe = null;
 
@@ -74,6 +78,12 @@ namespace GitNoob.Gui.Forms
 
             // Add the Edit GitNoob root configuration file menu item
             NativeMethods.AppendMenu(hSysMenu, NativeMethods.MF_STRING, SYSMENU_EDITROOTCONFIGURATION_ID, "Edit GitNoob root configuration file");
+
+            if (!string.IsNullOrWhiteSpace(_projectConfigurationFilename))
+            {
+                // Add the Edit GitNoob project configuration file menu item
+                NativeMethods.AppendMenu(hSysMenu, NativeMethods.MF_STRING, SYSMENU_EDITPROJECTCONFIGURATION_ID, "Edit GitNoob project configuration file");
+            }
 
             // Add the About menu item
             NativeMethods.AppendMenu(hSysMenu, NativeMethods.MF_STRING, SYSMENU_ABOUT_ID, "About GitNoob");
@@ -151,6 +161,20 @@ namespace GitNoob.Gui.Forms
                 try
                 {
                     Utils.BatFile.StartEditor(null, new string[] { _rootConfigurationFilename });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "GitNoob - Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return;
+            }
+
+            // Test if the Edit GitNoob project configuration file item was selected from the system menu
+            if ((m.Msg == NativeMethods.WM_SYSCOMMAND) && ((int)m.WParam == SYSMENU_EDITPROJECTCONFIGURATION_ID))
+            {
+                try
+                {
+                    Utils.BatFile.StartEditor(null, new string[] { _projectConfigurationFilename });
                 }
                 catch (Exception ex)
                 {

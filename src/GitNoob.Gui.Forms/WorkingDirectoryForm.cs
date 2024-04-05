@@ -25,7 +25,7 @@ namespace GitNoob.Gui.Forms
             FrontendLock frontendLock,
             Config.WorkingDirectory workingDirectory,
             System.Action chooseProject, string programPath, string licenseText, string rootConfigurationFilename) :
-            base(programPath, licenseText, rootConfigurationFilename)
+            base(programPath, licenseText, rootConfigurationFilename, workingDirectory.projectConfigurationIniFilename)
         {
             _frontendLock = frontendLock;
             WorkingDirectory = workingDirectory;

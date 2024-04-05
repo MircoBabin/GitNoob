@@ -28,7 +28,7 @@ namespace GitNoob.Gui.Forms
         }
 
         public ChooseProjectForm(Visualizer.IVisualizerBootstrapper Bootstrapper, List<Config.IConfig> configs, string programPath, string licenseText, string rootConfigurationFilename) : 
-            base(programPath, licenseText, rootConfigurationFilename)
+            base(programPath, licenseText, rootConfigurationFilename, null)
         {
             _bootstrapper = Bootstrapper;
             _configs = configs;

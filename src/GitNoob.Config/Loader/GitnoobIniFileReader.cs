@@ -369,7 +369,7 @@ namespace GitNoob.Config.Loader
         public WorkingDirectory LoadWorkingDirectory(Project project, string Section,
             string gitName, string webpageName, string apacheName, string phpName, string ngrokName, string smtpServerName)
         {
-            WorkingDirectory WorkingDirectory = new WorkingDirectory();
+            WorkingDirectory WorkingDirectory = new WorkingDirectory(project.projectConfigurationIniFilename);
             string value;
 
             WorkingDirectory.Name = ReadString(Section, "name");

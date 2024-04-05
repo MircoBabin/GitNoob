@@ -210,7 +210,7 @@ namespace GitNoob.Config.Loader
         {
             GitnoobIniFileReader ini = CreateReader(inifilename);
 
-            var project = new Project();
+            var project = new Project(inifilename);
 
             project.Name = ini.ReadString("gitnoob", "name");
             project.ProjectType = ProjectTypeLoader.Load(ini.ReadString("gitnoob", "type"));
