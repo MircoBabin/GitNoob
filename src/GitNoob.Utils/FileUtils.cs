@@ -8,6 +8,50 @@ namespace GitNoob.Utils
 {
     public static class FileUtils
     {
+        public static string GetExactPathName(string pathName)
+        {
+            List<string> parts = new List<string>();
+
+            var di = new DirectoryInfo(pathName);
+            while (di.Parent != null)
+            {
+                var foundNames = di.Parent.GetFileSystemInfos(di.Name);
+                if (foundNames.Length != 1) return pathName;
+
+                parts.Add(foundNames[0].Name);
+
+                di = di.Parent;
+            }
+
+            if (di.FullName.Contains(":"))
+            {
+                //drive
+                string searchDrive = di.FullName;
+                string foundDrive = null;
+                foreach (var drive in DriveInfo.GetDrives())
+                {
+                    if (drive.Name.Equals(searchDrive, StringComparison.OrdinalIgnoreCase))
+                    {
+                        foundDrive = drive.Name;
+                        break;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(foundDrive))
+                    parts.Add(foundDrive);
+                else
+                    parts.Add(searchDrive);
+            }
+            else
+            {
+                //unc name
+                parts.Add(di.FullName);
+            }
+
+            parts.Reverse();
+            return Path.Combine(parts.ToArray());
+        }
+
         public static string FindExeInProgramFiles(string subpathAndExe)
         {
             subpathAndExe = Environment.ExpandEnvironmentVariables(subpathAndExe);
