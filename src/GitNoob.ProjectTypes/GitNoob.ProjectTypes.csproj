@@ -40,6 +40,8 @@
     </Compile>
     <Compile Include="Php.cs" />
     <Compile Include="PhpLaravel.cs" />
+    <Compile Include="PhpLaravel11.cs" />
+    <Compile Include="PhpLaravel10.cs" />
     <Compile Include="PhpLaravel9.cs" />
     <Compile Include="PhpLaravel8.cs" />
     <Compile Include="PhpLaravel7.cs" />

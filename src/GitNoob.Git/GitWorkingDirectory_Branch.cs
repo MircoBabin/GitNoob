@@ -546,67 +546,6 @@ namespace GitNoob.Git
             return result;
         }
 
-        public MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranchResult MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranch(string currentBranch, string newBranch)
-        {
-            var result = new MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranchResult();
-            if (GitDisaster.Check(this, result, new GitDisasterAllowed()
-                {
-                    Allow_UnpushedCommitsOnMainBranch = true,
-                    Allow_StagedUncommittedFiles = true,
-                    Allow_WorkingTreeChanges = true,
-                }))
-                return result;
-
-            if (result.GitDisaster_CurrentBranchShortName != currentBranch)
-            {
-                result.ErrorUnexpectedCurrentBranch = true;
-                return result;
-            }
-
-            var remotebranch = new Command.Branch.GetRemoteBranch(this, currentBranch);
-            remotebranch.WaitFor();
-            if (String.IsNullOrWhiteSpace(remotebranch.result))
-            {
-                result.ErrorNotTrackingRemoteBranch = true;
-                return result;
-            }
-
-            var org_remote = remotebranch.result;
-
-            var rename = new Command.Branch.RenameBranch(this, currentBranch, newBranch);
-            rename.WaitFor();
-
-            var currentbranch = new Command.Branch.GetCurrentBranch(this);
-            currentbranch.WaitFor();
-            result.CurrentBranch = currentbranch.shortname;
-
-            if (rename.result != true ||
-                currentbranch.shortname != newBranch)
-            {
-                result.ErrorRenaming = true;
-                return result;
-            }
-
-            var removetracking = new Command.Branch.RemoveTrackingRemoteBranch(this, newBranch);
-            removetracking.WaitFor();
-
-            remotebranch = new Command.Branch.GetRemoteBranch(this, newBranch);
-            remotebranch.WaitFor();
-
-            if (!String.IsNullOrWhiteSpace(remotebranch.result))
-            {
-                result.ErrorRemovingRemote = true;
-                return result;
-            }
-
-            //recreate tracking branch (might be the main branch)
-            var create = new Command.Branch.CreateBranch(this, currentBranch, org_remote, false);
-            create.WaitFor();
-
-            result.Moved = true;
-            return result;
-        }
-
         public MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranch(string remoteTrackingBranch, string newBranch)
         {
             var result = new MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranchResult();
@@ -621,15 +560,14 @@ namespace GitNoob.Git
             var remotebranch = new Command.Branch.GetRemoteBranch(this, remoteTrackingBranch);
             remotebranch.WaitFor();
 
-            if (result.GitDisaster_CurrentBranchShortName == remoteTrackingBranch ||
-                String.IsNullOrWhiteSpace(remotebranch.result))
+            if (String.IsNullOrWhiteSpace(remotebranch.result))
             {
-                result.ErrorBranchIsCurrent_UseMoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranch = result.GitDisaster_CurrentBranchShortName == remoteTrackingBranch;
-                result.ErrorNotTrackingRemoteBranch = String.IsNullOrWhiteSpace(remotebranch.result);
+                result.ErrorNotTrackingRemoteBranch = true;
 
                 return result;
             }
 
+            bool isCurrentBranch = result.GitDisaster_CurrentBranchShortName == remoteTrackingBranch;
             var org_remote = remotebranch.result;
 
             var rename = new Command.Branch.RenameBranch(this, remoteTrackingBranch, newBranch);
@@ -640,6 +578,22 @@ namespace GitNoob.Git
                 result.ErrorRenaming = true;
 
                 return result;
+            }
+
+            if (isCurrentBranch)
+            {
+                var currentbranch = new Command.Branch.GetCurrentBranch(this);
+                currentbranch.WaitFor();
+
+                if (rename.result != true ||
+                    currentbranch.shortname != newBranch)
+                {
+                    result.ErrorRenaming = true;
+                    return result;
+                }
+
+                result.GitDisaster_CurrentBranchShortName = newBranch;
+                result.GitDisaster_CurrentGitBranch = currentbranch.branch;
             }
 
             var removetracking = new Command.Branch.RemoveTrackingRemoteBranch(this, newBranch);

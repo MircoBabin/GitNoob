@@ -16,7 +16,7 @@ namespace GitNoob.Gui.Program.Step
         {
             BusyMessage = "Busy - moving changes from current branch to new branch";
 
-            var result = StepsExecutor.Config.Git.MoveUnpushedCommitsAndWorkingTreeChangesFromCurrentRemoteTrackingBranchToNewBranch(_currentBranch, _newBranch);
+            var result = StepsExecutor.Config.Git.MoveUnpushedCommitsFromRemoteTrackingBranchToNewBranch(_currentBranch, _newBranch);
 
             var message = new VisualizerMessageWithLinks("Move changes is not possible.");
 
@@ -32,12 +32,12 @@ namespace GitNoob.Gui.Program.Step
                 return false;
             }
 
-            StepsExecutor.CurrentBranchChangedTo(result.CurrentBranch);
+            StepsExecutor.CurrentBranchChangedTo(result.GitDisaster_CurrentBranchShortName);
 
             if (result.ErrorRenaming || result.ErrorRemovingRemote)
             {
                 FailureRemedy = new Remedy.MessageMoveFailed(this, message, 
-                    _currentBranch, _newBranch, result.CurrentBranch, 
+                    _currentBranch, _newBranch, result.GitDisaster_CurrentBranchShortName, 
                     result.ErrorRenaming, result.ErrorRemovingRemote);
                 return false;
             }
@@ -48,9 +48,9 @@ namespace GitNoob.Gui.Program.Step
                 return false;
             }
 
-            if (result.CurrentBranch != _newBranch)
+            if (result.GitDisaster_CurrentBranchShortName != _newBranch)
             {
-                FailureRemedy = new Remedy.MessageUnexpectedCurrentBranch(this, message, result.CurrentBranch, _newBranch);
+                FailureRemedy = new Remedy.MessageUnexpectedCurrentBranch(this, message, result.GitDisaster_CurrentBranchShortName, _newBranch);
                 return false;
             }
 
