@@ -8,14 +8,21 @@ namespace GitNoob.Git
         {
             var currentbranch = new Command.Branch.GetCurrentBranch(gitworkingdirectory);
             var changes = new Command.WorkingTree.HasChanges(gitworkingdirectory);
-            var unpushedCommitsOnMain = new Command.Branch.HasBranchUnpushedChanges(gitworkingdirectory, gitworkingdirectory.MainBranch, null);
+
+            Command.Branch.HasBranchUnpushedChanges unpushedCommitsOnMain = null;
+            if (!string.IsNullOrWhiteSpace(gitworkingdirectory.RemoteUrl))
+                unpushedCommitsOnMain = new Command.Branch.HasBranchUnpushedChanges(gitworkingdirectory, gitworkingdirectory.MainBranch, null);
+
             var rebasing = new Command.WorkingTree.IsRebaseActive(gitworkingdirectory);
             var merging = new Command.WorkingTree.IsMergeActive(gitworkingdirectory);
             var cherrypicking = new Command.WorkingTree.IsCherryPickActive(gitworkingdirectory);
             var reverting = new Command.WorkingTree.IsRevertActive(gitworkingdirectory);
             currentbranch.WaitFor();
             changes.WaitFor();
-            unpushedCommitsOnMain.WaitFor();
+
+            if (!string.IsNullOrWhiteSpace(gitworkingdirectory.RemoteUrl))
+                unpushedCommitsOnMain.WaitFor();
+
             rebasing.WaitFor();
             merging.WaitFor();
             cherrypicking.WaitFor();
@@ -27,7 +34,11 @@ namespace GitNoob.Git
             result.GitDisaster_DetachedHead = (currentbranch.DetachedHead != false);
             result.GitDisaster_StagedUncommittedFiles = (changes.stagedUncommittedFiles != false);
             result.GitDisaster_WorkingTreeChanges = (changes.workingtreeChanges != false);
-            result.GitDisaster_UnpushedCommitsOnMainBranch = (unpushedCommitsOnMain.result != false);
+
+            if (!string.IsNullOrWhiteSpace(gitworkingdirectory.RemoteUrl))
+                result.GitDisaster_UnpushedCommitsOnMainBranch = (unpushedCommitsOnMain.result != false);
+            else
+                result.GitDisaster_UnpushedCommitsOnMainBranch = false;
 
             result.GitDisaster_RebaseInProgress = (rebasing.result != false);
             result.GitDisaster_MergeInProgress = (merging.result != false);

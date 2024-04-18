@@ -6,6 +6,93 @@ namespace GitNoob.Git
 {
     public partial class GitWorkingDirectory
     {
+        private GetLatestResult GetLatestViaInit()
+        {
+            var initcmd = new Command.Repository.Init(this, MainBranch);
+            initcmd.WaitFor();
+
+            ClearCache();
+
+            var rootdir = new Command.WorkingTree.IsGitRootDirectory(this, false);
+            rootdir.WaitFor();
+            if (rootdir.result != true)
+            {
+                throw new Exception("Error git initializing directory: " + _workingdirectory.Path);
+            }
+
+            var commitname = new Command.Config.GetCurrentCommitter(this);
+            commitname.WaitFor();
+
+            return new GetLatestResult
+            {
+                Initialized = true,
+                CommitFullName = commitname.result,
+                CommitName = commitname.name,
+                CommitEmail = commitname.email,
+            };
+        }
+
+        private GetLatestResult GetLatestViaNoGitNoobRemoteUrl()
+        {
+            var changes = new Command.WorkingTree.HasChanges(this);
+            var currentbranch = new Command.Branch.GetCurrentBranch(this);
+            changes.WaitFor();
+            currentbranch.WaitFor();
+
+            Command.Branch.HasBranchUnpushedChanges unpushedCommits;
+            if (currentbranch.shortname != MainBranch)
+            {
+                unpushedCommits = new Command.Branch.HasBranchUnpushedChanges(this, currentbranch.shortname, MainBranch);
+                unpushedCommits.WaitFor();
+            }
+            else
+            {
+                unpushedCommits = null;
+            }
+
+            bool CurrentBranchIsBehindMainBranch;
+            var commitname = new Command.Config.GetCurrentCommitter(this);
+            if (currentbranch.DetachedHead == true)
+            {
+                // Detached head can never be behind mainbranch.
+                CurrentBranchIsBehindMainBranch = false;
+            }
+            else
+            {
+                if (MainBranch == currentbranch.shortname)
+                {
+                    // Mainbranch can never be behind itself (when RemoteUrl is empty)
+                    CurrentBranchIsBehindMainBranch = false;
+                }
+                else
+                {
+                    var common = new Command.Branch.FindCommonCommitOfTwoBranches(this, MainBranch, currentbranch.shortname);
+                    var maincommit = new Command.Branch.GetLastCommitOfBranch(this, MainBranch);
+                    common.WaitFor();
+                    maincommit.WaitFor();
+
+                    CurrentBranchIsBehindMainBranch = (common.commitid != maincommit.commitid);
+                }
+            }
+            commitname.WaitFor();
+
+            return new GetLatestResult
+            {
+                NothingToUpdate_HasNoGitNoobRemoteUrl = true,
+
+                CurrentBranch = currentbranch.shortname,
+                DetachedHead_NotOnBranch = (currentbranch.DetachedHead == true),
+                WorkingTreeChanges = (changes.workingtreeChanges != false),
+                StagedUncommittedFiles = (changes.stagedUncommittedFiles != false),
+                UnpushedCommits = (unpushedCommits != null && unpushedCommits.result == true),
+                CurrentBranchIsBehindMainBranch = CurrentBranchIsBehindMainBranch,
+                CommitFullName = commitname.result,
+                CommitName = commitname.name,
+                CommitEmail = commitname.email,
+            };
+        }
+
+
         private GetLatestResult GetLatestViaClone()
         {
             var clonecmd = new Command.Repository.Clone(this, MainBranch);
@@ -172,6 +259,18 @@ namespace GitNoob.Git
             else
             {
                 clone = IsDirectoryEmpty(_workingdirectory.Path.ToString());
+            }
+
+            if (string.IsNullOrWhiteSpace(_workingdirectory.Git.RemoteUrl))
+            {
+                if (clone)
+                {
+                    return GetLatestViaInit();
+                }
+                else
+                {
+                    return GetLatestViaNoGitNoobRemoteUrl();
+                }
             }
 
             if (CheckGitCredentialsViaKeePassCommander && !GitCredentialsViaKeePassCommander.AreCredentialsAvailable(this))

@@ -66,7 +66,7 @@ namespace GitNoob.Gui.Program.Step
                 return false;
             }
 
-            if (!result.Cloned && !result.Updated)
+            if (!result.Cloned && !result.Updated && !result.NothingToUpdate_HasNoGitNoobRemoteUrl)
             {
                 FailureRemedy = new Remedy.MessageUnknownResult(this, message, result);
                 return false;
@@ -86,7 +86,7 @@ namespace GitNoob.Gui.Program.Step
 
             if (!result.DetachedHead_NotOnBranch && result.CurrentBranchIsBehindMainBranch)
             {
-                if (result.UnpushedCommits)
+                if (result.UnpushedCommits || result.WorkingTreeChanges || result.StagedUncommittedFiles)
                 {
                     if (result.WorkingTreeChanges || result.StagedUncommittedFiles)
                     {

@@ -7,6 +7,8 @@ namespace GitNoob.GitResult
         public bool ErrorKeePassNotStarted { get; set; }
         public bool ErrorRemoteNotReachable { get; set; }
 
+        public bool Initialized { get; set; }
+
         public bool Cloned { get; set; }
         public bool ErrorNonEmptyAndNotAGitRepository { get; set; }
 
@@ -21,6 +23,8 @@ namespace GitNoob.GitResult
         public string CommitName { get; set; }
         public string CommitEmail { get; set; }
 
+        public bool NothingToUpdate_HasNoGitNoobRemoteUrl { get; set; }
+
         public bool ErrorStagedUncommittedFiles { get; set; }
         public bool ErrorUnpushedCommitsOnMainBranch { get; set; }
         public bool ErrorUnpushedCommitsAndOnLocalTrackingRemoteBranch { get; set; } //If current-branch == main-branch this will be true
@@ -30,6 +34,8 @@ namespace GitNoob.GitResult
         {
             ErrorKeePassNotStarted = false;
             ErrorRemoteNotReachable = false;
+
+            Initialized = false;
 
             Cloned = false;
             ErrorNonEmptyAndNotAGitRepository = false;
@@ -44,6 +50,8 @@ namespace GitNoob.GitResult
             CommitFullName = string.Empty;
             CommitName = string.Empty;
             CommitEmail = string.Empty;
+
+            NothingToUpdate_HasNoGitNoobRemoteUrl = false;
 
             ErrorStagedUncommittedFiles = false;
             ErrorUnpushedCommitsOnMainBranch = false;

@@ -107,6 +107,14 @@ namespace GitNoob.Git
             {
                 switch (branch.Type)
                 {
+                    case GitBranch.BranchType.Local:
+                        if (string.IsNullOrEmpty(RemoteUrl))
+                        {
+                            result.Exists = true;
+                            return result;
+                        }
+                        break;
+
                     case GitBranch.BranchType.LocalTrackingRemoteBranch:
                         if (branch.ShortName == MainBranch)
                         {
@@ -126,6 +134,13 @@ namespace GitNoob.Git
                         }
                         break;
                 }
+            }
+
+            if (string.IsNullOrEmpty(RemoteUrl))
+            {
+                result.ErrorLocalBranchNotFound = true;
+
+                return result;
             }
 
             if (remote == null)
