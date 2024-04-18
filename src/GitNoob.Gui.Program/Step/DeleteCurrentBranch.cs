@@ -18,7 +18,7 @@ namespace GitNoob.Gui.Program.Step
             BusyMessage = "Busy - deleting current branch \"" + _branchName + "\"";
 
             {
-                var result = StepsExecutor.Config.Git.DeleteCurrentBranch(_branchName, _message);
+                var result = StepsExecutor.Config.Git.DeleteBranch(_branchName, _message);
 
                 var message = new VisualizerMessageWithLinks("Deleting current branch failed.");
 

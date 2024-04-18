@@ -51,7 +51,7 @@
     <Compile Include="StageAllChangesOnCurrentBranchResult.cs" />
     <Compile Include="CommitAllChangesOnCurrentBranchResult.cs" />
     <Compile Include="CreateNewBranchResult.cs" />
-    <Compile Include="DeleteCurrentBranchResult.cs" />
+    <Compile Include="DeleteBranchResult.cs" />
     <Compile Include="DeletedBranchesResult.cs" />
     <Compile Include="DeleteWorkingTreeChangesAndStagedUncommittedFilesResult.cs" />
     <Compile Include="EnsureMainBranchExistanceResult.cs" />

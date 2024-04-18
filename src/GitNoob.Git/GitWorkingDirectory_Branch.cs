@@ -469,17 +469,11 @@ namespace GitNoob.Git
             return result;
         }
 
-        public DeleteCurrentBranchResult DeleteCurrentBranch(string branchname, string message)
+        public DeleteBranchResult DeleteBranch(string branchname, string message)
         {
-            var result = new DeleteCurrentBranchResult();
+            var result = new DeleteBranchResult();
             if (GitDisaster.Check(this, result, new GitDisasterAllowed()))
                 return result;
-
-            if (branchname != result.GitDisaster_CurrentBranchShortName)
-            {
-                result.ErrorCurrentBranchHasChanged = true;
-                return result;
-            }
 
             if (branchname == MainBranch)
             {
@@ -493,8 +487,21 @@ namespace GitNoob.Git
                 return result;
             }
 
-            var checkoutMainBranch = new Command.Branch.ChangeBranchTo(this, MainBranch);
-            checkoutMainBranch.WaitFor();
+            if (branchname == result.GitDisaster_CurrentBranchShortName)
+            {
+                var checkoutMainBranch = new Command.Branch.ChangeBranchTo(this, MainBranch);
+                checkoutMainBranch.WaitFor();
+
+                var branch = new Command.Branch.GetCurrentBranch(this);
+                branch.WaitFor();
+
+                if (branch.shortname != MainBranch)
+                {
+                    result.ErrorChangingToMainBranch = true;
+
+                    return result;
+                }
+            }
 
             var delete = new Command.Branch.DeleteBranch(this, branchname, true);
             delete.WaitFor();
