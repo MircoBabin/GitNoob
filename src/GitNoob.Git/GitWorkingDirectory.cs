@@ -161,6 +161,7 @@ namespace GitNoob.Git
                 CherryPicking = (cherrypicking.result == true),
                 Reverting = (reverting.result == true),
                 Conflicts = (conflicts.result == true),
+                HasGitNoobRemoteUrl = !string.IsNullOrWhiteSpace(RemoteUrl),
                 MainBranchExists = (!string.IsNullOrEmpty(mainbranchcommit.commitid)),
                 MainBranchIsTrackingRemoteBranch = (!string.IsNullOrEmpty(mainbranchremote.result)),
             };

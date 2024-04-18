@@ -18,6 +18,7 @@
         public bool CherryPicking { get; set; }
         public bool Reverting { get; set; }
         public bool Conflicts { get; set; }
+        public bool HasGitNoobRemoteUrl { get; set; }
         public bool MainBranchExists { get; set; }
         public bool MainBranchIsTrackingRemoteBranch { get; set; }
 
@@ -39,6 +40,7 @@
             CherryPicking = false;
             Reverting = false;
             Conflicts = false;
+            HasGitNoobRemoteUrl = false;
             MainBranchExists = false;
             MainBranchIsTrackingRemoteBranch = false;
         }

@@ -300,9 +300,27 @@ namespace GitNoob.Gui.Forms
             }
 
             lblMainbranchValue.Text = Config.visualizerProjectWorkingDirectoryMainBranch();
-            if (Config.visualizerProjectWorkingDirectoryTouchTimestampsBeforeMerge())
+            if (!Config.visualizerProjectWorkingDirectoryHasGitNoobRemoteUrl() ||
+                Config.visualizerProjectWorkingDirectoryTouchTimestampsBeforeMerge())
             {
-                lblMainbranchValue.Text = lblMainbranchValue.Text + " [touch timestamps before merge]";
+                lblMainbranchValue.Text = lblMainbranchValue.Text + " [";
+                bool first = true;
+
+                if (!Config.visualizerProjectWorkingDirectoryHasGitNoobRemoteUrl())
+                {
+                    if (!first) lblMainbranchValue.Text = lblMainbranchValue.Text + ", ";
+                    first = false;
+                    lblMainbranchValue.Text = lblMainbranchValue.Text + "no remote url";
+                }
+
+                if (Config.visualizerProjectWorkingDirectoryTouchTimestampsBeforeMerge())
+                {
+                    if (!first) lblMainbranchValue.Text = lblMainbranchValue.Text + ", ";
+                    first = false;
+                    lblMainbranchValue.Text = lblMainbranchValue.Text + "touch timestamps before merge";
+                }
+
+                lblMainbranchValue.Text = lblMainbranchValue.Text + "]";
             }
             lblWorkingdirectoryValue.Text = Config.visualizerProjectWorkingDirectoryPath();
             lblCurrentbranchValue.Text = String.Empty;

@@ -177,6 +177,11 @@ namespace GitNoob.Gui.Program
             return ProjectWorkingDirectory.Path.ToString();
         }
 
+        public bool visualizerProjectWorkingDirectoryHasGitNoobRemoteUrl()
+        {
+            return !string.IsNullOrWhiteSpace(ProjectWorkingDirectory.Git.RemoteUrl);
+        }
+
         public bool visualizerProjectWorkingDirectoryTouchTimestampsBeforeMerge()
         {
             return ProjectWorkingDirectory.Git.TouchTimestampOfCommitsBeforeMerge.Value;
