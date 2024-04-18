@@ -1,5 +1,11 @@
 # GitNoob changelog
 
+## Version 1.25
+* Add: support for local only repositories, without a configured remote origin.
+* Add: Laravel10 & Laravel11 projects.
+* Fix: move unpushed commits on master branch to a new branch.
+* Fix: unexisting mainbranch when deleting a branch.
+
 ## Version 1.24
 * Add: create a new branch on a specific commit-id.
 * Add: edit GitNoob project configuration file.
