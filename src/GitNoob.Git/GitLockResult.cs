@@ -4,6 +4,7 @@ namespace GitNoob.Git
 {
     public class GitLockResult : GitResult.BaseGitDisasterResult
     {
+        public bool NothingToLock_HasNoGitNoobRemoteUrl { get; set; }
         public bool Locked { get; set; }
         public bool Unlocked { get; set; }
         public GitLock GitLock { get; set; }
@@ -25,6 +26,7 @@ namespace GitNoob.Git
 
         public GitLockResult() : base()
         {
+            NothingToLock_HasNoGitNoobRemoteUrl = false;
             Locked = false;
             Unlocked = false;
             GitLock = null;

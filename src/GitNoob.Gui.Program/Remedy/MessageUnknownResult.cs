@@ -23,7 +23,10 @@ namespace GitNoob.Gui.Program.Remedy
                 try
                 {
                     var valueObject = prop.GetValue(result, null);
-                    value = valueObject.ToString();
+                    if (valueObject != null)
+                        value = valueObject.ToString();
+                    else
+                        value = "<NULL>";
                 }
                 catch (Exception) { }
 

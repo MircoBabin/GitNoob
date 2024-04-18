@@ -260,6 +260,14 @@ namespace GitNoob.Git
             if (GitDisaster.Check(this, result, new GitDisasterAllowed() { Allow_UnpushedCommitsOnMainBranch = true }))
                 return result;
 
+            if (string.IsNullOrWhiteSpace(RemoteUrl))
+            {
+                result.NothingToPush_HasNoGitNoobRemoteUrl = true;
+                result.Pushed = true;
+
+                return result;
+            }
+
             if (CheckGitCredentialsViaKeePassCommander && !GitCredentialsViaKeePassCommander.AreCredentialsAvailable(this))
             {
                 result.ErrorKeePassNotStarted = true;

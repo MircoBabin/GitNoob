@@ -4,6 +4,7 @@ namespace GitNoob.GitResult
 {
     public class PushResult : BaseGitDisasterResult
     {
+        public bool NothingToPush_HasNoGitNoobRemoteUrl { get; set; }
         public bool Pushed { get; set; }
         public string PushOutput { get; set; }
 
@@ -15,6 +16,7 @@ namespace GitNoob.GitResult
 
         public PushResult() : base()
         {
+            NothingToPush_HasNoGitNoobRemoteUrl = false;
             Pushed = false;
             PushOutput = String.Empty;
 

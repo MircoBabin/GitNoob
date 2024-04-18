@@ -79,6 +79,7 @@ namespace GitNoob.Git
         public string remoteBranchName { get; private set; }
         public string lockTagName { get; private set; }
 
+        private bool nothingToLock_HasNoGitNoobRemoteUrl = false;
         private bool acquired = false;
         private GitTag acquiredTag = null;
 
@@ -86,6 +87,13 @@ namespace GitNoob.Git
         {
             this.gitworkingdirectory = gitworkingdirectory;
             this.branchName = branchName;
+
+            if (string.IsNullOrEmpty(gitworkingdirectory.RemoteUrl))
+            {
+                this.lockTagName = "gitlock-local-" + branchName;
+                nothingToLock_HasNoGitNoobRemoteUrl = true;
+                return;
+            }
 
             {
                 var remote = new Command.Branch.GetRemoteBranch(gitworkingdirectory, branchName);
@@ -175,6 +183,15 @@ namespace GitNoob.Git
             var result = new GitLockResult();
             if (GitDisaster.Check(gitworkingdirectory, result))
                 return result;
+
+            if (nothingToLock_HasNoGitNoobRemoteUrl)
+            {
+                result.NothingToLock_HasNoGitNoobRemoteUrl = true;
+                result.Locked = true;
+                result.GitLock = this;
+
+                return result;
+            }
 
             /* 0. Initialize */
             string randomsha1 = GitUtils.GenerateRandomSha1();
@@ -349,6 +366,14 @@ namespace GitNoob.Git
             if (GitDisaster.Check(gitworkingdirectory, result, GitDisasterAllowed.AllowAll()))
                 return result;
 
+            if (nothingToLock_HasNoGitNoobRemoteUrl)
+            {
+                result.NothingToLock_HasNoGitNoobRemoteUrl = true;
+                result.Unlocked = true;
+
+                return result;
+            }
+
             if (OnlyIfOwned && !acquired)
             {
                 result.ErrorLockNotAcquired = true;
@@ -385,11 +410,10 @@ namespace GitNoob.Git
                 {
                     string lockedby = String.Empty;
                     DateTime? lockedtime = null;
-                    string lockedrandomsha1 = String.Empty;
                     string lockedmessage = String.Empty;
                     if (remotetag != null)
                     {
-                        SplitLockMessage(remotetag.Message, out lockedby, out lockedtime, out lockedrandomsha1, out lockedmessage);
+                        SplitLockMessage(remotetag.Message, out lockedby, out lockedtime, out _, out lockedmessage);
                     }
 
                     result.ErrorLockNotOwned = true;
