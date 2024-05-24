@@ -1,5 +1,9 @@
 # GitNoob changelog
 
+## Version 1.26
+* Fix: abort rebase.
+* Fix: only allow the safe option for toilet (delete all changes).
+
 ## Version 1.25
 * Add: support for local only repositories, without a configured remote origin.
 * Add: Laravel10 & Laravel11 projects.
