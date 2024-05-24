@@ -169,7 +169,6 @@
     <Compile Include="Step\MoveChangesOnMainBranchToNewBranch.cs" />
     <Compile Include="Step\MoveChangesOnCurrentBranchToNewBranch.cs" />
     <Compile Include="Step\PushMainBranchToRemote.cs" />
-    <Compile Include="Step\DeleteWorkingTreeChangesAndStagedUncommittedFiles.cs" />
     <Compile Include="Step\FinishRebaseMerge.cs" />
     <Compile Include="Step\MergeAbort.cs" />
     <Compile Include="Step\MergeContinue.cs" />
