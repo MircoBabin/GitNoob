@@ -64,6 +64,7 @@ namespace GitNoob.Git
         {
             var result = new RebaseResult();
             if (GitDisaster.Check(this, result, new GitDisasterAllowed() { 
+                Allow_DetachedHead = true,
                 Allow_RebaseInProgress = true,
                 Allow_WorkingTreeChanges = true,
                 Allow_StagedUncommittedFiles = true,
