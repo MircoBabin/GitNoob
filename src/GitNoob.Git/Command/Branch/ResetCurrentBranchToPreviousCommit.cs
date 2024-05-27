@@ -10,6 +10,7 @@
                 reset.WaitFor();
 
                 var unstage = RunGit("unstage", "restore --staged .");
+                unstage.WaitFor();
             }
             else
             {

@@ -1,4 +1,6 @@
-﻿namespace GitNoob.Git.Command.Branch
+﻿using System.Text;
+
+namespace GitNoob.Git.Command.Branch
 {
     public class CommitAllChanges : Command
     {
@@ -24,8 +26,19 @@
             if (!string.IsNullOrWhiteSpace(commitMessage))
             {
                 {
-                    var executor = RunGit("commit", "commit --quiet --message \"" + commitMessage + "\"");
+                    // commitmessage via file
+                    var commitMessageFilename = System.IO.Path.GetTempFileName();
+                    var encoding = new UTF8Encoding(false);
+                    System.IO.File.WriteAllBytes(commitMessageFilename, encoding.GetBytes(commitMessage));
+
+                    var executor = RunGit("commit", "commit --quiet \"--file=" + commitMessageFilename + "\"");
                     executor.WaitFor();
+
+                    try
+                    {
+                        System.IO.File.Delete(commitMessageFilename);
+                    }
+                    catch { }
                 }
 
                 {

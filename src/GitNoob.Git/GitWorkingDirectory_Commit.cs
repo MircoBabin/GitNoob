@@ -7,13 +7,21 @@ namespace GitNoob.Git
     public partial class GitWorkingDirectory
     {
         public enum UnpackLastCommitType { All, OnlyUnpackTemporaryCommit }
-        public UnpackLastCommitOnCurrentBranchResult UnpackLastCommitOnCurrentBranch(UnpackLastCommitType unpackType)
+        public UnpackLastCommitOnCurrentBranchResult UnpackLastCommitOnCurrentBranch(UnpackLastCommitType unpackType, string createUndeleteTagMessage)
         {
             var result = new UnpackLastCommitOnCurrentBranchResult();
-            if (GitDisaster.Check(this, result))
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()
+            {
+                Allow_WorkingTreeChanges = true,
+                Allow_StagedUncommittedFiles = true,
+            }))
                 return result;
 
-            var lastcommit = new Command.Branch.GetLastCommitOfBranch(this,result.GitDisaster_CurrentBranchShortName);
+            bool workingtreeChanges =
+                (result.GitDisaster_WorkingTreeChanges != false) ||
+                (result.GitDisaster_StagedUncommittedFiles != false);
+
+            var lastcommit = new Command.Branch.GetLastCommitOfBranch(this, result.GitDisaster_CurrentBranchShortName);
             lastcommit.WaitFor();
             if (lastcommit.commitmessage == null)
             {
@@ -28,6 +36,36 @@ namespace GitNoob.Git
                 result.NoCommitToUnpack = true;
 
                 return result;
+            }
+
+            if (!string.IsNullOrWhiteSpace(createUndeleteTagMessage))
+            {
+                if (!CreateDeletedBranchUndoTag(result.GitDisaster_CurrentBranchShortName, MainBranch,
+                    createUndeleteTagMessage.Replace("<<lastcommit-message>>", lastcommit.commitmessage)))
+                {
+                    result.ErrorCreatingSafetyTag = true;
+                    return result;
+                }
+            }
+
+            if (workingtreeChanges)
+            {
+                var now = DateTime.Now;
+                var amend = new Command.Branch.AmendLastCommit(this, true, now, now, "Unpack - amend last commit with working tree changes: " + lastcommit.commitmessage);
+                amend.WaitFor();
+
+                var changes = new Command.WorkingTree.HasChanges(this);
+                changes.WaitFor();
+
+                if (changes.workingtreeChanges != false || changes.stagedUncommittedFiles != false)
+                {
+                    result.ErrorAmendingLastCommitWithWorkingTreeChanges = true;
+
+                    return result;
+                }
+
+                result.GitDisaster_StagedUncommittedFiles = false;
+                result.GitDisaster_WorkingTreeChanges = false;
             }
 
             var unpack = new Command.Branch.ResetCurrentBranchToPreviousCommit(this, true);
@@ -104,7 +142,7 @@ namespace GitNoob.Git
                     return result;
                 }
 
-                var touch = new Command.Branch.AmendLastCommit(this, toTime, toTime);
+                var touch = new Command.Branch.AmendLastCommit(this, false, toTime, toTime, null);
                 touch.WaitFor();
             }
 

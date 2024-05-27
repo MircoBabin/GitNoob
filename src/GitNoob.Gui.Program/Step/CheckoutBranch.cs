@@ -58,7 +58,7 @@ namespace GitNoob.Gui.Program.Step
                 message.Append(Environment.NewLine);
                 message.Append("Unpacking the temporary commit failed.");
 
-                var result = StepsExecutor.Config.Git.UnpackLastCommitOnCurrentBranch(Git.GitWorkingDirectory.UnpackLastCommitType.OnlyUnpackTemporaryCommit);
+                var result = StepsExecutor.Config.Git.UnpackLastCommitOnCurrentBranch(Git.GitWorkingDirectory.UnpackLastCommitType.OnlyUnpackTemporaryCommit, null);
                 if (result.IsGitDisasterHappening != false)
                 {
                     FailureRemedy = new Remedy.MessageGitDisaster(this, message, result);

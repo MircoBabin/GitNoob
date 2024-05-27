@@ -12,7 +12,11 @@ namespace GitNoob.Gui.Program.Step
 
             var message = new VisualizerMessageWithLinks();
 
-            var result = StepsExecutor.Config.Git.CheckForGitDisaster();
+            var result = StepsExecutor.Config.Git.CheckForGitDisaster(new GitNoob.Git.GitDisasterAllowed()
+            {
+                Allow_WorkingTreeChanges = true,
+                Allow_StagedUncommittedFiles = true,
+            });
             if (result.IsGitDisasterHappening != false)
             {
                 FailureRemedy = new Remedy.MessageGitDisaster(this, message, result);

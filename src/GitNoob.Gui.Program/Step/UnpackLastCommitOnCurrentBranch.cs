@@ -12,7 +12,7 @@ namespace GitNoob.Gui.Program.Step
         {
             BusyMessage = "Busy - unpack last commit";
 
-            var result = StepsExecutor.Config.Git.UnpackLastCommitOnCurrentBranch(Git.GitWorkingDirectory.UnpackLastCommitType.All);
+            var result = StepsExecutor.Config.Git.UnpackLastCommitOnCurrentBranch(Git.GitWorkingDirectory.UnpackLastCommitType.All, "Safety - unpack - before unpacking: <<lastcommit-message>>");
 
             var message = new VisualizerMessageWithLinks("Unpack last commit failed.");
 

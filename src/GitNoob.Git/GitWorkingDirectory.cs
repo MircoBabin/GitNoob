@@ -167,10 +167,10 @@ namespace GitNoob.Git
             };
         }
 
-        public CheckForGitDisasterResult CheckForGitDisaster()
+        public CheckForGitDisasterResult CheckForGitDisaster(GitDisasterAllowed allowed = null)
         {
             var result = new CheckForGitDisasterResult();
-            if (GitDisaster.Check(this, result))
+            if (GitDisaster.Check(this, result, allowed))
                 return result;
 
             var currentlastcommit = new Command.Branch.GetLastCommitOfBranch(this, result.GitDisaster_CurrentBranchShortName);
