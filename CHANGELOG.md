@@ -1,5 +1,10 @@
 # GitNoob changelog
 
+## Version 1.27
+* Add: create undelete entry before unpacking last commit.
+* Add: unpack last commit when having working directory changes.
+* Fix: working directory window height.
+
 ## Version 1.26
 * Fix: abort rebase.
 * Fix: only allow the safe option for toilet (delete all changes).
