@@ -759,7 +759,7 @@ namespace GitNoob.Gui.Forms
             this.ClientSize = new Size(this.ClientSize.Width, maxheight);
             //But don't exceed the screen WorkingArea height
             var myScreen = Screen.FromControl(this);
-            if (this.Height > myScreen.WorkingArea.Height) this.Height = myScreen.WorkingArea.Height;
+            if (this.Height > (myScreen.WorkingArea.Height-this.Top)) this.Height = (myScreen.WorkingArea.Height-this.Top);
 
             panelError.Height = this.ClientSize.Height - panelError.Top;
             panelError.Visible = true;
