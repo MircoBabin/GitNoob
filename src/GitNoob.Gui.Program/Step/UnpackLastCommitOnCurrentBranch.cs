@@ -4,15 +4,27 @@ namespace GitNoob.Gui.Program.Step
 {
     public class UnpackLastCommitOnCurrentBranch : Step
     {
-        public UnpackLastCommitOnCurrentBranch() : base()
+        bool _onlyUnpackTemporaryCommit;
+
+        public UnpackLastCommitOnCurrentBranch(bool OnlyUnpackTemporaryCommit) : base()
         {
+            _onlyUnpackTemporaryCommit = OnlyUnpackTemporaryCommit;
         }
 
         protected override bool run()
         {
             BusyMessage = "Busy - unpack last commit";
 
-            var result = StepsExecutor.Config.Git.UnpackLastCommitOnCurrentBranch(Git.GitWorkingDirectory.UnpackLastCommitType.All, "Safety - unpack - before unpacking: <<lastcommit-message>>");
+            Git.GitWorkingDirectory.UnpackLastCommitType unpackType;
+            if (_onlyUnpackTemporaryCommit)
+            {
+                unpackType = Git.GitWorkingDirectory.UnpackLastCommitType.OnlyUnpackTemporaryCommit;
+            }
+            else
+            {
+                unpackType = Git.GitWorkingDirectory.UnpackLastCommitType.All;
+            }
+            var result = StepsExecutor.Config.Git.UnpackLastCommitOnCurrentBranch(unpackType, "Safety - unpack - before unpacking: <<lastcommit-message>>");
 
             var message = new VisualizerMessageWithLinks("Unpack last commit failed.");
 

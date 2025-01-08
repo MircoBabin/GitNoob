@@ -116,6 +116,29 @@ namespace GitNoob.Gui.Forms
             catch { }
         }
 
+        private const int _subButtonMargin = 8;
+        public int GetErrorButtonWidth(Visualizer.VisualizerMessageButton button)
+        {
+            int subsize = 0;
+            foreach (var sub in button.subButtons)
+            {
+                subsize += 32 + _subButtonMargin;
+            }
+
+            this.AutoSize = false;
+            this.MaximumSize = new Size();
+            this.MinimumSize = new Size();
+            this.Size = new Size(0, this.Size.Height);
+            this.Text = button.text.Replace("&", "&&");
+
+            this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            this.AutoEllipsis = false;
+            this.TextAlign = ContentAlignment.MiddleLeft;
+            this.AutoSize = true;
+
+            return subsize + this.Width;
+        }
+
         public void ShowErrorButton(ToolTip toolTips, TextBox Input, TextBox Input2, Visualizer.VisualizerMessageButton button, ref Point Location, Size size)
         {
             HideErrorButton();
@@ -124,7 +147,6 @@ namespace GitNoob.Gui.Forms
             _input = Input;
             _input2 = Input2;
 
-            const int margin = 8;
             Point sublocation = new Point(Location.X, Location.Y);
             int subsize = 0;
             foreach (var sub in button.subButtons)
@@ -132,8 +154,8 @@ namespace GitNoob.Gui.Forms
                 var subbutton = new Button();
                 subbutton.ClientSize = new Size(32, 32);
                 subbutton.Location = new Point(sublocation.X, sublocation.Y);
-                sublocation.X += 32 + margin;
-                subsize += 32 + margin;
+                sublocation.X += 32 + _subButtonMargin;
+                subsize += 32 + _subButtonMargin;
 
                 try
                 {
@@ -179,14 +201,16 @@ namespace GitNoob.Gui.Forms
         }
 
         private void SetErrorButton(string Description, ref Point Location, Size size)
-        { 
+        {
+            this.Text = Description.Replace("&", "&&");
+
+            this.AutoSize = true;
             this.MaximumSize = size;
             this.MinimumSize = size;
-            this.AutoSize = true;
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            this.AutoEllipsis = false;
             this.TextAlign = ContentAlignment.MiddleLeft;
 
-            this.Text = Description.Replace("&", "&&");
             this.Location = new Point(Location.X, Location.Y);
             base.Visible = true;
 

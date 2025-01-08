@@ -90,11 +90,7 @@ namespace GitNoob.Gui.Program.Step
                 {
                     if (result.WorkingTreeChanges || result.StagedUncommittedFiles)
                     {
-                        message.Append(Environment.NewLine);
-                        message.Append("The current branch \"" + result.CurrentBranch + "\" is not updated, because there are uncommitted changes. The current branch does not contain the downloaded changes of the main branch \"" + MainBranch + "\"." + Environment.NewLine);
-                        message.Append(Environment.NewLine);
-                        message.Append("If you want to incorporate the latest main branch changes in the current branch, then commit the current changes as a \"work in progress\" (wip) and retry get latest.");
-                        FailureRemedy = new Remedy.MessageChanges(this, message, result.WorkingTreeChanges, result.StagedUncommittedFiles);
+                        FailureRemedy = new Remedy.RebaseCurrentBranchWithChangesOntoMainBranch(this, message, MainBranch, result.CurrentBranch);
                         return false;
                     }
 

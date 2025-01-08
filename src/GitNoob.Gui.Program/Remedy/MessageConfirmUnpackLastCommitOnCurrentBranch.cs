@@ -22,7 +22,7 @@ namespace GitNoob.Gui.Program.Remedy
                         Cancel();
                     }),
                     new VisualizerMessageButton("Unpack last commit. Put changes of last commit into working directory and remove commit from current branch.", (input) => {
-                        var step = new Step.UnpackLastCommitOnCurrentBranch();
+                        var step = new Step.UnpackLastCommitOnCurrentBranch(false);
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                         Done();
                     }),

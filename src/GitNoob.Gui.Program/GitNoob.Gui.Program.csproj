@@ -64,6 +64,7 @@
     <Compile Include="Action\StartGitk.cs" />
     <Compile Include="Remedy\MessageGitDisaster.cs" />
     <Compile Include="Remedy\MessageNoGitReferenceLog.cs" />
+    <Compile Include="Remedy\RebaseCurrentBranchWithChangesOntoMainBranch.cs" />
     <Compile Include="Remedy\ResolveCherryPickConflicts.cs" />
     <Compile Include="Step\AskCherryPickCommitId.cs" />
     <Compile Include="Step\AskPruneAggressive.cs" />

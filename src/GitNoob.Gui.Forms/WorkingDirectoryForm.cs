@@ -660,17 +660,32 @@ namespace GitNoob.Gui.Forms
                 throw new Exception("buttons should have at least 1 entry");
             }
 
+            panelError.Visible = false;
             panelError.AutoScroll = false;
-            while (_errorButtons.Count < message.VisualizerMessageButtons.Count)
-            {
-                var button = new ErrorButton(this.panelError.Controls);
 
-                _errorButtons.Add(button);
-            };
+            int errorButtonWidth = 0;
+            {
+                while (_errorButtons.Count < message.VisualizerMessageButtons.Count || _errorButtons.Count < 1)
+                {
+                    var button = new ErrorButton(this.panelError.Controls);
+
+                    _errorButtons.Add(button);
+                };
+
+                foreach (var item in message.VisualizerMessageButtons)
+                {
+                    if (item != null)
+                    {
+                        errorButtonWidth = Math.Max(errorButtonWidth, _errorButtons[0].GetErrorButtonWidth(item));
+                    }
+                }
+            }
 
             lblCurrentbranchValue.Enabled = false;
             labelBusy.Visible = false;
             panelStatus.Visible = false;
+
+            panelError.ClientSize = new Size(Math.Max(this.ClientSize.Width - panelError.Left, errorText.Left + errorButtonWidth + 5), panelError.ClientSize.Height);
 
             var size = new Size(panelStatus.ClientSize.Width - SystemInformation.VerticalScrollBarWidth -
                                 errorText.Left -
@@ -732,12 +747,13 @@ namespace GitNoob.Gui.Forms
 
             {
                 int no = 0;
+                var errorButtonSize = new Size(Math.Max(errorButtonWidth, panelError.ClientSize.Width - errorText.Left - 5), size.Height);
                 foreach (var item in message.VisualizerMessageButtons)
                 {
                     if (item != null)
                     {
                         ErrorButton button = _errorButtons[no];
-                        button.ShowErrorButton(toolTips, input, input2, item, ref location, size);
+                        button.ShowErrorButton(toolTips, input, input2, item, ref location, errorButtonSize);
 
                         no++;
                     }
@@ -761,7 +777,7 @@ namespace GitNoob.Gui.Forms
             var myScreen = Screen.FromControl(this);
             if (this.Height > (myScreen.WorkingArea.Height-this.Top)) this.Height = (myScreen.WorkingArea.Height-this.Top);
 
-            panelError.Height = this.ClientSize.Height - panelError.Top;
+            panelError.Height = this.ClientSize.Height - panelError.Top + SystemInformation.HorizontalScrollBarHeight;
             panelError.Visible = true;
             panelError.AutoScroll = true;
 
