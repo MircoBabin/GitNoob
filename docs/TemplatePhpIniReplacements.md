@@ -8,6 +8,20 @@ In the configured **phpIni** file, markers will be replaced before starting Apac
 ; extension_dir = "./"
 ; On windows:
 extension_dir = "[PHP_EXTENSION_DIR_SLASH]"
+
+
+
+; Directory where the temporary files should be placed.
+; Defaults to the system default (see sys_get_temp_dir)
+sys_temp_dir = "[PHP_TEMP_DIR_SLASH]"
+
+
+
+; Log errors to specified file. PHP's default behavior is to leave this value
+; empty.
+; https://php.net/error-log
+; Example:
+error_log = "[PHP_ERROR_LOG_FILENAME_SLASH]"
 ```
 
 ## marker \[GIT_ROOT_DIR_SLASH\]
@@ -26,6 +40,30 @@ The marker "\[PHP_EXTENSION_DIR\]" will be replaced with the configured **phpPat
 
 
 
+## marker \[PHP_TEMP_DIR_SLASH\]
+The marker "\[PHP_TEMP_DIR_SLASH\]" will be replaced with the configured **phpTempPath** setting. The project type (PhpLaravel) can override this setting. Using unix-style '/' as directory seperator.
+
+## marker \[PHP_TEMP_DIR\]
+The marker "\[PHP_TEMP_DIR\]" will be replaced with the configured **phpTempPath** setting. The project type (PhpLaravel) can override this setting. Using windows-style '\\' as directory seperator.
+
+
+
+## marker \[PHP_LOG_DIR_SLASH\]
+The marker "\[PHP_LOG_DIR_SLASH\]" will be replaced with the configured **phpLogPath** setting. The project type (PhpLaravel) can override this setting. Using unix-style '/' as directory seperator.
+
+## marker \[PHP_LOG_DIR\]
+The marker "\[PHP_LOG_DIR\]" will be replaced with the configured **phpLogPath** setting. The project type (PhpLaravel) can override this setting. Using windows-style '\\' as directory seperator.
+
+
+
+## marker \[PHP_ERROR_LOG_FILENAME_SLASH\]
+The marker "\[PHP_ERROR_LOG_FILENAME_SLASH\]" will be replaced with "php-errors.log" in the configured **phpLogPath** setting. The project type (PhpLaravel) can override this setting. Using unix-style '/' as directory seperator.
+
+## marker \[PHP_ERROR_LOG_FILENAME\]
+The marker "\[PHP_ERROR_LOG_FILENAME\]" will be replaced with "php-errors.log" in the configured **phpLogPath** setting. The project type (PhpLaravel) can override this setting. Using windows-style '\\' as directory seperator.
+
+
+
 ## Example for XDEBUG extension
 
 ```
@@ -35,8 +73,8 @@ The marker "\[PHP_EXTENSION_DIR\]" will be replaced with the configured **phpPat
 ; Uncomment the next line to enable the xdebug extension.
 ; zend_extension=xdebug
 
-xdebug.log="[GIT_ROOT_DIR_SLASH]/storage/logs/php-xdebug.log"
-xdebug.output_dir="[GIT_ROOT_DIR_SLASH]/storage/logs"
+xdebug.log="[PHP_LOG_DIR_SLASH]/php-xdebug.log"
+xdebug.output_dir="[PHP_LOG_DIR_SLASH]"
 
 xdebug.trace_output_name=php-xdebug-trace.%u.%r
 xdebug.start_with_request=yes

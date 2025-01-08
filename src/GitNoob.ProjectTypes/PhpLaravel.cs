@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace GitNoob.ProjectTypes
@@ -12,6 +13,29 @@ namespace GitNoob.ProjectTypes
             CapableOfClearAndBuildCache = true,
         };
         public Config.IProjectType_Capabilities Capabilities { get { return _capabilities; } }
+
+        public string OverridePhpTempPath(string TempPath, string GIT_ROOT_DIR)
+        {
+            string storageTmpPhp_tempdir = Path.Combine(GIT_ROOT_DIR, "storage\\tmp\\php-tempdir");
+            if (!Directory.Exists(storageTmpPhp_tempdir))
+            {
+                try
+                {
+                    Directory.CreateDirectory(storageTmpPhp_tempdir);
+                }
+                catch
+                {
+                    return TempPath;
+                }
+            }
+
+            return storageTmpPhp_tempdir;
+        }
+
+        public string OverridePhpLogPath(string LogPath, string GIT_ROOT_DIR)
+        {
+            return Path.Combine(GIT_ROOT_DIR, "storage\\logs");
+        }
 
         public IEnumerable<string> GetConfigurationFiles()
         {

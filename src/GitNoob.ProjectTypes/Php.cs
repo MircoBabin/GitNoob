@@ -11,6 +11,16 @@ namespace GitNoob.ProjectTypes
         };
         public Config.IProjectType_Capabilities Capabilities { get { return _capabilities; } }
 
+        public string OverridePhpTempPath(string TempPath, string GIT_ROOT_DIR)
+        {
+            return TempPath;
+        }
+
+        public string OverridePhpLogPath(string LogPath, string GIT_ROOT_DIR)
+        {
+            return LogPath;
+        }
+
         public IEnumerable<string> GetConfigurationFiles()
         {
             //Relative to the git root directory.

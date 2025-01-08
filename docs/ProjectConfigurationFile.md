@@ -22,6 +22,8 @@ In the project configuration the section GitNoob can contain the settings:
 | php | Value | (Optional) project php settings name. E.g. "5.6.40" then there should also be a section \[php-5.6.40\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | phpPath | Path | (Optional) Path to Php binaries. %phpPath% should contain php.exe. e.g. "%binPath%\\php-5.6.40". |
 | phpIni | Path | (Optional) Path to Php ini template file. |
+| phpTempPath | Path | (Optional) Path for Php temp files (sys_temp_dir = ). e.g. "%gitRoot%\.tmp\php-tempdir". PhpLaravel projects will override this automatically to "%gitRoot%\\storage\\tmp\\php-tempdir". |
+| phpLogPath | Path | (Optional) Path for Php log files (error_log = ). e.g. "%gitRoot%\.tmp\php-logs". PhpLaravel projects will override this automatically to "%gitRoot%\\storage\\logs". |
 | | | |
 | ngrok | Value | (Optional) project ngrok settings name. E.g. "global" then there should also be a section \[ngrok-global\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | ngrokPath | Path | (Optional) Path to Ngrok binaries. %ngrokPath% should contain ngrok.exe. e.g. "%binPath%\\ngrok". |
@@ -77,6 +79,8 @@ This section defines a working directory.
 | php | Value | (Optional) project php settings name. E.g. "5.6.40" then there should also be a section \[php-5.6.40\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | phpPath | Path | (Optional) Path to Php binaries. %phpPath% should contain php.exe. e.g. "%binPath%\\php-5.6.40". |
 | phpIni | Path | (Optional) Path to Php ini template file. |
+| phpTempPath | Path | (Optional) Path for Php temp files (sys_temp_dir = ). e.g. "%gitRoot%\.tmp\php-tempdir". PhpLaravel projects will override this automatically to "%gitRoot%\\storage\\tmp\\php-tempdir". |
+| phpLogPath | Path | (Optional) Path for Php log files (error_log = ). e.g. "%gitRoot%\.tmp\php-logs". PhpLaravel projects will override this automatically to "%gitRoot%\\storage\\logs". |
 | | | |
 | ngrok | Value | (Optional) project ngrok settings name. E.g. "global" then there should also be a section \[ngrok-global\] in the [root configuration file - GitNoob.ini](RootConfigurationFile.md "Root Configuration File"). |
 | ngrokPath | Path | (Optional) Path to Ngrok binaries. %ngrokPath% should contain ngrok.exe. e.g. "%binPath%\\ngrok". |

@@ -41,21 +41,45 @@ namespace GitNoob.Utils.ConfigFileTemplate
 
         private void write()
         {
+            string GIT_ROOT_DIR = _projectWorkingDirectory.Path.ToString();
+
             var extdir = Path.Combine(_projectWorkingDirectory.Php.Path.ToString(), "ext");
+
+            string tempDirectory = _projectWorkingDirectory.Php.TempPath.ToString();
+            if (_projectWorkingDirectory.ProjectType != null)
+                tempDirectory = _projectWorkingDirectory.ProjectType.OverridePhpTempPath(tempDirectory, GIT_ROOT_DIR);
+            if (string.IsNullOrWhiteSpace(tempDirectory) || !Directory.Exists(tempDirectory))
+                tempDirectory = null;
+
+            string logDirectory = _projectWorkingDirectory.Php.LogPath.ToString();
+            if (_projectWorkingDirectory.ProjectType != null)
+                logDirectory = _projectWorkingDirectory.ProjectType.OverridePhpLogPath(logDirectory, GIT_ROOT_DIR);
+            if (string.IsNullOrWhiteSpace(logDirectory) || !Directory.Exists(logDirectory))
+                logDirectory = null;
+
+            string errorLogFilename = null;
+            if (!string.IsNullOrWhiteSpace(logDirectory))
+                errorLogFilename = Path.Combine(logDirectory, "php-errors.log");
 
             var contents = _projectWorkingDirectory.Php.PhpIniTemplateFilename.ReadAllText();
             contents = FileUtils.TemplateToContents(contents, _project, _projectWorkingDirectory,
                 new Dictionary<string, string>()
                 {
-                    { "GIT_ROOT_DIR",  _projectWorkingDirectory.Path.ToString() },
-                    { "GIT_ROOT_DIR_SLASH",  _projectWorkingDirectory.Path.ToString().Replace('\\', '/') },
+                    { "GIT_ROOT_DIR", GIT_ROOT_DIR },
+                    { "GIT_ROOT_DIR_SLASH",  GIT_ROOT_DIR.Replace('\\', '/') },
 
                     { "PHP_EXTENSION_DIR", extdir },
                     { "PHP_EXTENSION_DIR_SLASH", extdir.Replace('\\', '/') },
-                });
 
-            //TODO PHP_LOG_DIR (automatic for Laravel-9)
-            //     PHP_TEMP_DIR e.g. for session files
+                    { "PHP_TEMP_DIR", (tempDirectory != null ? tempDirectory : string.Empty) },
+                    { "PHP_TEMP_DIR_SLASH", (tempDirectory != null ? tempDirectory.Replace('\\', '/') : string.Empty) },
+
+                    { "PHP_LOG_DIR", (logDirectory != null ? logDirectory : string.Empty) },
+                    { "PHP_LOG_DIR_SLASH", (logDirectory != null ? logDirectory.Replace('\\', '/') : string.Empty) },
+
+                    { "PHP_ERROR_LOG_FILENAME", (errorLogFilename != null ? errorLogFilename : string.Empty) },
+                    { "PHP_ERROR_LOG_FILENAME_SLASH", (errorLogFilename != null ? errorLogFilename.Replace('\\', '/') : string.Empty) },
+                });
 
             /*
              * GitNoob assumption
@@ -69,14 +93,19 @@ namespace GitNoob.Utils.ConfigFileTemplate
 
 
 
-            
+
+            ; Directory where the temporary files should be placed.
+            ; Defaults to the system default (see sys_get_temp_dir)
+            sys_temp_dir = "[PHP_TEMP_DIR_SLASH]"
+
+
+
+
             ; Log errors to specified file. PHP's default behavior is to leave this value
             ; empty.
             ; https://php.net/error-log
             ; Example:
-            error_log = "[GIT_ROOT_DIR_SLASH]/storage/logs/php-errors.log"
-            ; Log errors to syslog (Event Log on Windows).
-            ;error_log = syslog
+            error_log = "[PHP_ERROR_LOG_FILENAME_SLASH]"
 
 
 
@@ -87,8 +116,8 @@ namespace GitNoob.Utils.ConfigFileTemplate
             ; Uncomment the next line to enable the xdebug extension.
             ; zend_extension=xdebug
 
-            xdebug.log="[GIT_ROOT_DIR_SLASH]/storage/logs/php-xdebug.log"
-            xdebug.output_dir="[GIT_ROOT_DIR_SLASH]/storage/logs"
+            xdebug.log="[PHP_ERROR_LOG_DIR_SLASH]/php-xdebug.log"
+            xdebug.output_dir="[PHP_ERROR_LOG_DIR_SLASH]"
 
             xdebug.trace_output_name=php-xdebug-trace.%u.%r
             xdebug.start_with_request=yes

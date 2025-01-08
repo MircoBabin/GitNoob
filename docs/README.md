@@ -15,13 +15,15 @@ The final result for a working directory are the settings from Global possibly o
 | origin | Url to be used for "git clone". |
 | mainbranch | Main branch name. |
 
-For a Php or PhpLaravel7, PhpLaravel8, PhpLaravel9 working directory, the following settings also must exist:
+For a Php or PhpLaravel working directory, the following settings also must exist:
 
 | Name |  Description |
 | ---- |  ----------- |
-| type | "Php" or "PhpLaravel7", "PhpLaravel8", "PhpLaravel9". |
+| type | "Php" or "PhpLaravel7", "PhpLaravel8", "PhpLaravel9", "PhpLaravel10", , "PhpLaravel11". |
 | phpPath | Path to Php binaries. |
 | phpIni | Path to Php ini template file. |
+
+PhpLaravel will automatically set **phpTempPath** to storage\\tmp\\php-tempdir and **phpLogPath** to storage\\logs.
 
 
 ## Configuration chapters

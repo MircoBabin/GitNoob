@@ -282,6 +282,8 @@ namespace GitNoob.Config.Loader
             }
 
             ReadPath(Section, "phpPath", php.Path);
+            ReadPath(Section, "phpTempPath", php.TempPath);
+            ReadPath(Section, "phpLogPath", php.LogPath);
             ReadFilename(Section, "phpIni", php.PhpIniTemplateFilename);
 
             return php;
