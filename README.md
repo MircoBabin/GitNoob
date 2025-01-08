@@ -24,7 +24,7 @@ GitNoob solves the following problems:
 - When using [Git Credentials via KeePassCommander](https://github.com/MircoBabin/GitCredentialsViaKeePassCommander) ensure KeePass is started.
 - Starting a dosprompt. Also with the "as administrator" option.
 - Starting an explorer.
-- Starting [Git Gui](https://github.com/prati0100/git-gui/) for committing changes.
+- Starting Git Gui for committing changes.
 - Starting git history for current branch, all branches or one file.
 - Optional: Starting the IDE. With the ability to start with "run as administrator" privileges.
 - Optional: Starting the browser. And automatically start Apache if needed.
