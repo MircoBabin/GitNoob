@@ -37,7 +37,7 @@ For [Php](https://www.php.net/) projects:
 - Use a different php.ini and php version per project.
 - Setup the correct path for global [Composer](https://getcomposer.org/) binaries (%appdata%\Composer\vendor\bin).
 
-For [Php Laravel 7](https://laravel.com/docs/7.x), [Php Laravel 8](https://laravel.com/docs/8.x), [Php Laravel 9](https://laravel.com/docs/9.x) projects:
+For [Php Laravel 7, 8, 9, 10, 11](https://laravel.com/docs/) projects:
 
 - Laravel is a Php project. All advantages for Php projects also apply for Laravel projects.
 - Clear the Laravel cache.
