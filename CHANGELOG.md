@@ -1,5 +1,11 @@
 # GitNoob changelog
 
+## Version 1.28
+* Fix: get latest, rebase when having working directory changes.
+* Add: show project type.
+* Add: configuration setting phpTempPath.
+* Add: configuration setting phpLogPath.
+
 ## Version 1.27
 * Add: create undelete entry before unpacking last commit.
 * Add: unpack last commit when having working directory changes.
