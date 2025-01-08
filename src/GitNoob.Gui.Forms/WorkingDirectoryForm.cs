@@ -300,11 +300,20 @@ namespace GitNoob.Gui.Forms
             }
 
             lblMainbranchValue.Text = Config.visualizerProjectWorkingDirectoryMainBranch();
-            if (!Config.visualizerProjectWorkingDirectoryHasGitNoobRemoteUrl() ||
+            string projectTypeName = Config.visualizerProjectWorkingDirectoryProjectTypeName();
+            if (!string.IsNullOrEmpty(projectTypeName) ||
+                !Config.visualizerProjectWorkingDirectoryHasGitNoobRemoteUrl() ||
                 Config.visualizerProjectWorkingDirectoryTouchTimestampsBeforeMerge())
             {
                 lblMainbranchValue.Text = lblMainbranchValue.Text + " [";
                 bool first = true;
+
+                if (!string.IsNullOrEmpty(projectTypeName))
+                {
+                    if (!first) lblMainbranchValue.Text = lblMainbranchValue.Text + ", ";
+                    first = false;
+                    lblMainbranchValue.Text = lblMainbranchValue.Text + projectTypeName;
+                }
 
                 if (!Config.visualizerProjectWorkingDirectoryHasGitNoobRemoteUrl())
                 {

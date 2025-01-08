@@ -177,6 +177,13 @@ namespace GitNoob.Gui.Program
             return ProjectWorkingDirectory.Path.ToString();
         }
 
+        public string visualizerProjectWorkingDirectoryProjectTypeName()
+        {
+            if (ProjectWorkingDirectory.ProjectType == null) return null;
+
+            return ProjectWorkingDirectory.ProjectType.GetType().Name;
+        }
+
         public bool visualizerProjectWorkingDirectoryHasGitNoobRemoteUrl()
         {
             return !string.IsNullOrWhiteSpace(ProjectWorkingDirectory.Git.RemoteUrl);

@@ -18,6 +18,7 @@ namespace GitNoob.Gui.Visualizer
         string visualizerProjectWorkingDirectoryImageBackgroundHtmlColor();
         string visualizerProjectWorkingDirectoryMainBranch();
         string visualizerProjectWorkingDirectoryPath();
+        string visualizerProjectWorkingDirectoryProjectTypeName();
         bool visualizerProjectWorkingDirectoryHasGitNoobRemoteUrl();
         bool visualizerProjectWorkingDirectoryTouchTimestampsBeforeMerge();
 
