@@ -30,7 +30,7 @@ namespace GitNoob.Gui.Program.Action
                 new Step.EnsureMainBranchExistance("Merge is not possible."),
                 new Step.CheckGitNoobTemporaryCommitsOnCurrentBranch("Continue merging GitNoob Temporary Commits ?"),
                 new Step.LockMainBranch("Merging local changes from " + config.Project.Name + " - " + config.ProjectWorkingDirectory.Name),
-                new Step.GetLatest(false),
+                new Step.GetLatest(false, Step.GetLatest.AllowMovingUnpushedCommitsFromMainBranchType.OnlyIfCurrentBranchIsMainBranch),
                 new Step.ExecutorStoreCurrentBranch(),
 
                 new Step.TouchTimestampOfCommitsBeforeMerge(),

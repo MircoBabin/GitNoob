@@ -56,7 +56,7 @@ namespace GitNoob.Gui.Program.Step
                 var message = new VisualizerMessageWithLinks("Changing branch succeeded.");
                 message.Append(Environment.NewLine);
                 message.Append(Environment.NewLine);
-                message.Append("Unpacking the temporary commit failed.");
+                message.Append("Optionally unpacking the temporary commit failed.");
 
                 var result = StepsExecutor.Config.Git.UnpackLastCommitOnCurrentBranch(Git.GitWorkingDirectory.UnpackLastCommitType.OnlyUnpackTemporaryCommit, null);
                 if (result.IsGitDisasterHappening != false)

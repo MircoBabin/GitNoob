@@ -25,7 +25,7 @@ namespace GitNoob.Gui.Program.Action
             var executor = new StepsExecutor.StepsExecutor(config, new List<StepsExecutor.IExecutableByStepsExecutor>()
             {
                 new Step.EnsureStatus("Cherry pick is not possible.", false, Step.EnsureStatus.WorkingTreeChanges.False, false, false, null),
-                new Step.GetLatest(true),
+                new Step.GetLatest(true, Step.GetLatest.AllowMovingUnpushedCommitsFromMainBranchType.Never),
                 new Step.AskCherryPickCommitId(),
             });
             executor.execute();

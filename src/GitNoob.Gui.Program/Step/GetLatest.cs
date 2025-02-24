@@ -6,10 +6,14 @@ namespace GitNoob.Gui.Program.Step
 {
     public class GetLatest : Step
     {
+        public enum AllowMovingUnpushedCommitsFromMainBranchType { Never, Yes, OnlyIfCurrentBranchIsMainBranch }
         private bool _rebaseCurrentBranchOntoMainBranchAfterDownload;
-        public GetLatest(bool RebaseCurrentBranchOntoMainBranchAfterDownload) : base()
+        private AllowMovingUnpushedCommitsFromMainBranchType _allowMovingUnpushedCommitsFromMainBranch;
+
+        public GetLatest(bool RebaseCurrentBranchOntoMainBranchAfterDownload, AllowMovingUnpushedCommitsFromMainBranchType AllowMovingUnpushedCommitsFromMainBranch) : base()
         {
             _rebaseCurrentBranchOntoMainBranchAfterDownload = RebaseCurrentBranchOntoMainBranchAfterDownload;
+            _allowMovingUnpushedCommitsFromMainBranch = AllowMovingUnpushedCommitsFromMainBranch;
         }
 
         protected override bool run()
@@ -62,7 +66,19 @@ namespace GitNoob.Gui.Program.Step
 
             if (result.ErrorUnpushedCommitsOnMainBranch)
             {
-                FailureRemedy = new Remedy.MoveChangesOnMainBranchToNewBranch(this, message, MainBranch);
+                bool allowMoving = false;
+                switch(_allowMovingUnpushedCommitsFromMainBranch)
+                {
+                    case AllowMovingUnpushedCommitsFromMainBranchType.Yes:
+                        allowMoving = true;
+                        break;
+
+                    case AllowMovingUnpushedCommitsFromMainBranchType.OnlyIfCurrentBranchIsMainBranch:
+                        if (result.CurrentBranch == MainBranch) allowMoving = true;
+                        break;
+                }
+
+                FailureRemedy = new Remedy.MoveChangesOnMainBranchToNewBranch(this, message, MainBranch, allowMoving);
                 return false;
             }
 

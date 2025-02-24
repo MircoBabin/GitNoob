@@ -14,6 +14,7 @@ namespace GitNoob.Git
             {
                 Allow_WorkingTreeChanges = true,
                 Allow_StagedUncommittedFiles = true,
+                Allow_UnpushedCommitsOnMainBranch = true,
             }))
                 return result;
 

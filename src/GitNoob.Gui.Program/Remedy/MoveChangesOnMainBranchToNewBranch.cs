@@ -5,7 +5,7 @@ namespace GitNoob.Gui.Program.Remedy
 {
     public class MoveChangesOnMainBranchToNewBranch : Remedy
     {
-        public MoveChangesOnMainBranchToNewBranch(Step.Step Step, VisualizerMessageWithLinks Message, string MainBranch) :
+        public MoveChangesOnMainBranchToNewBranch(Step.Step Step, VisualizerMessageWithLinks Message, string MainBranch, bool AllowMovingUnpushedCommitsFromMainBranch) :
             base(Step, ref Message)
         {
             var orgmessage = this.VisualizerMessageText.Message.ToString();
@@ -17,6 +17,11 @@ namespace GitNoob.Gui.Program.Remedy
                     new VisualizerMessageButton("Cancel", (input) => {
                         Cancel();
                     }),
+                };
+
+            if (AllowMovingUnpushedCommitsFromMainBranch)
+            {
+                VisualizerMessageButtons.Add(
                     new VisualizerMessageButton("Move changes on main branch \"" + MainBranch + "\" to a new branch.", (input) => {
                         var message = new VisualizerMessageWithLinks(orgmessage);
                         message.Append("Move changes on main branch \"" + MainBranch + "\" to a new branch.");
@@ -29,8 +34,8 @@ namespace GitNoob.Gui.Program.Remedy
 
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { remedy, Step });
                         Done();
-                    }),
-                };
+                    }));
+            }
         }
     }
 }

@@ -71,29 +71,16 @@ namespace GitNoob.Gui.Program.Remedy
 
             if (result.GitDisaster_UnpushedCommitsOnMainBranch != false)
             {
-                // MoveChangesOnMainBranchToNewBranch
                 VisualizerMessageText.Append("The main branch \"" + MainBranch + "\" has unpushed commits.");
+                VisualizerMessageText.Append(Environment.NewLine);
+                VisualizerMessageText.Append(Environment.NewLine);
+                VisualizerMessageText.Append("Resolve this situation by:");
+                VisualizerMessageText.Append(Environment.NewLine);
+                VisualizerMessageText.Append("- changing branch to \"" + MainBranch + "\".");
+                VisualizerMessageText.Append(Environment.NewLine);
+                VisualizerMessageText.Append("- and then executing get latest.");
 
-                VisualizerMessageButtons =
-                    new List<VisualizerMessageButton>()
-                    {
-                    new VisualizerMessageButton("Cancel", (input) => {
-                        Cancel();
-                    }),
-                    new VisualizerMessageButton("Move changes on main branch \"" + MainBranch + "\" to a new branch.", (input) => {
-                        var message = new VisualizerMessageWithLinks();
-                        message.Append("Move changes on main branch \"" + MainBranch + "\" to a new branch.");
 
-                        var remedy = new InputNewBranchName(Step, message, "Move changes", false, (NewBranchName, OnCommitId) =>
-                        {
-                            var step = new Step.MoveChangesOnMainBranchToNewBranch(MainBranch, NewBranchName);
-                            StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
-                        });
-
-                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { remedy, Step });
-                        Done();
-                    }),
-                };
                 return;
             }
 
