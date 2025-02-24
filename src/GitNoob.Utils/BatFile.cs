@@ -184,7 +184,7 @@ namespace GitNoob.Utils
 
         }
 
-        private bool NeedsPhp()
+        public bool NeedsPhp()
         {
             return (_projectWorkingDirectory.ProjectType != null &&
                     _projectWorkingDirectory.ProjectType.Capabilities.NeedsPhp);
@@ -232,7 +232,7 @@ namespace GitNoob.Utils
                     environmentPathParts.Add(phpPath);
 
                     //Global Composer bin directory, e.g. for php-cs-fixer
-                    //    %appdata%\Composer\\vendor\bin
+                    //    %appdata%\Composer\vendor\bin
                     string composerGlobalBin = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Composer\\vendor\\bin");
                     if (Directory.Exists(composerGlobalBin))
                     {

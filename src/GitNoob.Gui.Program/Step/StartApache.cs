@@ -45,6 +45,7 @@ namespace GitNoob.Gui.Program.Step
             if (!running)
             {
                 var confFilename = StepsExecutor.Config.ApacheConf.ConfFullFilename;
+                var templateFilename = StepsExecutor.Config.ProjectWorkingDirectory.Apache.ApacheConfTemplateFilename.ToString();
                 var batFile = new BatFile(StepsExecutor.Config.visualizerShowException, "run-apache", BatFile.RunAsType.runAsInvoker, BatFile.WindowType.showWindow, "Apache for " + StepsExecutor.Config.ApacheConf.ProjectnameASCII,
                     StepsExecutor.Config.Project, StepsExecutor.Config.ProjectWorkingDirectory,
                     StepsExecutor.Config.PhpIni,
@@ -53,6 +54,12 @@ namespace GitNoob.Gui.Program.Step
                 batFile.AppendLine("echo.");
                 batFile.AppendLine("echo Browse to " + StepsExecutor.Config.ProjectWorkingDirectory.Webpage.GetHomepageUrl(StepsExecutor.Config.ProjectWorkingDirectory.Apache.Port));
                 batFile.AppendLine("echo.");
+                if (batFile.NeedsPhp())
+                    batFile.AppendLine("echo GitNoob php-ini-template: " + StepsExecutor.Config.ProjectWorkingDirectory.Php.PhpIniTemplateFilename);
+                batFile.AppendLine("echo GitNoob apache-conf-template: " + templateFilename);
+                batFile.AppendLine("echo.");
+                if (batFile.NeedsPhp())
+                    batFile.AppendLine("echo Php inifile: " + StepsExecutor.Config.PhpIni.IniFullFilename);
                 batFile.AppendLine("echo Apache configfile: " + confFilename);
                 batFile.AppendLine("echo Apache path: " + apacheBinPath);
                 batFile.AppendLine("httpd.exe -v");
