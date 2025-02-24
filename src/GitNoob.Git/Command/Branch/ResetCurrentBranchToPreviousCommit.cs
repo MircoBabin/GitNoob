@@ -6,15 +6,15 @@
         {
             if (putLastCommitChangesInWorkingDirectory)
             {
-                var reset = RunGit("reset", "reset --soft \"HEAD^\"");
+                var reset = RunGit("reset", new string[] { "reset", "--soft", "HEAD^" });
                 reset.WaitFor();
 
-                var unstage = RunGit("unstage", "restore --staged .");
+                var unstage = RunGit("unstage", new string[] { "restore", "--staged", "." });
                 unstage.WaitFor();
             }
             else
             {
-                var reset = RunGit("reset", "reset --hard \"HEAD^\"");
+                var reset = RunGit("reset", new string[] { "reset", "--hard", "HEAD^" });
                 reset.WaitFor();
             }
         }

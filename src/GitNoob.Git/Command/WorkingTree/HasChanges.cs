@@ -10,8 +10,8 @@
             workingtreeChanges = null;
             stagedUncommittedFiles = null;
 
-            RunGit("workingtree-changes", "ls-files --exclude-standard --others --modified --deleted");
-            RunGit("staged-but-uncommitted", "diff --cached --quiet");
+            RunGit("workingtree-changes", new string[] { "ls-files", "--exclude-standard", "--others", "--modified", "--deleted" });
+            RunGit("staged-but-uncommitted", new string[] { "diff", "--cached", "--quiet" });
         }
 
         protected override void RunGitDone()

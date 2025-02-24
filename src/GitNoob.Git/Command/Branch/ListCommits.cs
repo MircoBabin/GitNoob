@@ -12,7 +12,7 @@ namespace GitNoob.Git.Command.Branch
         {
             result = null;
 
-            RunGit("list", "rev-list --no-commit-header --format=%H%x1f%B%x1e \"" + afterCommitId + ".." + uptoCommitId + "\"");
+            RunGit("list", new string[] { "rev-list", "--no-commit-header", "--format=%H%x1f%B%x1e", afterCommitId + ".." + uptoCommitId });
         }
 
         protected override void RunGitDone()

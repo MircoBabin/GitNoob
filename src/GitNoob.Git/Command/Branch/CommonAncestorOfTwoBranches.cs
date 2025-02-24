@@ -8,7 +8,7 @@
         {
             commitid = null;
 
-            RunGit("base", "merge-base --fork-point \"" + mainBranch + "\" \"" + topicBranch + "\"");
+            RunGit("base", new string[] { "merge-base", "--fork-point", mainBranch, topicBranch });
         }
 
         protected override void RunGitDone()

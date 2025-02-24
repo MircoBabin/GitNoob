@@ -221,9 +221,116 @@ namespace GitNoob.Utils
             }
         }
 
+        public static string EscapeParmsToCommandline(IList<string> parms)
+        {
+            if (parms == null)
+                return string.Empty;
+
+            /*
+            https://learn.microsoft.com/en-us/dotnet/api/system.environment.getcommandlineargs?view=net-9.0&redirectedfrom=MSDN#System_Environment_GetCommandLineArgs
+
+            Command line arguments are delimited by spaces. You can use double quotation marks (") to include spaces
+            within an argument. The single quotation mark ('), however, does not provide this functionality.
+
+            If a double quotation mark follows two or an even number of backslashes,
+            each proceeding backslash pair is replaced with one backslash and the double quotation mark is removed.
+
+            If a double quotation mark follows an odd number of backslashes, including just one,
+            each preceding pair is replaced with one backslash and the remaining backslash is removed;
+            however, in this case the double quotation mark is not removed.
+
+            Original                                      Escaped
+                                                          ""
+            .                                             "."
+            \path                                         "\path"
+            \path\                                        "\path\\"
+            "\path\"                                      "\"\path\\\""
+
+            ----------------------------------------------------------------------------------
+            var testvectors = new string[] { "", ".", "\\", "\"", "test", "\\test\\", "\"test\"", "\\\"test\\\"", "te\"st" };
+            foreach (var vector in testvectors)
+            {
+                Console.WriteLine(vector);
+                Console.WriteLine(EscapeParmsToCommandline(new string[] { vector }));
+                Console.WriteLine();
+            }
+
+            Console.WriteLine(EscapeParmsToCommandline(testvectors));
+            ----------------------------------------------------------------------------------
+            */
+            StringBuilder cmdline = new StringBuilder();
+            foreach (string argument in parms)
+            {
+                if (argument != null)
+                {
+                    cmdline.Append("\"");
+
+                    // find trailing backslashes
+                    int p4 = argument.Length - 1;
+                    while (p4 >= 0 && argument[p4] == '\\') p4--;
+                    // p4 == -1    -->    argument consisting of only backslashes or empty string
+
+                    // replace " inside argument
+                    int p1 = 0;
+                    while (p1 <= p4)
+                    {
+                        // find "
+                        int p3 = argument.IndexOf('"', p1);
+                        if (p3 < 0)
+                        {
+                            cmdline.Append(argument.Substring(p1, p4 - p1 + 1));
+                            break;
+                        }
+
+                        // backslashes before the "
+                        int p2 = p3 - 1;
+                        while (p2 >= 0 && argument[p2] == '\\') p2--;
+                        // p2 == -1    -->    \" at the beginning of parm
+
+                        // append part before the backslashes and "
+                        cmdline.Append(argument.Substring(p1, p2 - p1 + 1));
+
+                        // double the number of preceding backslashes
+                        cmdline.Append(new string('\\', 2 * (p3 - (p2 + 1))));
+
+                        // append \" (odd number of backslashes preceding the quotation mark)
+                        cmdline.Append("\\\"");
+
+                        // next search
+                        p1 = p3 + 1;
+                    }
+
+                    // double the number of trailing backslashes (even number of backslashes preceding the closing quotation mark)
+                    cmdline.Append(new string('\\', 2 * ((argument.Length - 1) - p4)));
+                    // closing quotation mark + space separator for next argument
+                    cmdline.Append("\" ");
+                }
+            }
+            if (cmdline.Length > 0)
+            {
+                //remove last space
+                cmdline.Length--;
+            }
+
+            return cmdline.ToString();
+        }
+
+        public ConsoleExecutor(string executable, IList<string> commandlineParms, string workingdirectory, string enterPasswordText, SecureString password,
+                               IList<string> AppendToPath = null, IDictionary<string, string> EnvironmentVariables = null)
+        {
+            Construct(executable, EscapeParmsToCommandline(commandlineParms), workingdirectory, enterPasswordText, password, AppendToPath, EnvironmentVariables);
+        }
+
         public ConsoleExecutor(string executable, string commandline, string workingdirectory, string enterPasswordText, SecureString password,
                                IList<string> AppendToPath = null, IDictionary<string, string> EnvironmentVariables = null)
         {
+            Construct(executable, commandline, workingdirectory, enterPasswordText, password, AppendToPath, EnvironmentVariables);
+        }
+
+        private void Construct(string executable, string commandline, string workingdirectory, string enterPasswordText, SecureString password,
+                               IList<string> AppendToPath = null, IDictionary<string, string> EnvironmentVariables = null)
+        {
+
             _executable = executable;
             _commandline = (commandline != null ? commandline : String.Empty);
             _workingdirectory = workingdirectory;

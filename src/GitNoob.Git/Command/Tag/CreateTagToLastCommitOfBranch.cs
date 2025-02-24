@@ -1,4 +1,6 @@
-﻿namespace GitNoob.Git.Command.Tag
+﻿using System.Text;
+
+namespace GitNoob.Git.Command.Tag
 {
     public class CreateTagToLastCommitOfBranch : Command
     {
@@ -8,15 +10,28 @@
         {
             //result = null;
 
+            // commitmessage via file
+            var tagMessageFilename = System.IO.Path.GetTempFileName();
+            var encoding = new UTF8Encoding(false);
+            System.IO.File.WriteAllBytes(tagMessageFilename, encoding.GetBytes(message != null ? message : string.Empty));
+
+            ExecutorGit executor;
             if (branchNameOrNullForCurrentBranch == null)
             {
                 //create on current branch
-                RunGit("tag", "tag --annotate --no-sign --force \"--message=" + (message != null ? message : string.Empty) + "\" \"" + tagname + "\"");
+                executor = RunGit("tag", new string[] { "tag", "--annotate", "--no-sign", "--force", "--file=" + tagMessageFilename, tagname });
             }
             else
             {
-                RunGit("tag", "tag --annotate --no-sign --force \"--message=" + (message != null ? message : string.Empty) + "\" \"" + tagname + "\" \"" + branchNameOrNullForCurrentBranch + "\"");
+                executor = RunGit("tag", new string[] { "tag", "--annotate", "--no-sign", "--force", "--file=" + tagMessageFilename, tagname, branchNameOrNullForCurrentBranch });
             }
+            executor.WaitFor();
+
+            try
+            {
+                System.IO.File.Delete(tagMessageFilename);
+            }
+            catch { }
         }
 
         protected override void RunGitDone()

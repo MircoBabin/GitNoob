@@ -98,11 +98,8 @@
     <Compile Include="Command\Config\GetCurrentCommitter.cs" />
     <Compile Include="Command\Branch\GetCurrentBranch.cs" />
     <Compile Include="Command\ExecutorGit.cs" />
-    <Compile Include="Command\Stash\ListStashes.cs" />
     <Compile Include="Command\Tag\ListTags.cs" />
     <Compile Include="Command\WorkingTree\ResolveGitPath.cs" />
-    <Compile Include="Command\Stash\RestoreStashedWorkingTreeChanges.cs" />
-    <Compile Include="Command\Stash\StashWorkingTreeChanges.cs" />
     <Compile Include="Command\Repository\UpdateRepositoryFromRemotes.cs" />
     <Compile Include="GitCredentialsViaKeePassCommander.cs" />
     <Compile Include="GitDisaster.cs" />

@@ -17,7 +17,7 @@
                 return;
             }
 
-            RunGit("merge", "merge --ff-only \"" + fromBranch + "\"");
+            RunGit("merge", new string[] { "merge", "--ff-only", fromBranch });
         }
 
         protected override void RunGitDone()

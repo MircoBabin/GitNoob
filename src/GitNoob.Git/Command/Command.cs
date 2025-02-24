@@ -16,7 +16,7 @@ namespace GitNoob.Git.Command
             _commands = new Dictionary<string, Command>();
         }
 
-        public ExecutorGit RunGit(string executorName, string parms, string workingDirectory = null, Dictionary<string,string> environmentVariables = null)
+        public ExecutorGit RunGit(string executorName, IList<string> parms, string workingDirectory = null, Dictionary<string,string> environmentVariables = null)
         {
             var executor = new ExecutorGit(
                 _gitworkingdirectory.GitExecutable,

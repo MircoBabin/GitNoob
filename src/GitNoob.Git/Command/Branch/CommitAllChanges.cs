@@ -19,7 +19,7 @@ namespace GitNoob.Git.Command.Branch
             }
 
             {
-                var executor = RunGit("add", "add --all");
+                var executor = RunGit("add", new string[] { "add", "--all" });
                 executor.WaitFor();
             }
 
@@ -31,7 +31,7 @@ namespace GitNoob.Git.Command.Branch
                     var encoding = new UTF8Encoding(false);
                     System.IO.File.WriteAllBytes(commitMessageFilename, encoding.GetBytes(commitMessage));
 
-                    var executor = RunGit("commit", "commit --quiet \"--file=" + commitMessageFilename + "\"");
+                    var executor = RunGit("commit", new string[] { "commit", "--quiet", "--file=" + commitMessageFilename });
                     executor.WaitFor();
 
                     try

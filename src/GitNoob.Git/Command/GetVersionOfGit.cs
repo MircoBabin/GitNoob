@@ -14,7 +14,7 @@ namespace GitNoob.Git.Command
         public GetVersionOfGit(string gitExecutable)
         {
             fullversion = null;
-            _executor = new ExecutorGit(gitExecutable, null, "--version", null);
+            _executor = new ExecutorGit(gitExecutable, null, new string[] { "--version" }, null);
         }
 
         public void WaitFor()

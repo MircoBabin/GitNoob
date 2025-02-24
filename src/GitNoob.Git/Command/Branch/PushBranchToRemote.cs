@@ -14,7 +14,7 @@ namespace GitNoob.Git.Command.Branch
             remote.WaitFor();
             if (!String.IsNullOrWhiteSpace(remote.remoteName))
             {
-                RunGit("push", "push --quiet \"" + remote.remoteName + "\" \"" + localBranch + "\"");
+                RunGit("push", new string[] { "push", "--quiet", remote.remoteName, localBranch });
             }
             else
             {

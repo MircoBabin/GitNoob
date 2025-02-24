@@ -4,7 +4,7 @@
     {
         public ResetCurrentBranchToRemote(GitWorkingDirectory gitworkingdirectory) : base(gitworkingdirectory)
         {
-            RunGit("reset", "reset --hard @{upstream}");
+            RunGit("reset", new string[] { "reset", "--hard", "@{upstream}" });
         }
 
         protected override void RunGitDone()

@@ -10,7 +10,7 @@ namespace GitNoob.Git.Command.Branch
         {
             result = null;
 
-            RunGit("checkout", "checkout --quiet \"" + localBranch + "\"");
+            RunGit("checkout", new string[] { "checkout", "--quiet", localBranch });
         }
 
         protected override void RunGitDone()

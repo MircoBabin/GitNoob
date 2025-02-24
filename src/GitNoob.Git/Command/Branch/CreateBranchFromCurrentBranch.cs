@@ -8,7 +8,7 @@
         {
             //result = null;
 
-            RunGit("branch", "branch \"" + newBranch + "\"");
+            RunGit("branch", new string[] { "branch", newBranch });
         }
 
         protected override void RunGitDone()

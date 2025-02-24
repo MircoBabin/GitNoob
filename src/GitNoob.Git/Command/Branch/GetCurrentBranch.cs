@@ -35,8 +35,8 @@ namespace GitNoob.Git.Command.Branch
             list = null;
             _shortname = null;
 
-            var current = RunGit("branch", "symbolic-ref -q HEAD");
-            var currentshort = RunGit("branchshort", "symbolic-ref -q --short HEAD");
+            var current = RunGit("branch", new string[] { "symbolic-ref", "-q", "HEAD" });
+            var currentshort = RunGit("branchshort", new string[] { "symbolic-ref", "-q", "--short", "HEAD" });
             current.WaitFor();
             switch (current.ExitCode)
             {

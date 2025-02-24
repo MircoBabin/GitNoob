@@ -10,8 +10,8 @@
         {
             result = null;
 
-            RunGit("name", "config user.name");
-            RunGit("email", "config user.email");
+            RunGit("name", new string[] { "config", "user.name" });
+            RunGit("email", new string[] { "config", "user.email" });
         }
 
         protected override void RunGitDone()

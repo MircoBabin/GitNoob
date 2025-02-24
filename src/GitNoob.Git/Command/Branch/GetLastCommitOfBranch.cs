@@ -10,7 +10,7 @@
             commitid = null;
             commitmessage = null;
 
-            RunGit("commit", "rev-parse --verify \"" + localBranch + "\"");
+            RunGit("commit", new string[] { "rev-parse", "--verify", localBranch });
         }
 
         protected override void RunGitDone()
@@ -19,7 +19,7 @@
             commitid = executor.Output.Trim();
             if (!string.IsNullOrWhiteSpace(commitid))
             {
-                var msg = RunGit("message", "rev-list --no-commit-header --format=%B --max-count=1 \"" + commitid + "\"");
+                var msg = RunGit("message", new string[] { "rev-list", "--no-commit-header", "--format=%B", "--max-count=1", commitid });
                 msg.WaitFor();
 
                 commitmessage = msg.Output.Trim();

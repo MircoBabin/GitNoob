@@ -21,7 +21,7 @@ namespace GitNoob.Git.Command.Config
             if (!_resolved.ContainsKey(_resolveName))
             {
                 result = null;
-                RunGit("credential", "config credential.helper");
+                RunGit("credential", new string[] { "config", "credential.helper" });
             }
             else
             {

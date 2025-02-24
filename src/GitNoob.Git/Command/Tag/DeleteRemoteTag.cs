@@ -12,7 +12,7 @@ namespace GitNoob.Git.Command.Tag
             result = null;
             output = null;
 
-            RunGit("push", "push --quiet \"" + remotename + "\" \":refs/tags/" + tagname + "\"");
+            RunGit("push", new string[] { "push", "--quiet", remotename, ":refs/tags/" + tagname });
         }
 
         protected override void RunGitDone()

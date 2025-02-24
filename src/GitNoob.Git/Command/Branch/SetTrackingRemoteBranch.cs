@@ -4,7 +4,7 @@
     {
         public SetTrackingRemoteBranch(GitWorkingDirectory gitworkingdirectory, string branchName, string remoteName, string remoteBranch) : base(gitworkingdirectory)
         {
-            RunGit("set", "branch \"--set-upstream-to=" + remoteName + "/" + remoteBranch + "\" \"" + branchName + "\"");
+            RunGit("set", new string[] { "branch", "--set-upstream-to=" + remoteName + "/" + remoteBranch, branchName });
         }
 
         protected override void RunGitDone()

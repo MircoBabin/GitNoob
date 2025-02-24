@@ -14,7 +14,7 @@ namespace GitNoob.Git.Command.Repository
             //result = null;
             output = null;
 
-            RunGit("fetch", "fetch --all --tags --prune --quiet").WaitFor();
+            RunGit("fetch", new string[] { "fetch", "--all", "--tags", "--prune", "--quiet" }).WaitFor();
 
             var branches = new ListBranches(gitworkingdirectory, false);
             branches.WaitFor();

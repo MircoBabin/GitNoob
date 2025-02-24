@@ -15,24 +15,28 @@ namespace GitNoob.Git.Command.Branch
         {
             //result = null;
 
-            StringBuilder options = new StringBuilder();
-            Dictionary<string, string> environmentVariables = new Dictionary<string, string>();
-
             if (amendWithAllCurrentChanges)
             {
-                var executor = RunGit("add", "add --all");
+                var executor = RunGit("add", new string[] { "add", "--all" });
                 executor.WaitFor();
             }
 
+            List<string> amendParms = new List<string>();
+            Dictionary<string, string> amendEnvironmentVariables = new Dictionary<string, string>();
+
+            amendParms.Add("commit");
+            amendParms.Add("--amend");
+            amendParms.Add("--quiet");
+            amendParms.Add("--no-edit");
 
             if (authorTime != null && authorTime.HasValue)
             {
-                options.Append(" \"--date=" + GitUtils.FormatDateTimeForGit(authorTime.Value) + "\"");
+                amendParms.Add("--date=" + GitUtils.FormatDateTimeForGit(authorTime.Value));
             }
 
             if (commitTime != null && commitTime.HasValue)
             {
-                environmentVariables.Add("GIT_COMMITTER_DATE", GitUtils.FormatDateTimeForGit(commitTime.Value));
+                amendEnvironmentVariables.Add("GIT_COMMITTER_DATE", GitUtils.FormatDateTimeForGit(commitTime.Value));
             }
 
             if (!string.IsNullOrWhiteSpace(commitMessage))
@@ -41,11 +45,11 @@ namespace GitNoob.Git.Command.Branch
                 commitMessageFilename = System.IO.Path.GetTempFileName();
                 var encoding = new UTF8Encoding(false);
                 System.IO.File.WriteAllBytes(commitMessageFilename, encoding.GetBytes(commitMessage));
-                options.Append(" \"--file=" + commitMessageFilename + "\"");
+                amendParms.Add("--file=" + commitMessageFilename);
             }
 
             //Warning: staged files will also be updated in the previous commit!
-            RunGit("amend", "commit --amend --quiet --no-edit" + options.ToString(), null, environmentVariables);
+            RunGit("amend", amendParms, null, amendEnvironmentVariables);
         }
 
         protected override void RunGitDone()

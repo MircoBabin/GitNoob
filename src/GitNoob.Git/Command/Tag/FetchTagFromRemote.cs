@@ -13,7 +13,7 @@ namespace GitNoob.Git.Command.Tag
             output = null;
 
             //Overwrite local tag if it exists
-            RunGit("fetch", "fetch \"" + remotename + "\" \"+refs/tags/" + tagname + ":refs/tags/" + tagname + "\"");
+            RunGit("fetch", new string[] { "fetch", remotename, "+refs/tags/" + tagname + ":refs/tags/" + tagname });
         }
 
         protected override void RunGitDone()

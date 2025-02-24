@@ -4,13 +4,13 @@
     {
         public PruneAggressive(GitWorkingDirectory gitworkingdirectory) : base(gitworkingdirectory)
         {
-            var reflog1 = RunGit("reflog1", "reflog expire --expire-unreachable=now --all");
+            var reflog1 = RunGit("reflog1", new string[] { "reflog", "expire", "--expire-unreachable=now", "--all" });
             reflog1.WaitFor();
 
-            var reflog2 = RunGit("reflog2", "reflog expire --expire=now --all");
+            var reflog2 = RunGit("reflog2", new string[] { "reflog", "expire", "--expire=now", "--all" });
             reflog2.WaitFor();
 
-            RunGit("prune", "gc --prune=now --aggressive");
+            RunGit("prune", new string[] { "gc", "--prune=now", "--aggressive" });
         }
 
         protected override void RunGitDone()

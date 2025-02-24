@@ -11,8 +11,10 @@
             if (string.IsNullOrWhiteSpace(_gitworkingdirectory.RemoteUrl))
                 throw new System.Exception("RemoteUrl is empty");
 
-            RunGit("clone", "clone " + (!string.IsNullOrWhiteSpace(checkoutBranchName) ? "--branch \"" + checkoutBranchName + "\" " : "--no-checkout ") +
-                "\"" + _gitworkingdirectory.RemoteUrl + "\" \"" + _gitworkingdirectory.WorkingPath + "\"");
+            RunGit("clone", new string[] { "clone",
+                (!string.IsNullOrWhiteSpace(checkoutBranchName) ? "--branch" : "--no-checkout"),
+                (!string.IsNullOrWhiteSpace(checkoutBranchName) ? checkoutBranchName : null),
+                _gitworkingdirectory.RemoteUrl, _gitworkingdirectory.WorkingPath });
         }
 
         protected override void RunGitDone()

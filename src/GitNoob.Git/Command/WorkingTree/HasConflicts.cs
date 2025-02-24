@@ -8,7 +8,7 @@
         {
             result = null;
 
-            RunGit("unmerged", "ls-files --exclude-standard --unmerged");
+            RunGit("unmerged", new string[] { "ls-files", "--exclude-standard", "--unmerged" });
         }
 
         protected override void RunGitDone()

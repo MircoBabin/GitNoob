@@ -8,7 +8,7 @@
         {
             //result = null;
 
-            RunGit("cherry-pick", "cherry-pick --cleanup=verbatim \"" + commitid + "\"");
+            RunGit("cherry-pick", new string[] { "cherry-pick", "--cleanup=verbatim", commitid });
         }
 
         protected override void RunGitDone()

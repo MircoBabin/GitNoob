@@ -19,17 +19,17 @@
             if (!string.IsNullOrWhiteSpace(RemoteBranch.result))
             {
                 IsTrackingRemoteBranch = TrackingRemoteBranch.Yes;
-                RunGit("base", "rev-list -n 1 \"" + RemoteBranch.result + ".." + localBranch + "\"");
+                RunGit("base", new string[] { "rev-list", "--max-count=1", RemoteBranch.result + ".." + localBranch });
             }
             else
             {
                 if (mainBranch != null)
                 {
-                    RunGit("base", "rev-list -n 1 \"" + mainBranch + ".." + localBranch + "\"");
+                    RunGit("base", new string[] { "rev-list", "--max-count=1", mainBranch + ".." + localBranch });
                 }
                 else
                 {
-                    RunGit("base", "rev-list -n 1 \"" + localBranch + "\"");
+                    RunGit("base", new string[] { "rev-list", "--max-count=1", localBranch });
                 }
             }
         }

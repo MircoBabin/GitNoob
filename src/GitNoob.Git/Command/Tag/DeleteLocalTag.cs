@@ -8,7 +8,7 @@
         {
             //result = null;
 
-            RunGit("delete", "tag -d \"" + tagname + "\"");
+            RunGit("delete", new string[] { "tag", "-d", tagname });
         }
 
         protected override void RunGitDone()

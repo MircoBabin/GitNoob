@@ -9,7 +9,7 @@
             result = null;
             if (commitid1 != commitid2)
             {
-                RunGit("diff-tree", "diff-tree --color=never --no-renames --exit-code --quiet \"" + commitid1 + "\" \"" + commitid2 + "\"");
+                RunGit("diff-tree", new string[] { "diff-tree", "--color=never", "--no-renames", "--exit-code", "--quiet", commitid1, commitid2 });
             }
             else
             {

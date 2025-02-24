@@ -22,8 +22,8 @@ namespace GitNoob.Git.Command.WorkingTree
             if (!useCache || !_resolved.ContainsKey(_resolveName))
             {
                 result = null;
-                RunGit("toplevel", "rev-parse --show-toplevel");
-                RunGit("not-inside-other-repository", "rev-parse --show-toplevel", Path.Combine(_gitworkingdirectory.WorkingPath, ".."));
+                RunGit("toplevel", new string[] { "rev-parse", "--show-toplevel" });
+                RunGit("not-inside-other-repository", new string[] { "rev-parse", "--show-toplevel" }, Path.Combine(_gitworkingdirectory.WorkingPath, ".."));
             }
             else
             {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace GitNoob.Git.Command
 {
@@ -6,11 +7,11 @@ namespace GitNoob.Git.Command
     {
         protected string _gitExecutable;
         protected string _workingDirectory;
-        protected string _parms;
+        protected IList<string> _parms;
         protected Dictionary<string, string> _environmentVariables;
         protected GitNoob.Utils.ConsoleExecutor _executor = null;
 
-        public ExecutorGit(string gitExecutable, string workingDirectory, string parms, Dictionary<string,string> environmentVariables)
+        public ExecutorGit(string gitExecutable, string workingDirectory, IList<string> parms, Dictionary<string,string> environmentVariables)
         {
             _gitExecutable = gitExecutable;
             _workingDirectory = workingDirectory;

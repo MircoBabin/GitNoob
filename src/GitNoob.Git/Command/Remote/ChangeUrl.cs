@@ -4,10 +4,10 @@
     {
         public ChangeUrl(GitWorkingDirectory gitworkingdirectory, string remoteName, string remoteUrl) : base(gitworkingdirectory)
         {
-            var add = RunGit("add", "remote add \"" + remoteName + "\" \"" + remoteUrl + "\""); //may fail because remote already exists
+            var add = RunGit("add", new string[] { "remote", "add", remoteName, remoteUrl }); //may fail because remote already exists
             add.WaitFor();
 
-            RunGit("change", "remote set-url \"" + remoteName + "\" \"" + remoteUrl + "\"");
+            RunGit("change", new string[] { "remote", "set-url", remoteName, remoteUrl });
         }
 
         protected override void RunGitDone()

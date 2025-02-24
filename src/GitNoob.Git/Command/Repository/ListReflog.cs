@@ -13,7 +13,7 @@ namespace GitNoob.Git.Command.Repository
         {
             result = null;
 
-            RunGit("reflog", "reflog --all --color=never \"--pretty=format:%H%x1f%gd%x1f%gscI%x1f%cI%x1f%B%x1e\"");
+            RunGit("reflog", new string[] { "reflog", "--all", "--color=never", "--pretty=format:%H%x1f%gd%x1f%gscI%x1f%cI%x1f%B%x1e" });
         }
 
         protected override void RunGitDone()

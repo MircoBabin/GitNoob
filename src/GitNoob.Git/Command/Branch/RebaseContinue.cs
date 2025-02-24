@@ -8,7 +8,7 @@
         {
             //result = null;
 
-            RunGit("rebase", "rebase --continue");
+            RunGit("rebase", new string[] { "rebase", "--continue" });
         }
 
         protected override void RunGitDone()

@@ -11,7 +11,7 @@ namespace GitNoob.Git.Command.Branch
             result = null;
 
             //fast forward a branch without checking out
-            RunGit("ff", "fetch . \"" + branch.RemoteBranchFullName + ":" + branch.FullName + "\"");
+            RunGit("ff", new string[] { "fetch", ".", branch.RemoteBranchFullName + ":" + branch.FullName });
         }
 
         protected override void RunGitDone()

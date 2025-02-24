@@ -10,11 +10,11 @@
 
             if (checkout)
             {
-                RunGit("branch", "checkout -b \"" + newBranch + "\" \"" + branchFromBranchName + "\"");
+                RunGit("branch", new string[] { "checkout", "-b", newBranch, branchFromBranchName });
             }
             else
             {
-                RunGit("branch", "branch \"" + newBranch + "\" \"" + branchFromBranchName + "\"");
+                RunGit("branch", new string[] { "branch", newBranch, branchFromBranchName });
             }
         }
 

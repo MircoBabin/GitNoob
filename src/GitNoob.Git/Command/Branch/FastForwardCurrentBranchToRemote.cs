@@ -8,7 +8,7 @@
         {
             result = null;
 
-            RunGit("merge", "merge --ff-only");
+            RunGit("merge", new string[] { "merge", "--ff-only" });
         }
 
         protected override void RunGitDone()

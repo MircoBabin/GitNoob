@@ -11,7 +11,7 @@ namespace GitNoob.Git.Command.Remote
         {
             result = null;
 
-            RunGit("list", "remote");
+            RunGit("list", new string[] { "remote" });
         }
 
         protected override void RunGitDone()
@@ -24,7 +24,7 @@ namespace GitNoob.Git.Command.Remote
                 var name = line.Trim();
                 if (!string.IsNullOrWhiteSpace(name))
                 {
-                    var listurl = RunGit("listurl-" + name, "remote get-url \"" + name + "\"");
+                    var listurl = RunGit("listurl-" + name, new string[] { "remote", "get-url", name });
                     listurl.WaitFor();
 
                     var url = listurl.Output.Trim();

@@ -8,10 +8,10 @@
         {
             //Sequentially, otherwise error: could not lock config file .git/config: File exists
 
-            var configName = RunGit("name", "config --unset user.name");
+            var configName = RunGit("name", new string[] { "config", "--unset", "user.name" });
             configName.WaitFor();
 
-            var configEmail = RunGit("email", "config --unset user.email");
+            var configEmail = RunGit("email", new string[] { "config", "--unset", "user.email" });
             configEmail.WaitFor();
         }
 

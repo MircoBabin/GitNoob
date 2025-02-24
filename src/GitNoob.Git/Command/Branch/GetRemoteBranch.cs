@@ -12,7 +12,7 @@
             remoteName = null;
             remoteBranch = null;
 
-            RunGit("remote", "rev-parse --abbrev-ref --symbolic-full-name \"" + localBranch + "@{upstream}\"");
+            RunGit("remote", new string[] { "rev-parse", "--abbrev-ref", "--symbolic-full-name", localBranch + "@{upstream}" });
         }
 
         protected override void RunGitDone()

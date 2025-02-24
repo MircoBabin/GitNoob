@@ -14,7 +14,7 @@
             //
             //This moves unpushed commits and working tree changes on a current remote tracking branch to a new branch
             //After, the remote tracking branch has no local equivalent anymore. Not a problem, checkout the remote branch and it will be created again.
-            RunGit("rename", "branch -m \"" + oldName + "\" \"" + newName + "\"");
+            RunGit("rename", new string[] { "branch", "-m", oldName, newName });
         }
 
         protected override void RunGitDone()

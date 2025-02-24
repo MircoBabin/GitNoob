@@ -1,4 +1,6 @@
-﻿namespace GitNoob.Git.Command.Branch
+﻿using System.Text;
+
+namespace GitNoob.Git.Command.Branch
 {
     public class CreateEmptyCommitOnCurrentBranch : Command
     {
@@ -8,12 +10,23 @@
         {
             //result = null;
 
-            RunGit("commit", "commit --allow-empty --message \"" + message + "\"");
+            // commitmessage via file
+            var commitMessageFilename = System.IO.Path.GetTempFileName();
+            var encoding = new UTF8Encoding(false);
+            System.IO.File.WriteAllBytes(commitMessageFilename, encoding.GetBytes(message));
+
+            var executor = RunGit("commit", new string[] { "commit", "--allow-empty", "--quiet", "--file=" + commitMessageFilename });
+            executor.WaitFor();
+
+            try
+            {
+                System.IO.File.Delete(commitMessageFilename);
+            }
+            catch { }
         }
 
         protected override void RunGitDone()
         {
-            var executor = GetGitExecutor("commit");
             //result can not be determined
         }
     }

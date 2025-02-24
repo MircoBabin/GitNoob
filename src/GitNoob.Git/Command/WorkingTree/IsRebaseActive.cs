@@ -38,7 +38,7 @@ namespace GitNoob.Git.Command.WorkingTree
                     ontoCommitid = File.ReadAllText(filename, System.Text.Encoding.UTF8).Trim();
                     if (!string.IsNullOrWhiteSpace(ontoCommitid))
                     {
-                        var gitOntoBranchName = RunGit("branchname", "name-rev --name-only --exclude=tags/* \"" + ontoCommitid + "\"");
+                        var gitOntoBranchName = RunGit("branchname", new string[] { "name-rev", "--name-only", "--exclude=tags/*", ontoCommitid });
                         gitOntoBranchName.WaitFor();
                         string ontoBranch = gitOntoBranchName.Output.Trim();
                         if (!string.IsNullOrWhiteSpace(ontoBranch))

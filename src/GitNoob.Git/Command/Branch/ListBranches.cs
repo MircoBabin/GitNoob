@@ -14,20 +14,23 @@ namespace GitNoob.Git.Command.Branch
         {
             result = null;
 
-            string command = "for-each-ref --color=never \"--format=%(refname)%1f%(refname:short)%1f%(upstream)%1f%(upstream:short)\" ";
+            List<string> command = new List<string>();
+            command.Add("for-each-ref");
+            command.Add("--color=never");
+            command.Add("--format=%(refname)%1f%(refname:short)%1f%(upstream)%1f%(upstream:short)");
             if (String.IsNullOrWhiteSpace(oneBranchName))
             {
-                command += "\"refs/heads\"";
+                command.Add("refs/heads");
             }
             else
             {
                 if (oneBranchName.StartsWith("refs/"))
                 {
-                    command += "\"" + oneBranchName + "\"";
+                    command.Add(oneBranchName);
                 }
                 else
                 {
-                    command += "\"refs/heads/" + oneBranchName + "\"";
+                    command.Add("refs/heads/" + oneBranchName);
                 }
             }
             RunGit("list", command);
@@ -35,7 +38,7 @@ namespace GitNoob.Git.Command.Branch
             this.listRemoteBranches = listRemoteBranches;
             if (this.listRemoteBranches)
             {
-                RunGit("remote", "for-each-ref --color=never \"--format=%(refname)%1f%(refname:short)%1f%(upstream)%1f%(upstream:short)\" \"refs/remotes\"");
+                RunGit("remote", new string[] { "for-each-ref", "--color=never", "--format=%(refname)%1f%(refname:short)%1f%(upstream)%1f%(upstream:short)", "refs/remotes" });
             }
         }
 

@@ -8,7 +8,8 @@
         {
             //result = null;
 
-            RunGit("init", "init " + (!string.IsNullOrWhiteSpace(mainBranchName) ? "\"--initial-branch=" + mainBranchName + "\" " : "--no-checkout "));
+            RunGit("init", new string[] { "init",
+                (!string.IsNullOrWhiteSpace(mainBranchName) ? "--initial-branch=" + mainBranchName : "--no-checkout") });
         }
 
         protected override void RunGitDone()

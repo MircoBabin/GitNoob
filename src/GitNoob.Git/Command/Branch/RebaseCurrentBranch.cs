@@ -8,7 +8,7 @@
         {
             //result = null;
 
-            RunGit("rebase", "rebase \"" + ontoBranch + "\"");
+            RunGit("rebase", new string[] { "rebase", ontoBranch });
         }
 
         protected override void RunGitDone()

@@ -8,7 +8,7 @@
         {
             //result = null;
 
-            RunGit("unset", "branch --unset-upstream \"" + localBranch + "\"");
+            RunGit("unset", new string[] { "branch", "--unset-upstream", localBranch });
         }
 
         protected override void RunGitDone()

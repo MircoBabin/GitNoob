@@ -12,7 +12,7 @@ namespace GitNoob.Git.Command.Repository
 
             if (!String.IsNullOrWhiteSpace(_gitworkingdirectory.RemoteUrl))
             {
-                RunGit("connect", "ls-remote --quiet \"" + _gitworkingdirectory.RemoteUrl + "\"");
+                RunGit("connect", new string[] { "ls-remote", "--quiet", _gitworkingdirectory.RemoteUrl });
             }
             else
             {

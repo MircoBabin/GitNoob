@@ -1,14 +1,15 @@
-﻿namespace GitNoob.Git.Command.Branch
+﻿
+namespace GitNoob.Git.Command.Branch
 {
-    public class CherryPickAbort : Command
+    public class CherryPickContinue : Command
     {
         //public bool? result { get; private set; }
 
-        public CherryPickAbort(GitWorkingDirectory gitworkingdirectory) : base(gitworkingdirectory)
+        public CherryPickContinue(GitWorkingDirectory gitworkingdirectory) : base(gitworkingdirectory)
         {
             //result = null;
 
-            RunGit("cherry-pick", "cherry-pick --abort");
+            RunGit("cherry-pick", new string[] { "cherry-pick", "--continue" });
         }
 
         protected override void RunGitDone()

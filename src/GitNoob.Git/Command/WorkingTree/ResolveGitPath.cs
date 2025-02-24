@@ -21,7 +21,7 @@ namespace GitNoob.Git.Command.WorkingTree
             if (!_resolved.ContainsKey(_resolveName))
             {
                 result = null;
-                RunGit("resolve", "rev-parse --no-flags --git-path \"" + path + "\"");
+                RunGit("resolve", new string[] { "rev-parse", "--no-flags", "--git-path", path });
             }
             else
             {

@@ -12,7 +12,7 @@ namespace GitNoob.Git.Command.Tag
         {
             result = null;
 
-            RunGit("list", "for-each-ref --color=never \"--format=%(*objectname)%1f%(objecttype)%1f%(refname)%1f%(refname:short)%1f%1f%(contents)%1e\" refs/tags");
+            RunGit("list", new string[] { "for-each-ref", "--color=never", "--format=%(*objectname)%1f%(objecttype)%1f%(refname)%1f%(refname:short)%1f%1f%(contents)%1e", "refs/tags" });
         }
 
         protected override void RunGitDone()

@@ -8,7 +8,7 @@
         {
             commitid = null;
 
-            RunGit("base", "merge-base \"" + localBranch1 + "\" \"" + localBranch2 + "\"");
+            RunGit("base", new string[] { "merge-base", localBranch1, localBranch2 });
         }
 
         protected override void RunGitDone()

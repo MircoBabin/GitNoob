@@ -8,7 +8,7 @@
         {
             //result = null;
 
-            RunGit("merge", "merge --continue");
+            RunGit("merge", new string[] { "merge", "--continue" });
         }
 
         protected override void RunGitDone()
