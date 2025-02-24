@@ -1,5 +1,10 @@
 # GitNoob changelog
 
+## Version 1.29
+* Fix: having unpushed commits on the main branch.
+* Fix: escape commandline arguments for Git.
+* Add: show more configuration when starting Apache.
+
 ## Version 1.28
 * Fix: get latest, rebase when having working directory changes.
 * Add: show project type.
