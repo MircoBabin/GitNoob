@@ -8,7 +8,7 @@
         {
             //result = null;
 
-            RunGit("branch", new string[] { "branch", "--delete", (forced ? "--force " : null), branch });
+            RunGit("branch", new string[] { "branch", "--delete", (forced ? "--force" : null), branch });
         }
 
         protected override void RunGitDone()
