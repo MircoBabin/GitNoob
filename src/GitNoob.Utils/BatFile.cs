@@ -309,30 +309,30 @@ namespace GitNoob.Utils
 
         public void Start()
         {
-            var batFile = WriteBatFile();
-
-            var info = new ProcessStartInfo
-            {
-                FileName = batFile,
-
-                UseShellExecute = true,
-            };
-
-            if (_runAs == RunAsType.runAsAdministrator)
-            {
-                info.Verb = "runas";
-            }
-
-            switch (_window)
-            {
-                case WindowType.hideWindow:
-                    info.CreateNoWindow = true;
-                    info.WindowStyle = ProcessWindowStyle.Hidden;
-                    break;
-            }
-
             try
             {
+                var batFile = WriteBatFile();
+
+                var info = new ProcessStartInfo
+                {
+                    FileName = batFile,
+
+                    UseShellExecute = true,
+                };
+
+                if (_runAs == RunAsType.runAsAdministrator)
+                {
+                    info.Verb = "runas";
+                }
+
+                switch (_window)
+                {
+                    case WindowType.hideWindow:
+                        info.CreateNoWindow = true;
+                        info.WindowStyle = ProcessWindowStyle.Hidden;
+                        break;
+                }
+
                 Process.Start(info);
             }
             catch (Exception ex)
@@ -346,47 +346,47 @@ namespace GitNoob.Utils
 
         public void StartAndKeepDosPromptOpen()
         {
-            switch(_window)
-            {
-                case WindowType.showWindow:
-                case WindowType.showWindowWithPauseAtEnd:
-                    break;
-
-                default:
-                    throw new Exception("BatFile.StartAndKeepDosPromptOpen can only be used with showWindow");
-            }
-
-            var orgTitle = _windowTitle;
-            string batFile;
             try
             {
+                switch (_window)
+                {
+                    case WindowType.showWindow:
+                    case WindowType.showWindowWithPauseAtEnd:
+                        break;
+
+                    default:
+                        throw new Exception("BatFile.StartAndKeepDosPromptOpen can only be used with showWindow");
+                }
+
+                var orgTitle = _windowTitle;
+                string batFile;
+                try
+                {
+                    if (_runAs == RunAsType.runAsAdministrator)
+                    {
+                        _windowTitle = "Administrator: " + _windowTitle;
+                    }
+                    batFile = WriteBatFile();
+                }
+                finally
+                {
+                    _windowTitle = orgTitle;
+                }
+
+                var exe = FileUtils.FindExePath("%ComSpec%");
+                var info = new ProcessStartInfo
+                {
+                    FileName = exe,
+                    Arguments = "/K \"" + batFile + "\"",
+
+                    UseShellExecute = true,
+                };
+
                 if (_runAs == RunAsType.runAsAdministrator)
                 {
-                    _windowTitle = "Administrator: " + _windowTitle;
+                    info.Verb = "runas";
                 }
-                batFile = WriteBatFile();
-            }
-            finally
-            {
-                _windowTitle = orgTitle;
-            }
 
-            var exe = FileUtils.FindExePath("%ComSpec%");
-            var info = new ProcessStartInfo
-            {
-                FileName = exe,
-                Arguments = "/K \"" + batFile + "\"",
-
-                UseShellExecute = true,
-            };
-
-            if (_runAs == RunAsType.runAsAdministrator)
-            {
-                info.Verb = "runas";
-            }
-
-            try
-            {
                 Process.Start(info);
             }
             catch (Exception ex)
