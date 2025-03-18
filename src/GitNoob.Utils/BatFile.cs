@@ -224,7 +224,18 @@ namespace GitNoob.Utils
             {
                 if (NeedsPhp())
                 {
-                    string phpPath = FileUtils.GetExactPathName(_projectWorkingDirectory.Php.Path.ToString());
+                    var wdPhpPath = _projectWorkingDirectory.Php.Path.ToString();
+                    if (string.IsNullOrEmpty(wdPhpPath))
+                        throw new Exception("This project requires PHP. But the path to PHP is not set in the GitNoob configuration.");
+                    string phpPath;
+                    try
+                    {
+                        phpPath = FileUtils.GetExactPathName(wdPhpPath);
+                    }
+                    catch(Exception ex)
+                    {
+                        throw new Exception("This project requires PHP. But the path to PHP \"" + wdPhpPath + "\", set in the GitNoob configuration, is invalid. " + ex.Message);
+                    }
 
                     contents.AppendLine("set PHPRC=" + _phpIni.IniPath); /* Directory containing php.ini */
 
