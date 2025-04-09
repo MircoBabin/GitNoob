@@ -1,5 +1,10 @@
 # GitNoob changelog
 
+## Version 1.30
+* Add: move workingtree changes and unpushed commits to a new branch.
+* Fix: improve error messages when dos prompt fails.
+* Fix: when Php is required but not configured show a message.
+
 ## Version 1.29
 * Fix: having unpushed commits on the main branch.
 * Fix: escape commandline arguments for Git.
