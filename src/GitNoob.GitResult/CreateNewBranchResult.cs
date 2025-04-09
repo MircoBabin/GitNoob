@@ -8,6 +8,7 @@ namespace GitNoob.GitResult
         public string CurrentBranch { get; set; }
 
         public bool ErrorBranchAlreadyExists { get; set; }
+        public bool ErrorNoWorkingTreeChangesOrStagedUncommittedFiles { get; set; }
         public bool ErrorCreating { get; set; }
 
         public bool TemporaryCommitFailed { get; set; }
@@ -19,6 +20,7 @@ namespace GitNoob.GitResult
             CurrentBranch = String.Empty;
 
             ErrorBranchAlreadyExists = false;
+            ErrorNoWorkingTreeChangesOrStagedUncommittedFiles = false;
             ErrorCreating = false;
 
             TemporaryCommitFailed = false;

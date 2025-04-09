@@ -27,11 +27,13 @@ namespace GitNoob.Gui.Program.Step
             string renameBranch = "Rename current branch \"" + currentBranch + "\".";
             string newBranch = "Create a new branch based on the main branch \"" + MainBranch + "\".";
             string newBranchOnCommit = "Create a new branch on a specific commit-id.";
+            string moveChanges = "Move current workingtree changes and staged uncommitted files to a new branch.";
             string deleteBranch = "Delete current branch \"" + currentBranch + "\".";
             FailureRemedy = new Remedy.InputChooseBranch(this, message, result.Branches, "Cancel, don't change branch", 
                 (!result.CurrentBranchIsTrackingRemoteBranch && !result.DetachedHead_NotOnBranch ? renameBranch : null), currentBranch,
                 newBranch, MainBranch,
                 newBranchOnCommit,
+                ((result.WorkingTreeChanges || result.StagedUncommittedFiles) ? moveChanges : null),
                 deleteBranch, 
                 (name) => {
                 var step = new CheckoutBranch(false, name);

@@ -10,11 +10,17 @@
 
             if (checkout)
             {
-                RunGit("branch", new string[] { "checkout", "-b", newBranch, branchFromBranchName });
+                if (branchFromBranchName != null)
+                    RunGit("branch", new string[] { "checkout", "-b", newBranch, branchFromBranchName });
+                else
+                    RunGit("branch", new string[] { "checkout", "-b", newBranch}); // on current commit
             }
             else
             {
-                RunGit("branch", new string[] { "branch", newBranch, branchFromBranchName });
+                if (branchFromBranchName != null)
+                    RunGit("branch", new string[] { "branch", newBranch, branchFromBranchName });
+                else
+                    RunGit("branch", new string[] { "branch", newBranch }); //on current commit
             }
         }
 

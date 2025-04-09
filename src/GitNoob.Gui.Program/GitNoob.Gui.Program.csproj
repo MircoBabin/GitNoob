@@ -75,6 +75,7 @@
     <Compile Include="Step\DeleteUndeleteTag.cs" />
     <Compile Include="Step\CherryPickAbort.cs" />
     <Compile Include="Step\CherryPickContinue.cs" />
+    <Compile Include="Step\MoveCurrentChangesToNewBranch.cs" />
     <Compile Include="Step\TouchTimestampOfCommitsBeforeMerge.cs" />
     <Compile Include="Step\AskTouchTimestampsOnCurrentBranch.cs" />
     <Compile Include="Step\PruneAggressive.cs" />

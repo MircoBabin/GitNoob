@@ -10,6 +10,7 @@ namespace GitNoob.Gui.Program.Remedy
             string RenameCurrentBranchText, string CurrentBranch,
             string NewBranchText, string MainBranch,
             string NewBranchOnSpecificCommitText,
+            string MoveChangesText,
             string DeleteBranchText, 
             System.Action<string> OnSelectedBranchAction) :
             base(Step, ref Message)
@@ -62,6 +63,20 @@ namespace GitNoob.Gui.Program.Remedy
                     var remedy = new InputNewBranchName(Step, new VisualizerMessageWithLinks("Create new branch on specific commit-id."), NewBranchOnSpecificCommitText, true, (NewBranchName, OnCommitId) =>
                     {
                         var step = new Step.CreateBranchOntoCommitId(NewBranchName, OnCommitId);
+                        StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
+                    });
+
+                    StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor> { remedy });
+                    Done();
+                }));
+            }
+
+            if (!string.IsNullOrWhiteSpace(MoveChangesText))
+            {
+                VisualizerMessageButtons.Add(new VisualizerMessageButton(MoveChangesText, (input) => {
+                    var remedy = new InputNewBranchName(Step, new VisualizerMessageWithLinks("Create new branch."), MoveChangesText, false, (NewBranchName, OnCommitId) =>
+                    {
+                        var step = new Step.MoveCurrentChangesToNewBranch(NewBranchName);
                         StepsExecutor.InjectSteps(new List<StepsExecutor.IExecutableByStepsExecutor>() { step });
                     });
 

@@ -299,6 +299,7 @@ namespace GitNoob.Git
         {
             var result = new BranchesResult();
 
+            var changes = new Command.WorkingTree.HasChanges(this);
             var command = new Command.Branch.ListBranches(this, true);
 
             var currentbranch = new Command.Branch.GetCurrentBranch(this);
@@ -320,6 +321,10 @@ namespace GitNoob.Git
                     result.Branches.Add(branch.ShortName);
                 }
             }
+
+            changes.WaitFor();
+            result.WorkingTreeChanges = (changes.workingtreeChanges == true);
+            result.StagedUncommittedFiles = (changes.stagedUncommittedFiles == true);
 
             return result;
         }
@@ -346,6 +351,57 @@ namespace GitNoob.Git
             }
 
             result.Renamed = true;
+            return result;
+        }
+
+        public CreateNewBranchResult MoveCurrentChangesToNewBranch(string branchname)
+        {
+            var result = new CreateNewBranchResult();
+
+            if (GitDisaster.Check(this, result, new GitDisasterAllowed()
+            {
+                Allow_DetachedHead = true,
+                Allow_UnpushedCommitsOnMainBranch = true,
+
+                Allow_StagedUncommittedFiles = true,
+                Allow_WorkingTreeChanges = true,
+            }))
+                return result;
+
+            if (!result.GitDisaster_StagedUncommittedFiles.Value && !result.GitDisaster_WorkingTreeChanges.Value)
+            {
+                result.ErrorNoWorkingTreeChangesOrStagedUncommittedFiles = true;
+                return result;
+            }
+
+            {
+                var command = new Command.Branch.ListBranches(this, false, branchname);
+                command.WaitFor();
+
+                if (command.result.Count > 0)
+                {
+                    result.ErrorBranchAlreadyExists = true;
+
+                    return result;
+                }
+            }
+
+            var create = new Command.Branch.CreateBranch(this, branchname, null, true);
+            create.WaitFor();
+
+            var currentbranch = new Command.Branch.GetCurrentBranch(this);
+            bool created;
+            {
+                var command = new Command.Branch.ListBranches(this, false, branchname);
+                command.WaitFor();
+
+                created = (command.result.Count > 0);
+            }
+            currentbranch.WaitFor();
+
+            result.Created = created;
+            result.CurrentBranch = currentbranch.shortname;
+            result.ErrorCreating = !created;
             return result;
         }
 
