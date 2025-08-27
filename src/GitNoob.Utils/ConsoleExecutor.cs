@@ -330,7 +330,6 @@ namespace GitNoob.Utils
         private void Construct(string executable, string commandline, string workingdirectory, string enterPasswordText, SecureString password,
                                IList<string> AppendToPath = null, IDictionary<string, string> EnvironmentVariables = null)
         {
-
             _executable = executable;
             _commandline = (commandline != null ? commandline : String.Empty);
             _workingdirectory = workingdirectory;
@@ -452,7 +451,14 @@ namespace GitNoob.Utils
             [DllImport("user32.dll", CharSet = CharSet.Auto)]
             public static extern short VkKeyScan(char ch);
 
+            [DllImport("user32.dll", CharSet = CharSet.Auto)]
+            public static extern short GetKeyState(int nVirtKey);
+
             public const int VK_RETURN = 0x0D;
+            public const int VK_SHIFT = 0x10;
+            public const int VK_CONTROL = 0x11;
+            public const int VK_MENU = 0x12; // actually the ALT key
+            public const int VK_CAPITAL = 0x14; // actually the CAPS LOCK key
             public const int WmKeyDown = 0x100;
             public const int WmKeyUp = 0x101;
 
@@ -573,25 +579,144 @@ namespace GitNoob.Utils
                 SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
             }
 
-            public static void PressVirtualKey(ushort vkCode)
+            public static void Release_Shift_Ctrl_Alt_Keys()
             {
-                var inputs = new KeyboardInput[]
+                var currentShiftDown = (GetKeyState(VK_SHIFT) & 0x8000) > 0;
+                var currentCtrlDown = (GetKeyState(VK_CONTROL) & 0x8000) > 0;
+                var currentAltDown = (GetKeyState(VK_MENU) & 0x8000) > 0;
+
+                var inputs = new List<KeyboardInput>();
+
+                if (currentShiftDown)
                 {
+                    inputs.Add(
+                        new KeyboardInput
+                        {
+                            wVk = VK_SHIFT,
+                            dwFlags = (uint)(KeyEventF.KeyUp),
+                            dwExtraInfo = GetMessageExtraInfo()
+                        });
+                }
+
+                if (currentCtrlDown)
+                {
+                    inputs.Add(
+                        new KeyboardInput
+                        {
+                            wVk = VK_CONTROL,
+                            dwFlags = (uint)(KeyEventF.KeyUp),
+                            dwExtraInfo = GetMessageExtraInfo()
+                        });
+                }
+
+                if (currentAltDown)
+                {
+                    inputs.Add(
+                        new KeyboardInput
+                        {
+                            wVk = VK_MENU,
+                            dwFlags = (uint)(KeyEventF.KeyUp),
+                            dwExtraInfo = GetMessageExtraInfo()
+                        });
+                }
+
+                SendKeyboardInput(inputs.ToArray());
+            }
+
+            public static void PressVirtualKey(short vkKeyScan)
+            {
+                var vkCode = vkKeyScan & 0xff;
+                if (vkCode == -1) return;
+
+                var vkCodeShift = (vkKeyScan & 0x100) > 0;
+                var vkCodeCtrl = (vkKeyScan & 0x200) > 0;
+                var vkCodeAlt = (vkKeyScan & 0x400) > 0;
+
+                var currentShiftDown = (GetKeyState(VK_SHIFT) & 0x8000) > 0;
+                var currentCtrlDown = (GetKeyState(VK_CONTROL) & 0x8000) > 0;
+                var currentAltDown = (GetKeyState(VK_MENU) & 0x8000) > 0;
+
+                var inputs = new List<KeyboardInput>();
+
+                /*
+                while (true)
+                {
+                    var currentCapsLockActive = (GetKeyState(VK_CAPITAL) & 1) > 0;
+                    if (!currentCapsLockActive) break;
+
+                    inputs.Clear();
+                    inputs.Add(
                     new KeyboardInput
                     {
-                        wVk = vkCode,
+                        wVk = VK_CAPITAL,
                         dwFlags = (uint)(KeyEventF.KeyDown),
                         dwExtraInfo = GetMessageExtraInfo()
-                    },
+                        });
+
+                    inputs.Add(
                     new KeyboardInput
                     {
-                        wScan = vkCode,
+                        wScan = VK_CAPITAL,
                         dwFlags = (uint)(KeyEventF.KeyUp),
                         dwExtraInfo = GetMessageExtraInfo()
-                    }
-                };
+                        });
 
-                SendKeyboardInput(inputs);
+                    SendKeyboardInput(inputs.ToArray());
+                    Thread.Sleep(50);
+                }
+                */
+
+                inputs.Clear();
+                if (currentShiftDown != vkCodeShift)
+                {
+                    inputs.Add(
+                        new KeyboardInput
+                        {
+                            wVk = VK_SHIFT,
+                            dwFlags = (uint)(currentShiftDown ? KeyEventF.KeyUp : KeyEventF.KeyDown),
+                            dwExtraInfo = GetMessageExtraInfo()
+                        });
+                }
+
+                if (currentCtrlDown != vkCodeCtrl)
+                {
+                    inputs.Add(
+                        new KeyboardInput
+                        {
+                            wVk = VK_CONTROL,
+                            dwFlags = (uint)(currentCtrlDown ? KeyEventF.KeyUp : KeyEventF.KeyDown),
+                            dwExtraInfo = GetMessageExtraInfo()
+                        });
+                }
+
+                if (currentAltDown != vkCodeAlt)
+                {
+                    inputs.Add(
+                        new KeyboardInput
+                        {
+                            wVk = VK_MENU,
+                            dwFlags = (uint)(currentAltDown ? KeyEventF.KeyUp : KeyEventF.KeyDown),
+                            dwExtraInfo = GetMessageExtraInfo()
+                        });
+                }
+
+                inputs.Add(
+                    new KeyboardInput
+                    {
+                        wVk = (ushort)vkCode,
+                        dwFlags = (uint)(KeyEventF.KeyDown),
+                        dwExtraInfo = GetMessageExtraInfo()
+                    });
+
+                inputs.Add(
+                    new KeyboardInput
+                    {
+                        wScan = (ushort)vkCode,
+                        dwFlags = (uint)(KeyEventF.KeyUp),
+                        dwExtraInfo = GetMessageExtraInfo()
+                    });
+
+                SendKeyboardInput(inputs.ToArray());
             }
         }
 
@@ -944,8 +1069,8 @@ namespace GitNoob.Utils
                             the shift states will be reported correctly. (I can’t help you with the complex input problem, though.)
                             */
 
-                            var vkcode = NativeMethods.VkKeyScan(SecureString_GetCharAt(_password, i));
-                            NativeMethods.PressVirtualKey((ushort)vkcode);
+                            var vkKeyScan = NativeMethods.VkKeyScan(SecureString_GetCharAt(_password, i));
+                            NativeMethods.PressVirtualKey(vkKeyScan);
 
                             Thread.Sleep(50);
                         }
@@ -953,6 +1078,7 @@ namespace GitNoob.Utils
                     }
                     finally
                     {
+                        try { NativeMethods.Release_Shift_Ctrl_Alt_Keys(); } catch { }
                         try { NativeMethods.FreeConsole(); } catch { }
                     }
                 }
